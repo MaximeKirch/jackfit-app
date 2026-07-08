@@ -29,6 +29,8 @@ module.exports = [
       ...tseslint.configs['recommended'].rules,
       ...reactPlugin.configs['recommended'].rules,
       ...reactHooksPlugin.configs['recommended'].rules,
+      // Too aggressive: flags valid async data-fetching patterns (HealthKit, etc.)
+      'react-hooks/set-state-in-effect': 'off',
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
