@@ -7,7 +7,7 @@ import {
   AuthorizationRequestStatus,
   WorkoutTypeIdentifier,
 } from '@kingstinct/react-native-healthkit'
-import { transformWorkout, transformSleepSamples } from '../utils/healthTransform'
+import { transformWorkout, transformSleepSamples, deduplicateWorkouts } from '../utils/healthTransform'
 import type { HealthSummary } from '@/shared/types/health.types'
 
 const READ_TYPES = [
@@ -44,7 +44,7 @@ export const useHealthData = () => {
       ])
 
       setData({
-        workouts: workouts.map(transformWorkout),
+        workouts: deduplicateWorkouts(workouts).map(transformWorkout),
         sleep: transformSleepSamples(sleepSamples),
         steps: Math.round(stepsResult.sumQuantity?.quantity ?? 0),
         weeklyScore: 0, // computed in step 3 (scoring algorithm)

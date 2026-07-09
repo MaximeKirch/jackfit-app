@@ -17,6 +17,30 @@ export const transformWorkout = (workout: WorkoutProxyTyped): WorkoutData => ({
   date: workout.startDate.toISOString(),
 })
 
+// Strava + Coros (and other sync apps) both write the same workout to HealthKit.
+// Deduplicate by grouping workouts with the same activity type and start time
+// within a 2-minute window, keeping the one with the most complete calorie data.
+export const deduplicateWorkouts = (
+  workouts: readonly WorkoutProxyTyped[],
+): readonly WorkoutProxyTyped[] => {
+  const BUCKET_MS = 2 * 60 * 1000
+  const groups = new Map<string, WorkoutProxyTyped>()
+
+  for (const workout of workouts) {
+    const bucket = Math.floor(workout.startDate.getTime() / BUCKET_MS)
+    const key = `${workout.workoutActivityType}-${bucket}`
+    const existing = groups.get(key)
+    const calories = workout.totalEnergyBurned?.quantity ?? 0
+    if (!existing || calories > (existing.totalEnergyBurned?.quantity ?? 0)) {
+      groups.set(key, workout)
+    }
+  }
+
+  return Array.from(groups.values()).sort(
+    (a, b) => b.startDate.getTime() - a.startDate.getTime(),
+  )
+}
+
 const ASLEEP_VALUES = new Set([
   CategoryValueSleepAnalysis.asleepUnspecified,
   CategoryValueSleepAnalysis.asleepCore,

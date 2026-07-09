@@ -9,7 +9,10 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.jackfit.app"
+      "bundleIdentifier": "com.jackfit.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -18,12 +21,7 @@
       "typedRoutes": true
     },
     "plugins": [
-      [
-        "expo-router",
-        {
-          "root": "src/app"
-        }
-      ],
+      "expo-router",
       [
         "@kingstinct/react-native-healthkit",
         {
@@ -31,6 +29,11 @@
           "NSHealthUpdateUsageDescription": false
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a0ee710a-df1d-4030-b32d-419e45cf697e"
+      }
+    }
   }
 }
