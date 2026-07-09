@@ -25,7 +25,7 @@ export const ChatInput = ({ onSend, isLoading, accentColor }: ChatInputProps) =>
         style={styles.input}
         value={text}
         onChangeText={setText}
-        placeholder="Parle à ton Jack Russell…"
+        placeholder="Dis quelque chose..."
         placeholderTextColor="#999"
         returnKeyType="send"
         onSubmitEditing={handleSend}

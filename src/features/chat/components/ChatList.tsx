@@ -85,7 +85,7 @@ export default function ChatList() {
           contentContainerStyle={styles.listContent}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>Dis bonjour à ton Jack Russell.</Text>
+              <Text style={styles.emptyText}>Commence une discussion ici/</Text>
             </View>
           }
           ListFooterComponent={isPending ? <TypingIndicator color={color} /> : null}
