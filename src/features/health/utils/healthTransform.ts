@@ -18,27 +18,36 @@ export const transformWorkout = (workout: WorkoutProxyTyped): WorkoutData => ({
 })
 
 // Strava + Coros (and other sync apps) both write the same workout to HealthKit.
-// Deduplicate by grouping workouts with the same activity type and start time
-// within a 2-minute window, keeping the one with the most complete calorie data.
+// Deduplicate by overlap: two workouts of the same type whose time ranges intersect
+// are the same session. Keep the one with the most complete calorie data.
 export const deduplicateWorkouts = (
   workouts: readonly WorkoutProxyTyped[],
 ): readonly WorkoutProxyTyped[] => {
-  const BUCKET_MS = 2 * 60 * 1000
-  const groups = new Map<string, WorkoutProxyTyped>()
+  const endMs = (w: WorkoutProxyTyped) => w.startDate.getTime() + w.duration.quantity * 1000
+  const unique: WorkoutProxyTyped[] = []
 
   for (const workout of workouts) {
-    const bucket = Math.floor(workout.startDate.getTime() / BUCKET_MS)
-    const key = `${workout.workoutActivityType}-${bucket}`
-    const existing = groups.get(key)
-    const calories = workout.totalEnergyBurned?.quantity ?? 0
-    if (!existing || calories > (existing.totalEnergyBurned?.quantity ?? 0)) {
-      groups.set(key, workout)
+    const startA = workout.startDate.getTime()
+    const endA = endMs(workout)
+
+    const dupIdx = unique.findIndex(
+      (u) => u.startDate.getTime() < endA && startA < endMs(u),
+    )
+
+    if (dupIdx === -1) {
+      unique.push(workout)
+    } else {
+      const dup = unique[dupIdx]
+      if (dup !== undefined) {
+        const calories = workout.totalEnergyBurned?.quantity ?? 0
+        if (calories > (dup.totalEnergyBurned?.quantity ?? 0)) {
+          unique[dupIdx] = workout
+        }
+      }
     }
   }
 
-  return Array.from(groups.values()).sort(
-    (a, b) => b.startDate.getTime() - a.startDate.getTime(),
-  )
+  return unique.sort((a, b) => b.startDate.getTime() - a.startDate.getTime())
 }
 
 const ASLEEP_VALUES = new Set([

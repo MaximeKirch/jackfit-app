@@ -36,6 +36,8 @@ export const useHealthData = () => {
       monday.setDate(today.getDate() + offsetToMonday)
       const dateFilter = { date: { startDate: monday, endDate: now } }
 
+      console.log('[HealthData] window:', monday.toISOString(), '→', now.toISOString())
+
       const [workouts, sleepSamples, stepsResult] = await Promise.all([
         queryWorkoutSamples({ filter: dateFilter, limit: -1 }),
         queryCategorySamples('HKCategoryTypeIdentifierSleepAnalysis', {
@@ -48,8 +50,19 @@ export const useHealthData = () => {
         }),
       ])
 
+      const raw = workouts
+      const deduped = deduplicateWorkouts(raw)
+      console.log('[HealthData] raw workouts:', raw.length)
+      raw.forEach((w) =>
+        console.log(`  raw: ${w.workoutActivityType} | start=${w.startDate.toISOString()} | duration=${Math.round(w.duration.quantity / 60)}min | cal=${w.totalEnergyBurned?.quantity ?? 0}`)
+      )
+      console.log('[HealthData] after dedup:', deduped.length)
+      deduped.forEach((w) =>
+        console.log(`  dedup: ${w.workoutActivityType} | start=${w.startDate.toISOString()} | duration=${Math.round(w.duration.quantity / 60)}min | cal=${w.totalEnergyBurned?.quantity ?? 0}`)
+      )
+
       setData({
-        workouts: deduplicateWorkouts(workouts).map(transformWorkout),
+        workouts: deduped.map(transformWorkout),
         sleep: transformSleepSamples(sleepSamples),
         steps: Math.round(stepsResult.sumQuantity?.quantity ?? 0),
         weeklyScore: 0, // computed in step 3 (scoring algorithm)

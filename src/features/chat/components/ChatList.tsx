@@ -44,6 +44,9 @@ export default function ChatList() {
     gcTime: Infinity,
   })
 
+
+  console.log(messages)
+
   const listRef = useRef<FlatList<Message>>(null)
 
   useEffect(() => {
@@ -85,7 +88,7 @@ export default function ChatList() {
           contentContainerStyle={styles.listContent}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>Commence une discussion ici/</Text>
+              <Text style={styles.emptyText}>Commence une discussion ici</Text>
             </View>
           }
           ListFooterComponent={isPending ? <TypingIndicator color={color} /> : null}
