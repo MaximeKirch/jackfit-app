@@ -28,8 +28,13 @@ export const useHealthData = () => {
     setError(null)
     try {
       const now = new Date()
-      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-      const dateFilter = { date: { startDate: sevenDaysAgo, endDate: now } }
+      const today = new Date(now)
+      today.setHours(0, 0, 0, 0)
+      const dayOfWeek = today.getDay() // 0=Sun … 6=Sat
+      const offsetToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek
+      const monday = new Date(today)
+      monday.setDate(today.getDate() + offsetToMonday)
+      const dateFilter = { date: { startDate: monday, endDate: now } }
 
       const [workouts, sleepSamples, stepsResult] = await Promise.all([
         queryWorkoutSamples({ filter: dateFilter, limit: -1 }),
