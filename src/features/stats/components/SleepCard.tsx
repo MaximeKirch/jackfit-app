@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native'
 import { Card } from '@/shared/components/Card'
 import { Skeleton } from '@/shared/components/Skeleton'
+import { Colors, Typography } from '@/shared/constants/tokens'
 import type { SleepStats } from '../hooks/useStats'
 
 const qualityColor = (avgHours: number, targetHours: number): string => {
@@ -24,7 +25,7 @@ interface SleepCardProps {
 }
 
 export const SleepCard = ({ stats }: SleepCardProps) => {
-  const color = stats.nightCount > 0 ? qualityColor(stats.avgHours, stats.targetHours) : '#9E9E9E'
+  const color = stats.nightCount > 0 ? qualityColor(stats.avgHours, stats.targetHours) : Colors.stone
   const label = stats.nightCount > 0 ? qualityLabel(stats.avgHours, stats.targetHours) : '—'
 
   return (
@@ -62,9 +63,9 @@ export const SleepCardSkeleton = () => (
 
 const styles = StyleSheet.create({
   label: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#9E9E9E',
+    fontSize: Typography.xs,
+    fontFamily: 'Inter-SemiBold',
+    color: Colors.stone,
     letterSpacing: 1,
     marginBottom: 4,
   },
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
   },
   mainValue: {
     fontSize: 40,
-    fontWeight: '800',
+    fontFamily: 'Inter-SemiBold',
     lineHeight: 48,
   },
   badge: {
@@ -85,12 +86,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   badgeText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontSize: Typography.sm,
+    fontFamily: 'Inter-SemiBold',
+    color: Colors.white,
   },
   subLabel: {
-    fontSize: 13,
-    color: '#9E9E9E',
+    fontSize: Typography.sm,
+    fontFamily: 'Inter-Regular',
+    color: Colors.stone,
   },
 })

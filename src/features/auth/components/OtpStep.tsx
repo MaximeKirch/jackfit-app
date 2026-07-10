@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native'
+import { Colors, Spacing, Typography } from '@/shared/constants/tokens'
 import { useAuth } from '../hooks/useAuth'
 
 interface OtpStepProps {
@@ -27,7 +28,6 @@ export const OtpStep = ({ email, onBack }: OtpStepProps) => {
     setIsVerifying(true)
     try {
       await verifyOtp(email, code)
-      // onAuthStateChange dans AuthGuard prend le relais → redirect automatique
     } catch {
       Alert.alert('Code invalide', 'Le code est incorrect ou a expiré. Demande-en un nouveau.')
       setOtp('')
@@ -40,9 +40,7 @@ export const OtpStep = ({ email, onBack }: OtpStepProps) => {
   const handleChangeText = (value: string) => {
     const numeric = value.replace(/[^0-9]/g, '').slice(0, 6)
     setOtp(numeric)
-    if (numeric.length === 6) {
-      void handleVerify(numeric)
-    }
+    if (numeric.length === 6) void handleVerify(numeric)
   }
 
   const handleResend = async () => {
@@ -79,12 +77,12 @@ export const OtpStep = ({ email, onBack }: OtpStepProps) => {
           maxLength={6}
           autoFocus
           placeholder="000000"
-          placeholderTextColor="#CCCCCC"
+          placeholderTextColor={Colors.stone}
           textAlign="center"
           editable={!isVerifying}
         />
 
-        {isVerifying && <ActivityIndicator style={styles.loader} color="#1A1A1A" />}
+        {isVerifying && <ActivityIndicator style={styles.loader} color={Colors.moss} />}
 
         <Pressable
           onPress={() => { void handleResend() }}
@@ -103,60 +101,62 @@ export const OtpStep = ({ email, onBack }: OtpStepProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: Spacing.lg,
   },
   backButton: {
-    paddingTop: 16,
-    paddingBottom: 8,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.sm,
     alignSelf: 'flex-start',
   },
   backText: {
-    fontSize: 16,
-    color: '#9E9E9E',
+    fontFamily: 'Inter-Regular',
+    fontSize: Typography.base,
+    color: Colors.stone,
   },
   content: {
     flex: 1,
     justifyContent: 'center',
-    gap: 16,
+    gap: Spacing.md,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#1A1A1A',
+    fontFamily: 'DMSerifDisplay-Regular',
+    fontSize: Typography.xl,
+    color: Colors.charcoal,
     textAlign: 'center',
-    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 15,
-    color: '#9E9E9E',
+    fontFamily: 'Inter-Regular',
+    fontSize: Typography.sm,
+    color: Colors.stone,
     textAlign: 'center',
     lineHeight: 22,
   },
   emailHighlight: {
-    fontWeight: '600',
-    color: '#1A1A1A',
+    fontFamily: 'Inter-SemiBold',
+    color: Colors.charcoal,
   },
   otpInput: {
+    fontFamily: 'Inter-Regular',
     fontSize: 40,
-    fontWeight: '800',
     letterSpacing: 10,
     borderBottomWidth: 2,
-    borderBottomColor: '#1A1A1A',
+    borderBottomColor: Colors.charcoal,
     paddingVertical: 12,
-    marginTop: 16,
-    color: '#1A1A1A',
+    marginTop: Spacing.md,
+    color: Colors.charcoal,
   },
   loader: {
-    marginTop: 8,
+    marginTop: Spacing.sm,
   },
   resendButton: {
     alignItems: 'center',
-    paddingVertical: 12,
-    marginTop: 8,
+    paddingVertical: Spacing.sm,
+    marginTop: Spacing.sm,
   },
   resendText: {
-    fontSize: 15,
-    color: '#9E9E9E',
+    fontFamily: 'Inter-Regular',
+    fontSize: Typography.sm,
+    color: Colors.stone,
     textDecorationLine: 'underline',
   },
 })

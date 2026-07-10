@@ -28,7 +28,9 @@
           "NSHealthShareUsageDescription": "JackFit lit tes données de santé pour évaluer ta forme et donner des conseils personnalisés.",
           "NSHealthUpdateUsageDescription": false
         }
-      ]
+      ],
+      "expo-font",
+      "expo-splash-screen"
     ],
     "extra": {
       "eas": {

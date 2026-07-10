@@ -14,6 +14,7 @@ import { useHealthData } from '@/features/health/hooks/useHealthData'
 import { usePetStore } from '@/shared/stores/petStore'
 import { PET_STATES } from '@/shared/types/pet.types'
 import { Skeleton } from '@/shared/components/Skeleton'
+import { Colors, Spacing, Typography } from '@/shared/constants/tokens'
 import { useChat, MESSAGES_KEY } from '../hooks/useChat'
 import { ChatBubble } from './ChatBubble'
 import { ChatInput } from './ChatInput'
@@ -44,8 +45,6 @@ export default function ChatList() {
     gcTime: Infinity,
   })
 
-
-  console.log(messages)
 
   const listRef = useRef<FlatList<Message>>(null)
 
@@ -102,14 +101,14 @@ export default function ChatList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.linen,
   },
   flex: {
     flex: 1,
   },
   listContent: {
-    paddingTop: 16,
-    paddingBottom: 8,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.sm,
     flexGrow: 1,
   },
   emptyContainer: {
@@ -120,18 +119,19 @@ const styles = StyleSheet.create({
     paddingTop: 80,
   },
   emptyText: {
-    fontSize: 16,
-    color: '#9E9E9E',
+    fontFamily: 'Inter-Regular',
+    fontSize: Typography.base,
+    color: Colors.stone,
     textAlign: 'center',
     fontStyle: 'italic',
   },
   typingRow: {
-    paddingHorizontal: 16,
+    paddingHorizontal: Spacing.md,
     marginVertical: 4,
     alignItems: 'flex-start',
   },
   typingBubble: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
     borderWidth: 1.5,
     borderRadius: 18,
     borderBottomLeftRadius: 4,
@@ -139,13 +139,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
   },
   typingText: {
-    fontSize: 20,
-    color: '#9E9E9E',
+    fontSize: Typography.lg,
+    color: Colors.stone,
     letterSpacing: 4,
   },
   loadingContainer: {
-    padding: 16,
-    paddingTop: 24,
+    padding: Spacing.md,
+    paddingTop: Spacing.lg,
   },
   gap8: { height: 8 },
 })

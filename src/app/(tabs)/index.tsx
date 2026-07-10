@@ -5,9 +5,12 @@ import { PetStatus } from '@/features/pet/components/PetStatus'
 import { PetSpeechBubble } from '@/features/pet/components/PetSpeechBubble'
 import { Skeleton } from '@/shared/components/Skeleton'
 import { usePetState } from '@/features/pet/hooks/usePetState'
+import { usePetStore } from '@/shared/stores/petStore'
+import { Colors, Typography } from '@/shared/constants/tokens'
 
 export default function HomeScreen() {
   const { isLoading, error } = usePetState()
+  const status = usePetStore((s) => s.status)
 
   if (error) {
     return (
@@ -34,7 +37,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <PetAvatar />
+        <PetAvatar status={status} />
         <PetStatus />
         <PetSpeechBubble />
       </View>
@@ -45,7 +48,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.linen,
   },
   content: {
     flex: 1,
@@ -53,10 +56,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   error: {
+    fontFamily: 'Inter-Regular',
+    fontSize: Typography.base,
     color: '#FF1744',
     textAlign: 'center',
     paddingHorizontal: 24,
-    fontSize: 16,
   },
   gap16: { height: 16 },
   gap24: { height: 24 },

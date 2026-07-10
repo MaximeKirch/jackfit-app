@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native'
+import { Colors, Radius, Spacing, Typography } from '@/shared/constants/tokens'
 import { useAuth } from '../hooks/useAuth'
 
 interface EmailStepProps {
@@ -50,7 +51,7 @@ export const EmailStep = ({ onSuccess }: EmailStepProps) => {
         <TextInput
           style={styles.input}
           placeholder="ton@email.com"
-          placeholderTextColor="#9E9E9E"
+          placeholderTextColor={Colors.stone}
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -68,7 +69,7 @@ export const EmailStep = ({ onSuccess }: EmailStepProps) => {
           disabled={isLoading}
         >
           {isLoading ? (
-            <ActivityIndicator color="#FFFFFF" />
+            <ActivityIndicator color={Colors.white} />
           ) : (
             <Text style={styles.buttonLabel}>Envoyer le code</Text>
           )}
@@ -82,18 +83,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: Spacing.lg,
     gap: 40,
   },
   avatarContainer: {
     alignItems: 'center',
-    gap: 8,
+    gap: Spacing.sm,
   },
   avatar: {
     width: 96,
     height: 96,
     borderRadius: 48,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.sand,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 4,
@@ -102,42 +103,44 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   title: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: '#1A1A1A',
+    fontFamily: 'DMSerifDisplay-Regular',
+    fontSize: Typography.xxl,
+    color: Colors.charcoal,
     letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#9E9E9E',
+    fontFamily: 'Inter-Regular',
+    fontSize: Typography.base,
+    color: Colors.stone,
     textAlign: 'center',
     lineHeight: 22,
   },
   form: {
-    gap: 12,
+    gap: Spacing.sm,
   },
   input: {
     height: 52,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    color: '#1A1A1A',
+    backgroundColor: Colors.sand,
+    borderRadius: Radius.md,
+    paddingHorizontal: Spacing.md,
+    fontFamily: 'Inter-Regular',
+    fontSize: Typography.base,
+    color: Colors.charcoal,
   },
   button: {
     height: 52,
-    backgroundColor: '#1A1A1A',
-    borderRadius: 14,
+    backgroundColor: Colors.moss,
+    borderRadius: Radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 4,
   },
   buttonDisabled: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: Colors.sand,
   },
   buttonLabel: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#FFFFFF',
+    fontFamily: 'Inter-SemiBold',
+    fontSize: Typography.base,
+    color: Colors.white,
   },
 })

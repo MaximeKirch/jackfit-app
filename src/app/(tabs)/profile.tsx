@@ -1,5 +1,6 @@
 import { View, Text, Pressable, StyleSheet, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { Colors, Radius, Spacing, Typography } from '@/shared/constants/tokens'
 import { useAuthStore } from '@/shared/stores/authStore'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 
@@ -10,11 +11,7 @@ export default function ProfileScreen() {
   const handleSignOut = () => {
     Alert.alert('Déconnexion', 'Tu veux vraiment te déconnecter ?', [
       { text: 'Annuler', style: 'cancel' },
-      {
-        text: 'Se déconnecter',
-        style: 'destructive',
-        onPress: () => { void signOut() },
-      },
+      { text: 'Se déconnecter', style: 'destructive', onPress: () => { void signOut() } },
     ])
   }
 
@@ -39,24 +36,24 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.linen,
   },
   inner: {
     flex: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: Spacing.lg,
     justifyContent: 'space-between',
-    paddingBottom: 24,
+    paddingBottom: Spacing.lg,
   },
   avatarContainer: {
     alignItems: 'center',
     paddingTop: 48,
-    gap: 12,
+    gap: Spacing.sm,
   },
   avatar: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.sand,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -64,19 +61,20 @@ const styles = StyleSheet.create({
     fontSize: 36,
   },
   email: {
-    fontSize: 16,
-    color: '#9E9E9E',
+    fontFamily: 'Inter-Regular',
+    fontSize: Typography.base,
+    color: Colors.stone,
   },
   button: {
     height: 52,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 14,
+    backgroundColor: Colors.sand,
+    borderRadius: Radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonLabel: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Inter-SemiBold',
+    fontSize: Typography.base,
     color: '#FF1744',
   },
 })

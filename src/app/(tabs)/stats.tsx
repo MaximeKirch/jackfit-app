@@ -2,15 +2,10 @@ import { ScrollView, View, Text, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useStats } from '@/features/stats/hooks/useStats'
 import { PET_STATES } from '@/shared/types/pet.types'
-import {
-  ActivityCard,
-  ActivityCardSkeleton,
-} from '@/features/stats/components/ActivityCard'
+import { Colors, Radius, Spacing, Typography } from '@/shared/constants/tokens'
+import { ActivityCard, ActivityCardSkeleton } from '@/features/stats/components/ActivityCard'
 import { SleepCard, SleepCardSkeleton } from '@/features/stats/components/SleepCard'
-import {
-  ConsistencyCard,
-  ConsistencyCardSkeleton,
-} from '@/features/stats/components/ConsistencyCard'
+import { ConsistencyCard, ConsistencyCardSkeleton } from '@/features/stats/components/ConsistencyCard'
 
 export default function StatsScreen() {
   const { stats, isLoading, error, score, status } = useStats()
@@ -25,11 +20,8 @@ export default function StatsScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        showsVerticalScrollIndicator={false}
-      >
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <View style={[styles.scoreBanner, { backgroundColor: color }]}>
           <Text style={styles.scoreLabel}>Score de la semaine</Text>
           <Text style={styles.scoreValue}>{score}/100</Text>
@@ -56,34 +48,35 @@ export default function StatsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.linen,
   },
   scroll: {
-    padding: 16,
-    gap: 12,
-    paddingBottom: 32,
+    padding: Spacing.md,
+    gap: Spacing.sm,
+    paddingBottom: Spacing.xl,
   },
   scoreBanner: {
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: Radius.lg,
+    padding: Spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   scoreLabel: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontFamily: 'Inter-SemiBold',
+    fontSize: Typography.sm,
+    color: Colors.white,
   },
   scoreValue: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#FFFFFF',
+    fontFamily: 'Inter-SemiBold',
+    fontSize: Typography.xxl,
+    color: Colors.white,
   },
   error: {
+    fontFamily: 'Inter-Regular',
+    fontSize: Typography.base,
     color: '#FF1744',
     textAlign: 'center',
     paddingHorizontal: 24,
-    fontSize: 16,
   },
 })

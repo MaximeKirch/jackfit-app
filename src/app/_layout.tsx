@@ -1,9 +1,16 @@
 import { useEffect } from 'react'
 import { Stack, useRouter, useSegments } from 'expo-router'
 import { QueryClientProvider } from '@tanstack/react-query'
+import { useFonts } from 'expo-font'
+import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display'
+import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter'
+import { DMMono_400Regular } from '@expo-google-fonts/dm-mono'
+import * as SplashScreen from 'expo-splash-screen'
 import { queryClient } from '@/config/queryClient'
 import { supabase } from '@/shared/lib/supabase'
 import { useAuthStore } from '@/shared/stores/authStore'
+
+SplashScreen.preventAutoHideAsync()
 
 function AuthGuard() {
   const { user, isLoading, setUser, setSession, setIsLoading } = useAuthStore()
@@ -46,6 +53,20 @@ function AuthGuard() {
 }
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    'DMSerifDisplay-Regular': DMSerifDisplay_400Regular,
+    'Inter-Regular':          Inter_400Regular,
+    'Inter-Medium':           Inter_500Medium,
+    'Inter-SemiBold':         Inter_600SemiBold,
+    'DMMono-Regular':         DMMono_400Regular,
+  })
+
+  useEffect(() => {
+    if (fontsLoaded) void SplashScreen.hideAsync()
+  }, [fontsLoaded])
+
+  if (!fontsLoaded) return null
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthGuard />

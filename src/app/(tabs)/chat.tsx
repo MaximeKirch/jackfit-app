@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Skeleton } from '@/shared/components/Skeleton'
+import { Colors, Spacing } from '@/shared/constants/tokens'
 
 const ChatList = lazy(() => import('@/features/chat/components/ChatList'))
 
@@ -25,9 +26,9 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
   fallback: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-    padding: 16,
-    paddingTop: 24,
+    backgroundColor: Colors.linen,
+    padding: Spacing.md,
+    paddingTop: Spacing.lg,
   },
   gap8: { height: 8 },
 })
