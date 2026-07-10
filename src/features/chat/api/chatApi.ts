@@ -1,13 +1,11 @@
 import { env } from '@/config/env'
 import type { HealthSummary } from '@/shared/types/health.types'
 
-const USER_ID = 'jackfit-user'
-
-export const sendMessage = async (message: string, healthData: HealthSummary): Promise<string> => {
+export const sendMessage = async (userId: string, message: string, healthData: HealthSummary): Promise<string> => {
   const response = await fetch(`${env.EXPO_PUBLIC_API_URL}/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId: USER_ID, message, healthData }),
+    body: JSON.stringify({ userId, message, healthData }),
   })
 
   if (!response.ok) {

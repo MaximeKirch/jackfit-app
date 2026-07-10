@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { sendMessage } from '../api/chatApi'
+import { useAuthStore } from '@/shared/stores/authStore'
 import type { HealthSummary } from '@/shared/types/health.types'
 import type { Message } from '@/shared/types/chat.types'
 
@@ -7,11 +8,13 @@ export const MESSAGES_KEY = ['messages'] as const
 
 export const useChat = (healthData: HealthSummary | null) => {
   const queryClient = useQueryClient()
+  const user = useAuthStore((state) => state.user)
 
   return useMutation({
     mutationFn: (message: string) => {
       if (!healthData) throw new Error('Health data not available')
-      return sendMessage(message, healthData)
+      if (!user) throw new Error('Not authenticated')
+      return sendMessage(user.id, message, healthData)
     },
 
     onMutate: async (message: string) => {
