@@ -9,19 +9,18 @@ import {
   type ListRenderItem,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useQuery } from '@tanstack/react-query'
 import { useHealthData } from '@/features/health/hooks/useHealthData'
 import { usePetStore } from '@/shared/stores/petStore'
 import { PET_STATES } from '@/shared/types/pet.types'
 import { Skeleton } from '@/shared/components/Skeleton'
 import { Colors, Spacing, Typography } from '@/shared/constants/tokens'
-import { useChat, MESSAGES_KEY } from '../hooks/useChat'
+import { useChat, useMessages } from '../hooks/useChat'
 import { ChatBubble } from './ChatBubble'
 import { ChatInput } from './ChatInput'
 import type { Message } from '@/shared/types/chat.types'
 
 const TypingIndicator = ({ color }: { color: string }) => (
-  <View style={[styles.typingRow]}>
+  <View style={styles.typingRow}>
     <View style={[styles.typingBubble, { borderColor: color }]}>
       <Text style={styles.typingText}>…</Text>
     </View>
@@ -31,26 +30,19 @@ const TypingIndicator = ({ color }: { color: string }) => (
 export default function ChatList() {
   const { data: healthRaw, isLoading: healthLoading } = useHealthData()
   const status = usePetStore((s) => s.status)
-  const score = usePetStore((s) => s.score)
+  const score  = usePetStore((s) => s.score)
   const { color } = PET_STATES[status]
 
   const healthData = healthRaw ? { ...healthRaw, weeklyScore: score } : null
 
   const { mutate: sendMessage, isPending } = useChat(healthData)
-
-  const { data: messages = [] } = useQuery<Message[]>({
-    queryKey: MESSAGES_KEY,
-    queryFn: (): Message[] => [],
-    staleTime: Infinity,
-    gcTime: Infinity,
-  })
-
+  const { data: messages = [], isLoading: messagesLoading } = useMessages()
 
   const listRef = useRef<FlatList<Message>>(null)
 
   useEffect(() => {
     if (messages.length > 0) {
-      listRef.current?.scrollToEnd({ animated: true })
+      listRef.current?.scrollToEnd({ animated: false })
     }
   }, [messages.length])
 
@@ -58,7 +50,7 @@ export default function ChatList() {
     <ChatBubble message={item} />
   )
 
-  if (healthLoading) {
+  if (healthLoading || messagesLoading) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.loadingContainer}>

@@ -1,10 +1,22 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { sendMessage } from '../api/chatApi'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { sendMessage, fetchMessages } from '../api/chatApi'
 import { useAuthStore } from '@/shared/stores/authStore'
 import type { HealthSummary } from '@/shared/types/health.types'
 import type { Message } from '@/shared/types/chat.types'
 
-export const MESSAGES_KEY = ['messages'] as const
+export const messagesKey = (userId: string) => ['messages', userId] as const
+
+export const useMessages = () => {
+  const user = useAuthStore((state) => state.user)
+
+  return useQuery<Message[]>({
+    queryKey: messagesKey(user?.id ?? ''),
+    enabled: !!user,
+    queryFn: () => fetchMessages(user!.id),
+    staleTime: Infinity,
+    gcTime: Infinity,
+  })
+}
 
 export const useChat = (healthData: HealthSummary | null) => {
   const queryClient = useQueryClient()
@@ -18,8 +30,10 @@ export const useChat = (healthData: HealthSummary | null) => {
     },
 
     onMutate: async (message: string) => {
-      await queryClient.cancelQueries({ queryKey: MESSAGES_KEY })
-      const previousMessages = queryClient.getQueryData<Message[]>(MESSAGES_KEY)
+      if (!user) return
+      const key = messagesKey(user.id)
+      await queryClient.cancelQueries({ queryKey: key })
+      const previousMessages = queryClient.getQueryData<Message[]>(key)
 
       const optimisticMessage: Message = {
         id: `temp-${Date.now()}`,
@@ -29,32 +43,19 @@ export const useChat = (healthData: HealthSummary | null) => {
         isOptimistic: true,
       }
 
-      queryClient.setQueryData<Message[]>(MESSAGES_KEY, (old = []) => [...old, optimisticMessage])
+      queryClient.setQueryData<Message[]>(key, (old = []) => [...old, optimisticMessage])
 
       return { previousMessages }
     },
 
-    onSuccess: (aiResponse: string, userMessage: string) => {
-      const now = Date.now()
-      queryClient.setQueryData<Message[]>(MESSAGES_KEY, (old = []) => [
-        ...old.filter((m) => !m.isOptimistic),
-        {
-          id: `user-${now}`,
-          role: 'user',
-          content: userMessage,
-          createdAt: new Date(now).toISOString(),
-        },
-        {
-          id: `ai-${now + 1}`,
-          role: 'assistant',
-          content: aiResponse,
-          createdAt: new Date(now + 1).toISOString(),
-        },
-      ])
+    onSuccess: () => {
+      if (!user) return
+      void queryClient.invalidateQueries({ queryKey: messagesKey(user.id) })
     },
 
     onError: (_err, _message, context) => {
-      queryClient.setQueryData(MESSAGES_KEY, context?.previousMessages)
+      if (!user) return
+      queryClient.setQueryData(messagesKey(user.id), context?.previousMessages)
     },
   })
 }
