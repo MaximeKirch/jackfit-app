@@ -11,11 +11,15 @@ const DEFAULT_MESSAGES: Record<PetStatus, string> = {
   OVERREACHED: 'Stop. Tu te détruis. Récupère maintenant.',
 }
 
-export const PetSpeechBubble = () => {
+interface Props {
+  overrideMessage?: string | undefined
+}
+
+export const PetSpeechBubble = ({ overrideMessage }: Props) => {
   const lastMessage = usePetStore((s) => s.lastMessage)
   const status = usePetStore((s) => s.status)
   const { color } = PET_STATES[status]
-  const message = lastMessage || DEFAULT_MESSAGES[status]
+  const message = overrideMessage ?? (lastMessage || DEFAULT_MESSAGES[status])
 
   return (
     <View style={[styles.bubble, { borderColor: color }]}>

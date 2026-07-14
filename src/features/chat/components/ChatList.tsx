@@ -60,7 +60,7 @@ export default function ChatList() {
 
   if (healthLoading) {
     return (
-      <SafeAreaView style={styles.container} edges={['bottom']}>
+      <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.loadingContainer}>
           <Skeleton width="90%" height={56} borderRadius={18} />
           <View style={styles.gap8} />
@@ -73,11 +73,11 @@ export default function ChatList() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={90}
+        keyboardVerticalOffset={0}
       >
         <FlatList
           ref={listRef}

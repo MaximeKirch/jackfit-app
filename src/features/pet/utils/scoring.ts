@@ -45,12 +45,55 @@ const scoreConsistency = (workouts: WorkoutData[], targetActiveDays: number): nu
 export const calculateScore = (
   health: HealthSummary,
   config: ScoringConfig = DEFAULT_SCORING_CONFIG,
-): number =>
-  Math.round(
-    scoreActivity(health.workouts, config.weeklyTargetHours) +
-      scoreSleep(health.sleep, config.targetSleepHours) +
-      scoreConsistency(health.workouts, config.targetActiveDays),
+): number => {
+  const daysElapsed = health.daysElapsedThisWeek ?? 6
+
+  // Semaine qui vient de commencer : score GOOD par défaut, aucune donnée attendue
+  if (daysElapsed === 0) return 65
+
+  const weekProgress = daysElapsed / 7
+  const proRatedHours = config.weeklyTargetHours * weekProgress
+  const proRatedDays  = config.targetActiveDays  * weekProgress
+
+  return Math.round(
+    scoreActivity(health.workouts, proRatedHours) +
+    scoreSleep(health.sleep, config.targetSleepHours) +
+    scoreConsistency(health.workouts, proRatedDays),
   )
+}
+
+export interface ScoreBreakdown {
+  sleep:     number // 0-100
+  activity:  number // 0-100
+  wellbeing: number // 0-100
+  total:     number
+}
+
+export const calculateScoreBreakdown = (
+  health: HealthSummary,
+  config: ScoringConfig = DEFAULT_SCORING_CONFIG,
+): ScoreBreakdown => {
+  const daysElapsed = health.daysElapsedThisWeek ?? 6
+
+  if (daysElapsed === 0) {
+    return { sleep: 50, activity: 50, wellbeing: 50, total: 65 }
+  }
+
+  const weekProgress    = daysElapsed / 7
+  const proRatedHours   = config.weeklyTargetHours * weekProgress
+  const proRatedDays    = config.targetActiveDays  * weekProgress
+
+  const activityRaw    = scoreActivity(health.workouts, proRatedHours)
+  const sleepRaw       = scoreSleep(health.sleep, config.targetSleepHours)
+  const consistencyRaw = scoreConsistency(health.workouts, proRatedDays)
+
+  return {
+    sleep:     Math.round((sleepRaw / 40) * 100),
+    activity:  Math.round((activityRaw / 40) * 100),
+    wellbeing: Math.round(((activityRaw + consistencyRaw) / 60) * 100),
+    total:     Math.round(activityRaw + sleepRaw + consistencyRaw),
+  }
+}
 
 export const scoreToStatus = (score: number): PetStatus => {
   if (score >= 80) return 'PEAK'

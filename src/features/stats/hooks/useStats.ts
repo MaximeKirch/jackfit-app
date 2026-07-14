@@ -110,6 +110,7 @@ const computeStats = (
   }
 }
 
+
 export const useStats = () => {
   const { data, isLoading, error } = useHealthData()
   const scoringConfig = usePetStore((s) => s.scoringConfig)

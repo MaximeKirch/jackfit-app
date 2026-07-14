@@ -40,13 +40,28 @@ function AuthGuard() {
 
   useEffect(() => {
     if (isLoading) return
-    const inAuthScreen = segments[0] === 'auth'
 
-    if (!user && !inAuthScreen) {
-      router.replace('/auth')
-    } else if (user && inAuthScreen) {
-      router.replace('/')
+    if (!user) {
+      if (segments[0] !== 'auth') router.replace('/auth')
+      return
     }
+
+    const inTabs = segments[0] === '(tabs)'
+    const inOnboarding = segments[0] === 'onboarding'
+    if (inTabs || inOnboarding) return
+
+    void supabase
+      .from('profiles')
+      .select('onboarding_completed')
+      .eq('id', user.id)
+      .single()
+      .then(({ data }) => {
+        if (!data?.onboarding_completed) {
+          router.replace('/onboarding')
+        } else {
+          router.replace('/(tabs)')
+        }
+      })
   }, [user, isLoading, segments, router])
 
   return null
