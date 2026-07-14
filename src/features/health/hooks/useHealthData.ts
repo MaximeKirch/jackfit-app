@@ -82,6 +82,7 @@ export const useHealthData = () => {
         steps: Math.round(stepsResult.sumQuantity?.quantity ?? 0),
         weeklyScore: 0,
         daysElapsedThisWeek,
+        localHour: now.getHours(),
       })
 
       void checkForNewWorkout(transformedWorkouts)
