@@ -36,7 +36,7 @@ export default function StatsScreen() {
         ) : (
           <>
             <ActivityCard stats={stats.activity} accentColor={color} />
-            <SleepCard stats={stats.sleep} />
+            <SleepCard stats={stats.sleep} accentColor={color} />
             <ConsistencyCard stats={stats.consistency} accentColor={color} />
           </>
         )}

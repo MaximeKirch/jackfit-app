@@ -4,14 +4,6 @@ import { Skeleton } from '@/shared/components/Skeleton'
 import { Colors, Typography } from '@/shared/constants/tokens'
 import type { SleepStats } from '../hooks/useStats'
 
-const qualityColor = (avgHours: number, targetHours: number): string => {
-  const ratio = avgHours / targetHours
-  if (ratio >= 0.93) return Colors.pet.PEAK
-  if (ratio >= 0.81) return Colors.pet.GOOD
-  if (ratio >= 0.625) return Colors.pet.TIRED
-  return Colors.pet.LAZY
-}
-
 const qualityLabel = (avgHours: number, targetHours: number): string => {
   const ratio = avgHours / targetHours
   if (ratio >= 0.93) return 'Excellent'
@@ -22,10 +14,11 @@ const qualityLabel = (avgHours: number, targetHours: number): string => {
 
 interface SleepCardProps {
   stats: SleepStats
+  accentColor: string
 }
 
-export const SleepCard = ({ stats }: SleepCardProps) => {
-  const color = stats.nightCount > 0 ? qualityColor(stats.avgHours, stats.targetHours) : Colors.stone
+export const SleepCard = ({ stats, accentColor }: SleepCardProps) => {
+  const color = stats.nightCount > 0 ? accentColor : Colors.stone
   const label = stats.nightCount > 0 ? qualityLabel(stats.avgHours, stats.targetHours) : '—'
 
   return (
