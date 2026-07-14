@@ -1,12 +1,12 @@
 import { View, Text, StyleSheet } from 'react-native'
+import { Colors, Typography } from '@/shared/constants/tokens'
 import type { Message } from '@/shared/types/chat.types'
 
 interface ChatBubbleProps {
   message: Message
-  accentColor: string
 }
 
-export const ChatBubble = ({ message, accentColor }: ChatBubbleProps) => {
+export const ChatBubble = ({ message }: ChatBubbleProps) => {
   const isUser = message.role === 'user'
 
   return (
@@ -14,9 +14,7 @@ export const ChatBubble = ({ message, accentColor }: ChatBubbleProps) => {
       <View
         style={[
           styles.bubble,
-          isUser
-            ? [styles.bubbleUser, { backgroundColor: accentColor }]
-            : [styles.bubbleAI, { borderColor: accentColor }],
+          isUser ? styles.bubbleUser : styles.bubbleAI,
           message.isOptimistic === true && styles.optimistic,
         ]}
       >
@@ -46,25 +44,26 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   bubbleUser: {
+    backgroundColor: Colors.moss,
     borderBottomRightRadius: 4,
   },
   bubbleAI: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
+    backgroundColor: Colors.white,
     borderBottomLeftRadius: 4,
   },
   optimistic: {
     opacity: 0.7,
   },
   text: {
-    fontSize: 15,
+    fontFamily: 'Inter-Regular',
+    fontSize: Typography.base,
     lineHeight: 21,
   },
   textUser: {
-    color: '#FFFFFF',
-    fontWeight: '500',
+    fontFamily: 'Inter-Medium',
+    color: Colors.white,
   },
   textAI: {
-    color: '#1A1A1A',
+    color: Colors.charcoal,
   },
 })

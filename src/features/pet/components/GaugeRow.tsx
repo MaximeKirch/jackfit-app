@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { View, Animated, StyleSheet } from 'react-native'
 import { Text } from '@/shared/components/Text'
+import { TablerIcon } from '@/shared/components/TablerIcon'
+import type { TablerIconName } from '@/shared/components/TablerIcon'
 import { Colors, Spacing, Radius } from '@/shared/constants/tokens'
 
 interface Props {
-  emoji: string
+  icon: TablerIconName
   label: string
   value: number // 0-100
 }
@@ -15,7 +17,7 @@ const getGaugeColor = (value: number): string => {
   return Colors.pet.TIRED
 }
 
-export const GaugeRow = ({ emoji, label, value }: Props) => {
+export const GaugeRow = ({ icon, label, value }: Props) => {
   const widthAnim = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
@@ -33,7 +35,7 @@ export const GaugeRow = ({ emoji, label, value }: Props) => {
 
   return (
     <View style={styles.row}>
-      <Text size="base">{emoji}</Text>
+      <TablerIcon name={icon} size={16} color={Colors.stone} />
       <Text variant="body" size="sm" color={Colors.stone} style={styles.label}>
         {label}
       </Text>

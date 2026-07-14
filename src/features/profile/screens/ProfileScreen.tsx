@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { ScrollView, StyleSheet, Alert } from 'react-native'
+import { ScrollView, StyleSheet, Alert, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { Skeleton } from '@/shared/components/Skeleton'
 import { ProfileHeader }    from '../components/ProfileHeader'
 import { ProfileSection }   from '../components/ProfileSection'
 import { ProfileRow }       from '../components/ProfileRow'
@@ -10,8 +11,25 @@ import { EditAthleteModal } from '../components/EditAthleteModal'
 import { useProfile }       from '../hooks/useProfile'
 import { useAuthStore }     from '@/shared/stores/authStore'
 import { ATHLETE_PROFILES } from '@/shared/constants/athleteProfiles'
-import { SPORTS }           from '@/shared/constants/sports'
+import { TablerIcon }       from '@/shared/components/TablerIcon'
+import type { TablerIconName } from '@/shared/components/TablerIcon'
 import { Colors, Spacing }  from '@/shared/constants/tokens'
+import type { SportId }     from '@/shared/constants/sports'
+
+const SPORT_ICONS: Partial<Record<SportId, TablerIconName>> = {
+  running:    'run',
+  cycling:    'bike',
+  swimming:   'swimming',
+  strength:   'barbell',
+  hiking:     'walk',
+  yoga:       'yoga',
+  tennis:     'ball-tennis',
+  soccer:     'ball-football',
+  basketball: 'ball-basketball',
+  rowing:     'kayak',
+  crossfit:   'barbell',
+  triathlon:  'medal',
+}
 
 export default function ProfileScreen() {
   const user = useAuthStore((state) => state.user)
@@ -31,12 +49,26 @@ export default function ProfileScreen() {
   const [editSports,  setEditSports]  = useState(false)
   const [editAthlete, setEditAthlete] = useState(false)
 
-  if (isLoading || !profile) return null
+  if (isLoading || !profile) {
+    return (
+      <SafeAreaView style={styles.safe} edges={['top']}>
+        <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+          <View style={skeletonStyles.header}>
+            <Skeleton width={120} height={120} borderRadius={60} />
+            <Skeleton width={140} height={22} borderRadius={11} />
+            <Skeleton width={180} height={13} borderRadius={7} />
+          </View>
+          <ProfileSkeletonSection rows={3} />
+          <ProfileSkeletonSection rows={1} />
+          <ProfileSkeletonSection rows={3} />
+        </ScrollView>
+      </SafeAreaView>
+    )
+  }
 
-  const sportsLabel = profile.main_sports
-    ?.map((id) => SPORTS.find((s) => s.id === id)?.emoji)
-    .filter(Boolean)
-    .join(' ') || '—'
+  const sportsIcons = profile.main_sports
+    ?.map((id) => SPORT_ICONS[id as SportId])
+    .filter((icon): icon is TablerIconName => icon !== undefined)
 
   const athleteLabel = profile.athlete_profile
     ? ATHLETE_PROFILES[profile.athlete_profile].label
@@ -77,7 +109,15 @@ export default function ProfileScreen() {
           />
           <ProfileRow
             label="Sports"
-            value={sportsLabel}
+            valueNode={
+              sportsIcons && sportsIcons.length > 0 ? (
+                <View style={styles.sportsRow}>
+                  {sportsIcons.map((icon, i) => (
+                    <TablerIcon key={i} name={icon} size={18} color={Colors.moss} />
+                  ))}
+                </View>
+              ) : undefined
+            }
             onPress={() => setEditSports(true)}
           />
           <ProfileRow
@@ -139,8 +179,55 @@ export default function ProfileScreen() {
   )
 }
 
+const ProfileSkeletonSection = ({ rows }: { rows: number }) => (
+  <View style={skeletonStyles.section}>
+    <Skeleton width={72} height={10} borderRadius={5} />
+    <View style={skeletonStyles.card}>
+      {Array.from({ length: rows }).map((_, i) => (
+        <View key={i}>
+          {i > 0 && <View style={skeletonStyles.divider} />}
+          <View style={skeletonStyles.row}>
+            <Skeleton width={80} height={14} borderRadius={7} />
+            <Skeleton width={100} height={14} borderRadius={7} />
+          </View>
+        </View>
+      ))}
+    </View>
+  </View>
+)
+
 const styles = StyleSheet.create({
-  safe:    { flex: 1, backgroundColor: Colors.linen },
-  scroll:  { flex: 1 },
-  content: { paddingHorizontal: Spacing.lg, paddingBottom: Spacing.xxl },
+  safe:       { flex: 1, backgroundColor: Colors.linen },
+  scroll:     { flex: 1 },
+  content:    { paddingHorizontal: Spacing.lg, paddingBottom: Spacing.xxl },
+  sportsRow:  { flexDirection: 'row', gap: 8, alignItems: 'center' },
+})
+
+const skeletonStyles = StyleSheet.create({
+  header: {
+    alignItems:      'center',
+    paddingVertical: Spacing.xl,
+    gap:             Spacing.sm,
+  },
+  section: {
+    marginBottom: Spacing.lg,
+    gap:          Spacing.sm,
+  },
+  card: {
+    backgroundColor: Colors.sand,
+    borderRadius:    20,
+    overflow:        'hidden',
+  },
+  row: {
+    flexDirection:     'row',
+    justifyContent:    'space-between',
+    alignItems:        'center',
+    paddingVertical:   Spacing.md,
+    paddingHorizontal: Spacing.md,
+  },
+  divider: {
+    height:          1,
+    backgroundColor: Colors.linen,
+    marginHorizontal: Spacing.md,
+  },
 })

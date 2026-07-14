@@ -1,29 +1,31 @@
 import { useEffect, useRef } from 'react'
-import { Animated, StyleSheet, type DimensionValue } from 'react-native'
+import { Animated, type DimensionValue } from 'react-native'
+import { Colors } from '@/shared/constants/tokens'
 
 interface SkeletonProps {
   width: DimensionValue
   height: number
   borderRadius?: number
+  color?: string
 }
 
-export const Skeleton = ({ width, height, borderRadius = 8 }: SkeletonProps) => {
-  const opacity = useRef(new Animated.Value(0.3)).current
+export const Skeleton = ({ width, height, borderRadius = 8, color = Colors.sand }: SkeletonProps) => {
+  const opacity = useRef(new Animated.Value(0.5)).current
 
   useEffect(() => {
     const animation = Animated.loop(
       Animated.sequence([
         Animated.timing(opacity, { toValue: 1, duration: 800, useNativeDriver: true }),
-        Animated.timing(opacity, { toValue: 0.3, duration: 800, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0.5, duration: 800, useNativeDriver: true }),
       ]),
     )
     animation.start()
     return () => animation.stop()
   }, [opacity])
 
-  return <Animated.View style={[styles.skeleton, { width, height, borderRadius, opacity }]} />
+  return (
+    <Animated.View
+      style={{ width, height, borderRadius, backgroundColor: color, opacity }}
+    />
+  )
 }
-
-const styles = StyleSheet.create({
-  skeleton: { backgroundColor: '#E1E9EE' },
-})

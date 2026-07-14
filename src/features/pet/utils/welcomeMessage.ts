@@ -18,15 +18,15 @@ const getTimeSinceLastVisit = (lastVisitISO: string | null): TimeSinceLastVisit 
 
 const WELCOME_MESSAGES: Record<TimeSinceLastVisit, string[]> = {
   first_time: [
-    "Salut, je suis Uma ! On va bien s'entendre tous les deux. 🐾",
+    "Salut, je suis Uma ! 🐾",
   ],
   same_day: [
     "Re-coucou ! Je suis toujours là. 🐾",
     "On continue la journée ensemble ?",
-    "Content de te revoir si vite !",
+    "Content de te revoir !",
   ],
   yesterday: [
-    "Bien dormi ? Moi je me sens frais aujourd'hui.",
+    "Bien dormi ? Je suis en pleine forme aujourd'hui.",
     "Nouvelle journée, nouvelle énergie !",
     "J'espère que t'as bien récupéré cette nuit.",
   ],

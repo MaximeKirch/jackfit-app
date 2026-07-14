@@ -9,9 +9,9 @@ interface Props {
 
 export const GaugesPanel = ({ breakdown }: Props) => (
   <View style={styles.container}>
-    <GaugeRow emoji="💤" label="Sommeil"   value={breakdown.sleep} />
-    <GaugeRow emoji="🏃" label="Activité"  value={breakdown.activity} />
-    <GaugeRow emoji="❤️" label="Bien-être" value={breakdown.wellbeing} />
+    <GaugeRow icon="moon" label="Sommeil"   value={breakdown.sleep} />
+    <GaugeRow icon="run"  label="Activité"  value={breakdown.activity} />
+    <GaugeRow icon="heart" label="Bien-être" value={breakdown.wellbeing} />
   </View>
 )
 

@@ -1,39 +1,44 @@
 import { View, Text, StyleSheet } from 'react-native'
 import { usePetStore } from '@/shared/stores/petStore'
 import { PET_STATES } from '@/shared/types/pet.types'
+import { Colors, Typography } from '@/shared/constants/tokens'
+import type { PetStatus as PetStatusType } from '@/shared/types/pet.types'
+
+const PILL_BG: Record<PetStatusType, string> = {
+  PEAK:        '#E8F0E9',
+  GOOD:        '#EFF4F0',
+  TIRED:       '#F5EDDF',
+  LAZY:        '#F3E6DF',
+  OVERREACHED: '#F3DCD3',
+}
 
 export const PetStatus = () => {
   const status = usePetStore((s) => s.status)
-  const score = usePetStore((s) => s.score)
-  const { color, label } = PET_STATES[status]
+  const score  = usePetStore((s) => s.score)
+  const { label } = PET_STATES[status]
+  const textColor  = Colors.pet[status]
+  const pillBg     = PILL_BG[status]
 
   return (
-    <View style={[styles.badge, { backgroundColor: color }]}>
-      <Text style={styles.label}>{label}</Text>
-      <Text style={styles.score}>{score}/100</Text>
+    <View style={[styles.pill, { backgroundColor: pillBg }]}>
+      <Text style={[styles.text, { color: textColor }]}>
+        {label} · {score}/100
+      </Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  badge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    marginTop: 16,
+  pill: {
+    alignSelf: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    marginTop: 10,
   },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  score: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    opacity: 0.9,
+  text: {
+    fontFamily: 'Inter-Medium',
+    fontSize: Typography.xs,
+    letterSpacing: 0.1,
   },
 })

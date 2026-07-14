@@ -55,7 +55,7 @@ export default function ChatList() {
   }, [messages.length])
 
   const renderItem: ListRenderItem<Message> = ({ item }) => (
-    <ChatBubble message={item} accentColor={color} />
+    <ChatBubble message={item} />
   )
 
   if (healthLoading) {

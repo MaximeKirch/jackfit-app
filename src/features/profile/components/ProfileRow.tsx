@@ -1,16 +1,18 @@
 import { Pressable, StyleSheet } from 'react-native'
+import type { ReactNode } from 'react'
 import { Text } from '@/shared/components/Text'
 import { Colors, Spacing } from '@/shared/constants/tokens'
 
 interface Props {
   label:        string
   value?:       string
+  valueNode?:   ReactNode
   onPress?:     () => void
   destructive?: boolean
   isLast?:      boolean
 }
 
-export const ProfileRow = ({ label, value, onPress, destructive, isLast }: Props) => (
+export const ProfileRow = ({ label, value, valueNode, onPress, destructive, isLast }: Props) => (
   <Pressable
     onPress={onPress}
     disabled={!onPress}
@@ -27,11 +29,11 @@ export const ProfileRow = ({ label, value, onPress, destructive, isLast }: Props
     >
       {label}
     </Text>
-    {value !== undefined ? (
+    {valueNode ?? (value !== undefined ? (
       <Text variant="body" size="base" color={Colors.stone}>{value}</Text>
     ) : onPress ? (
       <Text variant="body" size="base" color={Colors.stone}>›</Text>
-    ) : null}
+    ) : null)}
   </Pressable>
 )
 

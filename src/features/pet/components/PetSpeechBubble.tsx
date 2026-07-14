@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native'
 import { usePetStore } from '@/shared/stores/petStore'
-import { PET_STATES } from '@/shared/types/pet.types'
 import type { PetStatus } from '@/shared/types/pet.types'
 
 const DEFAULT_MESSAGES: Record<PetStatus, string> = {
@@ -18,11 +17,10 @@ interface Props {
 export const PetSpeechBubble = ({ overrideMessage }: Props) => {
   const lastMessage = usePetStore((s) => s.lastMessage)
   const status = usePetStore((s) => s.status)
-  const { color } = PET_STATES[status]
   const message = overrideMessage ?? (lastMessage || DEFAULT_MESSAGES[status])
 
   return (
-    <View style={[styles.bubble, { borderColor: color }]}>
+    <View style={styles.bubble}>
       <Text style={styles.text}>{message}</Text>
     </View>
   )
@@ -34,7 +32,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     padding: 16,
     borderRadius: 16,
-    borderWidth: 2,
+    borderWidth: 1,
+    borderColor: '#E8DDD0',
     backgroundColor: '#FFFFFF',
   },
   text: {

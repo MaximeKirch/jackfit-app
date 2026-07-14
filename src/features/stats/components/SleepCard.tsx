@@ -6,10 +6,10 @@ import type { SleepStats } from '../hooks/useStats'
 
 const qualityColor = (avgHours: number, targetHours: number): string => {
   const ratio = avgHours / targetHours
-  if (ratio >= 0.93) return '#00C853'
-  if (ratio >= 0.81) return '#69F0AE'
-  if (ratio >= 0.625) return '#FF6D00'
-  return '#FF1744'
+  if (ratio >= 0.93) return Colors.pet.PEAK
+  if (ratio >= 0.81) return Colors.pet.GOOD
+  if (ratio >= 0.625) return Colors.pet.TIRED
+  return Colors.pet.LAZY
 }
 
 const qualityLabel = (avgHours: number, targetHours: number): string => {
