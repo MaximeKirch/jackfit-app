@@ -31,7 +31,11 @@ export const fetchMessages = async (userId: string): Promise<Message[]> => {
   }))
 }
 
-export const sendMessage = async (message: string, healthData: HealthSummary): Promise<string> => {
+export const sendMessage = async (
+  message: string,
+  healthData: HealthSummary,
+  weeklyScore = 65,
+): Promise<string> => {
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) throw new Error('Not authenticated')
 
@@ -41,7 +45,7 @@ export const sendMessage = async (message: string, healthData: HealthSummary): P
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${session.access_token}`,
     },
-    body: JSON.stringify({ message, healthData }),
+    body: JSON.stringify({ message, weeklyScore, healthData }),
   })
 
   if (response.status === 429) {

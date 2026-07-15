@@ -34,6 +34,7 @@ export default function ChatList() {
   const score  = usePetStore((s) => s.score)
   const { color } = PET_STATES[status]
 
+
   const healthData = healthRaw ? { ...healthRaw, weeklyScore: score } : null
 
   const { mutate: sendMessage, isPending, retryLastMessage } = useChat(healthData)
@@ -102,6 +103,7 @@ export default function ChatList() {
           data={messages}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>

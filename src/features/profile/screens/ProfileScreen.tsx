@@ -8,12 +8,16 @@ import { ProfileRow }       from '../components/ProfileRow'
 import { EditNameModal }    from '../components/EditNameModal'
 import { EditSportsModal }  from '../components/EditSportsModal'
 import { EditAthleteModal } from '../components/EditAthleteModal'
+import { ProgressionCard }  from '@/features/pet/components/ProgressionCard'
 import { useProfile }       from '../hooks/useProfile'
+import { useProgression }   from '@/features/pet/hooks/useProgression'
 import { useAuthStore }     from '@/shared/stores/authStore'
+import { usePetStore }      from '@/shared/stores/petStore'
 import { ATHLETE_PROFILES } from '@/shared/constants/athleteProfiles'
 import { TablerIcon }       from '@/shared/components/TablerIcon'
 import type { TablerIconName } from '@/shared/components/TablerIcon'
 import { Colors, Spacing }  from '@/shared/constants/tokens'
+import { Text }             from '@/shared/components/Text'
 import type { SportId }     from '@/shared/constants/sports'
 
 const SPORT_ICONS: Partial<Record<SportId, TablerIconName>> = {
@@ -45,6 +49,10 @@ export default function ProfileScreen() {
     deleteAccount,
   } = useProfile()
 
+  const totalXp      = usePetStore((s) => s.totalXp)
+  const currentStage = usePetStore((s) => s.currentStage)
+  const { justChangedStage } = useProgression()
+
   const [editName,    setEditName]    = useState(false)
   const [editSports,  setEditSports]  = useState(false)
   const [editAthlete, setEditAthlete] = useState(false)
@@ -54,7 +62,6 @@ export default function ProfileScreen() {
       <SafeAreaView style={styles.safe} edges={['top']}>
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
           <View style={skeletonStyles.header}>
-            <Skeleton width={120} height={120} borderRadius={60} />
             <Skeleton width={140} height={22} borderRadius={11} />
             <Skeleton width={180} height={13} borderRadius={7} />
           </View>
@@ -100,6 +107,17 @@ export default function ProfileScreen() {
         showsVerticalScrollIndicator={false}
       >
         <ProfileHeader firstName={profile.first_name} />
+
+        <View style={styles.progressionSection}>
+          <Text size="xs" weight="semibold" color={Colors.stone} style={styles.sectionLabel}>
+            PROGRESSION
+          </Text>
+          <ProgressionCard
+            totalXp={totalXp}
+            currentStage={currentStage}
+            justChangedStage={justChangedStage}
+          />
+        </View>
 
         <ProfileSection title="Mon profil">
           <ProfileRow
@@ -201,6 +219,8 @@ const styles = StyleSheet.create({
   scroll:     { flex: 1 },
   content:    { paddingHorizontal: Spacing.lg, paddingBottom: Spacing.xxl },
   sportsRow:  { flexDirection: 'row', gap: 8, alignItems: 'center' },
+  progressionSection: { marginBottom: Spacing.lg, gap: Spacing.sm },
+  sectionLabel: { textTransform: 'uppercase', letterSpacing: 0.8 },
 })
 
 const skeletonStyles = StyleSheet.create({

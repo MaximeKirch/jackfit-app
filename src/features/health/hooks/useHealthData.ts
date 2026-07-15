@@ -81,7 +81,6 @@ export const useHealthData = () => {
         workouts: transformedWorkouts,
         sleep: transformSleepSamples(sleepSamples),
         steps: Math.round(stepsResult.sumQuantity?.quantity ?? 0),
-        weeklyScore: 0,
         daysElapsedThisWeek,
         localHour: now.getHours(),
       })

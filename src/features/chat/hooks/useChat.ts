@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { sendMessage, fetchMessages, RateLimitError } from '../api/chatApi'
 import { useAuthStore } from '@/shared/stores/authStore'
+import { usePetStore } from '@/shared/stores/petStore'
 import type { HealthSummary } from '@/shared/types/health.types'
 import type { Message } from '@/shared/types/chat.types'
 
@@ -29,13 +30,14 @@ const RATE_LIMIT_MESSAGE: Message = {
 export const useChat = (healthData: HealthSummary | null) => {
   const queryClient = useQueryClient()
   const user = useAuthStore((state) => state.user)
+  const weeklyScore = usePetStore((s) => s.score)
   const lastFailedContent = useRef<string | null>(null)
 
   const mutation = useMutation({
     mutationFn: (message: string) => {
       if (!healthData) throw new Error('Health data not available')
       if (!user) throw new Error('Not authenticated')
-      return sendMessage(message, healthData)
+      return sendMessage(message, healthData, weeklyScore)
     },
 
     onMutate: async (message: string) => {

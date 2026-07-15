@@ -1,24 +1,28 @@
 import { useEffect } from 'react'
 import { useHealthData } from '@/features/health/hooks/useHealthData'
+import { syncScore } from '@/features/health/api/scoreApi'
 import { usePetStore } from '@/shared/stores/petStore'
-import { calculateScore, calculateScoreBreakdown, scoreToStatus, hasEnoughHealthData } from '../utils/scoring'
+import { hasEnoughHealthData } from '../utils/scoring'
 
 export const usePetState = () => {
   const { data, isLoading, error, refetch, permissionDenied, requestAuth, justCompletedWorkout } = useHealthData()
-  const scoringConfig = usePetStore((s) => s.scoringConfig)
-  const setScore = usePetStore((s) => s.setScore)
-  const setStatus = usePetStore((s) => s.setStatus)
-
-  const hasEnoughData = data ? hasEnoughHealthData(data) : false
+  const setScoreResult = usePetStore((s) => s.setScoreResult)
+  const breakdown = usePetStore((s) => s.breakdown)
+  const hasEnoughData = usePetStore((s) => s.hasEnoughData)
 
   useEffect(() => {
     if (!data) return
-    const score = calculateScore(data, scoringConfig)
-    setScore(score)
-    setStatus(scoreToStatus(score, hasEnoughHealthData(data)))
-  }, [data, scoringConfig, setScore, setStatus])
+    void syncScore(data).then(setScoreResult).catch(console.error)
+  }, [data, setScoreResult])
 
-  const breakdown = data ? calculateScoreBreakdown(data, scoringConfig) : null
-
-  return { isLoading, error, refetch, permissionDenied, requestAuth, breakdown, justCompletedWorkout, hasEnoughData }
+  return {
+    isLoading,
+    error,
+    refetch,
+    permissionDenied,
+    requestAuth,
+    breakdown,
+    justCompletedWorkout,
+    hasEnoughData: data ? hasEnoughHealthData(data) : hasEnoughData,
+  }
 }
