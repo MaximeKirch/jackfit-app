@@ -37,7 +37,6 @@ export const TabBar = ({ state, navigation }: TabBarProps) => {
               size={22}
               color={isFocused ? Colors.moss : Colors.stone}
             />
-            <View style={[styles.dot, isFocused && styles.dotActive]} />
           </Pressable>
         )
       })}
@@ -57,15 +56,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingVertical: Spacing.sm,
-    gap: 4,
-  },
-  dot: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: 'transparent',
-  },
-  dotActive: {
-    backgroundColor: Colors.moss,
   },
 })

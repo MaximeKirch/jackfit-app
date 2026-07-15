@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { Animated, View, Text } from 'react-native'
 import { Colors } from '@/shared/constants/tokens'
 import type { PetStatus } from '@/shared/types/pet.types'
@@ -28,9 +28,9 @@ const BREATHE_SCALE: Record<PetStatus, number> = {
 }
 
 export const PetAvatar = ({ status, size = 180, isCelebrating = false }: PetAvatarProps) => {
-  const scale   = useRef(new Animated.Value(1)).current
-  const opacity = useRef(new Animated.Value(0.15)).current
-  const bounceY = useRef(new Animated.Value(0)).current
+  const [scale]   = useState(() => new Animated.Value(1))
+  const [opacity] = useState(() => new Animated.Value(0.15))
+  const [bounceY] = useState(() => new Animated.Value(0))
 
   useEffect(() => {
     const duration = BREATHE_DURATION[status]
@@ -56,7 +56,7 @@ export const PetAvatar = ({ status, size = 180, isCelebrating = false }: PetAvat
       breathe.stop()
       halo.stop()
     }
-  }, [status])
+  }, [status, scale, opacity])
 
   useEffect(() => {
     if (!isCelebrating) return
@@ -75,7 +75,7 @@ export const PetAvatar = ({ status, size = 180, isCelebrating = false }: PetAvat
       bounce.stop()
       bounceY.setValue(0)
     }
-  }, [isCelebrating])
+  }, [isCelebrating, bounceY])
 
   const color = Colors.pet[status]
 

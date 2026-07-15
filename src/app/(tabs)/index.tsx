@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { View, Pressable, Linking, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { PetAvatar } from '@/features/pet/components/PetAvatar'
+import { PetRing } from '@/features/pet/components/PetRing'
 import { PetStatus } from '@/features/pet/components/PetStatus'
 import { PetSpeechBubble } from '@/features/pet/components/PetSpeechBubble'
 import { GaugesPanel } from '@/features/pet/components/GaugesPanel'
@@ -11,13 +11,18 @@ import { Text } from '@/shared/components/Text'
 import { usePetState } from '@/features/pet/hooks/usePetState'
 import { usePetStore } from '@/shared/stores/petStore'
 import { getWelcomeMessage } from '@/features/pet/utils/welcomeMessage'
+import { xpProgress } from '@/features/pet/utils/stages'
 import { Colors, Spacing, Radius } from '@/shared/constants/tokens'
 
 export default function HomeScreen() {
   const { isLoading, error, refetch, permissionDenied, breakdown, justCompletedWorkout, hasEnoughData } = usePetState()
-  const status = usePetStore((s) => s.status)
+  const status       = usePetStore((s) => s.status)
+  const totalXp      = usePetStore((s) => s.totalXp)
+  const currentStage = usePetStore((s) => s.currentStage)
   const getPreviousVisit = usePetStore((s) => s.getPreviousVisit)
   const recordVisit = usePetStore((s) => s.recordVisit)
+
+  const ringProgress = xpProgress(totalXp, currentStage)
 
   const [welcomeText, setWelcomeText] = useState('')
   const hasWelcomedRef = useRef(false)
@@ -72,7 +77,7 @@ export default function HomeScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.content}>
-          <Skeleton width={160} height={160} borderRadius={80} />
+          <Skeleton width={200} height={200} borderRadius={100} />
           <View style={styles.gap16} />
           <Skeleton width={140} height={32} borderRadius={20} />
           <View style={styles.gap24} />
@@ -85,7 +90,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <PetAvatar status={status} isCelebrating={justCompletedWorkout} />
+        <PetRing status={status} xpProgress={ringProgress} isCelebrating={justCompletedWorkout} />
         <PetStatus />
         {breakdown && (
           <View style={styles.gauges}>
