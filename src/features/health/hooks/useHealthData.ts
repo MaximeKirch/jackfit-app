@@ -24,6 +24,7 @@ export const useHealthData = () => {
   const [data, setData] = useState<HealthSummary | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
+  const [permissionDenied, setPermissionDenied] = useState(false)
   const [justCompletedWorkout, setJustCompletedWorkout] = useState(false)
 
   const [authStatus, requestAuth] = useHealthkitAuthorization({ toRead: READ_TYPES })
@@ -99,6 +100,10 @@ export const useHealthData = () => {
       void requestAuth()
       return
     }
+    if (authStatus === AuthorizationRequestStatus.unknown) {
+      setPermissionDenied(true)
+      return
+    }
     void fetchData()
   }, [authStatus, fetchData, requestAuth])
 
@@ -118,5 +123,5 @@ export const useHealthData = () => {
     }
   }, [])
 
-  return { data, isLoading, error, refetch: fetchData, justCompletedWorkout }
+  return { data, isLoading, error, refetch: fetchData, permissionDenied, requestAuth, justCompletedWorkout }
 }
