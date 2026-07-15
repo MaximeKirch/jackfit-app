@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { PetAvatar } from '@/features/pet/components/PetAvatar'
 import { PetStatus } from '@/features/pet/components/PetStatus'
 import { PetSpeechBubble } from '@/features/pet/components/PetSpeechBubble'
 import { GaugesPanel } from '@/features/pet/components/GaugesPanel'
 import { Skeleton } from '@/shared/components/Skeleton'
+import { ErrorState } from '@/shared/components/ErrorState'
 import { usePetState } from '@/features/pet/hooks/usePetState'
 import { usePetStore } from '@/shared/stores/petStore'
 import { getWelcomeMessage } from '@/features/pet/utils/welcomeMessage'
-import { Colors, Spacing, Typography } from '@/shared/constants/tokens'
+import { Colors, Spacing } from '@/shared/constants/tokens'
 
 export default function HomeScreen() {
-  const { isLoading, error, breakdown, justCompletedWorkout } = usePetState()
+  const { isLoading, error, refetch, breakdown, justCompletedWorkout } = usePetState()
   const status = usePetStore((s) => s.status)
   const getPreviousVisit = usePetStore((s) => s.getPreviousVisit)
   const recordVisit = usePetStore((s) => s.recordVisit)
@@ -29,7 +30,10 @@ export default function HomeScreen() {
   if (error) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.error}>Impossible de lire les données HealthKit.</Text>
+        <ErrorState
+          message="Impossible de lire les données de santé."
+          onRetry={() => void refetch()}
+        />
       </SafeAreaView>
     )
   }
@@ -78,13 +82,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: Spacing.lg,
     marginBottom: Spacing.sm,
-  },
-  error: {
-    fontFamily: 'Inter-Regular',
-    fontSize: Typography.base,
-    color: '#FF1744',
-    textAlign: 'center',
-    paddingHorizontal: 24,
   },
   gap16: { height: 16 },
   gap24: { height: 24 },

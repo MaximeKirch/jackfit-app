@@ -4,7 +4,7 @@ import { usePetStore } from '@/shared/stores/petStore'
 import { calculateScore, calculateScoreBreakdown, scoreToStatus } from '../utils/scoring'
 
 export const usePetState = () => {
-  const { data, isLoading, error, justCompletedWorkout } = useHealthData()
+  const { data, isLoading, error, refetch, justCompletedWorkout } = useHealthData()
   const scoringConfig = usePetStore((s) => s.scoringConfig)
   const setScore = usePetStore((s) => s.setScore)
   const setStatus = usePetStore((s) => s.setStatus)
@@ -18,5 +18,5 @@ export const usePetState = () => {
 
   const breakdown = data ? calculateScoreBreakdown(data, scoringConfig) : null
 
-  return { isLoading, error, breakdown, justCompletedWorkout }
+  return { isLoading, error, refetch, breakdown, justCompletedWorkout }
 }

@@ -13,6 +13,7 @@ import { useHealthData } from '@/features/health/hooks/useHealthData'
 import { usePetStore } from '@/shared/stores/petStore'
 import { PET_STATES } from '@/shared/types/pet.types'
 import { Skeleton } from '@/shared/components/Skeleton'
+import { ErrorState } from '@/shared/components/ErrorState'
 import { Colors, Spacing, Typography } from '@/shared/constants/tokens'
 import { useChat, useMessages } from '../hooks/useChat'
 import { ChatBubble } from './ChatBubble'
@@ -28,15 +29,15 @@ const TypingIndicator = ({ color }: { color: string }) => (
 )
 
 export default function ChatList() {
-  const { data: healthRaw, isLoading: healthLoading } = useHealthData()
+  const { data: healthRaw, isLoading: healthLoading, error: healthError, refetch: refetchHealth } = useHealthData()
   const status = usePetStore((s) => s.status)
   const score  = usePetStore((s) => s.score)
   const { color } = PET_STATES[status]
 
   const healthData = healthRaw ? { ...healthRaw, weeklyScore: score } : null
 
-  const { mutate: sendMessage, isPending } = useChat(healthData)
-  const { data: messages = [], isLoading: messagesLoading } = useMessages()
+  const { mutate: sendMessage, isPending, retryLastMessage } = useChat(healthData)
+  const { data: messages = [], isLoading: messagesLoading, isError: messagesError, refetch: refetchMessages } = useMessages()
 
   const listRef = useRef<FlatList<Message>>(null)
 
@@ -47,8 +48,33 @@ export default function ChatList() {
   }, [messages.length])
 
   const renderItem: ListRenderItem<Message> = ({ item }) => (
-    <ChatBubble message={item} />
+    <ChatBubble
+      message={item}
+      onRetry={item.isFailed === true ? retryLastMessage : undefined}
+    />
   )
+
+  if (healthError) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <ErrorState
+          message="Impossible de lire les données de santé."
+          onRetry={() => void refetchHealth()}
+        />
+      </SafeAreaView>
+    )
+  }
+
+  if (messagesError) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <ErrorState
+          message="Uma n'arrive pas à se connecter. Vérifie ta connexion."
+          onRetry={() => void refetchMessages()}
+        />
+      </SafeAreaView>
+    )
+  }
 
   if (healthLoading || messagesLoading) {
     return (

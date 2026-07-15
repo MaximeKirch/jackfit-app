@@ -1,12 +1,13 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, Pressable, StyleSheet } from 'react-native'
 import { Colors, Typography } from '@/shared/constants/tokens'
 import type { Message } from '@/shared/types/chat.types'
 
 interface ChatBubbleProps {
   message: Message
+  onRetry?: (() => void) | undefined
 }
 
-export const ChatBubble = ({ message }: ChatBubbleProps) => {
+export const ChatBubble = ({ message, onRetry }: ChatBubbleProps) => {
   const isUser = message.role === 'user'
 
   return (
@@ -16,12 +17,18 @@ export const ChatBubble = ({ message }: ChatBubbleProps) => {
           styles.bubble,
           isUser ? styles.bubbleUser : styles.bubbleAI,
           message.isOptimistic === true && styles.optimistic,
+          message.isFailed === true && styles.failed,
         ]}
       >
         <Text style={[styles.text, isUser ? styles.textUser : styles.textAI]}>
           {message.content}
         </Text>
       </View>
+      {message.isFailed === true && onRetry && (
+        <Pressable onPress={onRetry} style={styles.retryButton}>
+          <Text style={styles.retryText}>↻ Réessayer</Text>
+        </Pressable>
+      )}
     </View>
   )
 }
@@ -54,6 +61,9 @@ const styles = StyleSheet.create({
   optimistic: {
     opacity: 0.7,
   },
+  failed: {
+    opacity: 0.45,
+  },
   text: {
     fontFamily: 'Inter-Regular',
     fontSize: Typography.base,
@@ -65,5 +75,13 @@ const styles = StyleSheet.create({
   },
   textAI: {
     color: Colors.charcoal,
+  },
+  retryButton: {
+    marginTop: 4,
+  },
+  retryText: {
+    fontFamily: 'Inter-Regular',
+    fontSize: Typography.sm,
+    color: Colors.pet.TIRED,
   },
 })
