@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { sendMessage, fetchMessages } from '../api/chatApi'
+import { sendMessage, fetchMessages, RateLimitError } from '../api/chatApi'
 import { useAuthStore } from '@/shared/stores/authStore'
 import type { HealthSummary } from '@/shared/types/health.types'
 import type { Message } from '@/shared/types/chat.types'
@@ -19,6 +19,13 @@ export const useMessages = () => {
   })
 }
 
+const RATE_LIMIT_MESSAGE: Message = {
+  id: 'rate-limit-uma',
+  role: 'assistant',
+  content: "Uma se repose pour aujourd'hui. Reviens demain, j'aurai rechargé les batteries.",
+  createdAt: new Date().toISOString(),
+}
+
 export const useChat = (healthData: HealthSummary | null) => {
   const queryClient = useQueryClient()
   const user = useAuthStore((state) => state.user)
@@ -28,7 +35,7 @@ export const useChat = (healthData: HealthSummary | null) => {
     mutationFn: (message: string) => {
       if (!healthData) throw new Error('Health data not available')
       if (!user) throw new Error('Not authenticated')
-      return sendMessage(user.id, message, healthData)
+      return sendMessage(message, healthData)
     },
 
     onMutate: async (message: string) => {
@@ -59,8 +66,18 @@ export const useChat = (healthData: HealthSummary | null) => {
       void queryClient.invalidateQueries({ queryKey: messagesKey(user.id) })
     },
 
-    onError: (_err, message, _context) => {
+    onError: (err, message, _context) => {
       if (!user) return
+
+      if (err instanceof RateLimitError) {
+        // Remove optimistic message, inject Uma's rate-limit response
+        queryClient.setQueryData<Message[]>(messagesKey(user.id), (old = []) => [
+          ...old.filter((m) => !m.isOptimistic),
+          RATE_LIMIT_MESSAGE,
+        ])
+        return
+      }
+
       lastFailedContent.current = message
       queryClient.setQueryData<Message[]>(messagesKey(user.id), (old = []) =>
         old.map((m) => (m.isOptimistic ? { ...m, isOptimistic: false, isFailed: true } : m))
