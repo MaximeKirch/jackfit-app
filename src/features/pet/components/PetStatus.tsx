@@ -5,6 +5,7 @@ import { Colors, Typography } from '@/shared/constants/tokens'
 import type { PetStatus as PetStatusType } from '@/shared/types/pet.types'
 
 const PILL_BG: Record<PetStatusType, string> = {
+  NEW:         '#EDE9E4',
   PEAK:        '#E8F0E9',
   GOOD:        '#EFF4F0',
   TIRED:       '#F5EDDF',

@@ -1,6 +1,6 @@
 import { Colors } from '@/shared/constants/tokens'
 
-export type PetStatus = 'PEAK' | 'GOOD' | 'TIRED' | 'LAZY' | 'OVERREACHED'
+export type PetStatus = 'NEW' | 'PEAK' | 'GOOD' | 'TIRED' | 'LAZY' | 'OVERREACHED'
 
 export interface PetState {
   status: PetStatus
@@ -10,6 +10,7 @@ export interface PetState {
 }
 
 export const PET_STATES: Record<PetStatus, Omit<PetState, 'score'>> = {
+  NEW:         { status: 'NEW',         color: Colors.pet.NEW,         label: 'On se découvre' },
   PEAK:        { status: 'PEAK',        color: Colors.pet.PEAK,        label: 'En pleine forme' },
   GOOD:        { status: 'GOOD',        color: Colors.pet.GOOD,        label: 'Bonne semaine' },
   TIRED:       { status: 'TIRED',       color: Colors.pet.TIRED,       label: 'Fatigué' },

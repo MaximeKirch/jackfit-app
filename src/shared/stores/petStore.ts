@@ -24,7 +24,7 @@ interface PetStore {
 export const usePetStore = create<PetStore>()(
   persist(
     (set, get) => ({
-      status: 'GOOD',
+      status: 'NEW',
       score: 0,
       lastMessage: '',
       scoringConfig: DEFAULT_SCORING_CONFIG,

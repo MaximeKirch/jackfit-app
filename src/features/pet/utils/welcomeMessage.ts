@@ -16,6 +16,11 @@ const getTimeSinceLastVisit = (lastVisitISO: string | null): TimeSinceLastVisit 
   return 'week_plus'
 }
 
+const NEW_USER_MESSAGES = [
+  "On ne se connaît pas encore — bouge un peu et je vais commencer à comprendre comment tu vas.",
+  "Donne-moi quelques jours de données et je te dirai comment je me sens.",
+]
+
 const WELCOME_MESSAGES: Record<TimeSinceLastVisit, string[]> = {
   first_time: [
     "Salut, je suis Uma ! 🐾",
@@ -42,7 +47,10 @@ const WELCOME_MESSAGES: Record<TimeSinceLastVisit, string[]> = {
   ],
 }
 
-export const getWelcomeMessage = (lastVisitISO: string | null): string => {
+export const getWelcomeMessage = (lastVisitISO: string | null, hasEnoughData = true): string => {
+  if (!hasEnoughData) {
+    return NEW_USER_MESSAGES[Math.floor(Math.random() * NEW_USER_MESSAGES.length)] ?? NEW_USER_MESSAGES[0]!
+  }
   const period = getTimeSinceLastVisit(lastVisitISO)
   const messages = WELCOME_MESSAGES[period]
   return messages[Math.floor(Math.random() * messages.length)] ?? "Je suis là. 🐾"

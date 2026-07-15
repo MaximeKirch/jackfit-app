@@ -3,10 +3,11 @@ import { usePetStore } from '@/shared/stores/petStore'
 import type { PetStatus } from '@/shared/types/pet.types'
 
 const DEFAULT_MESSAGES: Record<PetStatus, string> = {
-  PEAK: 'Tu cartonnes cette semaine. Continue comme ça.',
-  GOOD: "Bonne semaine dans l'ensemble. Mais tu peux faire mieux.",
-  TIRED: 'Tu tires la langue là. Dors un peu plus.',
-  LAZY: "Sérieusement ? C'est tout ce que t'as fait cette semaine ?",
+  NEW:         "On ne se connaît pas encore — bouge un peu et je vais commencer à comprendre comment tu vas.",
+  PEAK:        'Tu cartonnes cette semaine. Continue comme ça.',
+  GOOD:        "Bonne semaine dans l'ensemble. Mais tu peux faire mieux.",
+  TIRED:       'Tu tires la langue là. Dors un peu plus.',
+  LAZY:        "Sérieusement ? C'est tout ce que t'as fait cette semaine ?",
   OVERREACHED: 'Stop. Tu te détruis. Récupère maintenant.',
 }
 

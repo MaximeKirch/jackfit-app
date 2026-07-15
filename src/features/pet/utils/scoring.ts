@@ -95,7 +95,11 @@ export const calculateScoreBreakdown = (
   }
 }
 
-export const scoreToStatus = (score: number): PetStatus => {
+export const hasEnoughHealthData = (health: HealthSummary): boolean =>
+  health.workouts.length + health.sleep.length >= 3
+
+export const scoreToStatus = (score: number, hasEnoughData: boolean): PetStatus => {
+  if (!hasEnoughData) return 'NEW'
   if (score >= 80) return 'PEAK'
   if (score >= 60) return 'GOOD'
   if (score >= 40) return 'TIRED'

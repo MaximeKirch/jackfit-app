@@ -15,6 +15,7 @@ export const Colors = {
 
   // États d'Uma
   pet: {
+    NEW:         '#B8A898',  // stone — pas encore de données
     PEAK:        '#5B8A5F',  // vert mousse foncé
     GOOD:        '#8BAF8E',  // vert mousse clair
     TIRED:       '#C4956A',  // terracotta doux

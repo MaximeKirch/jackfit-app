@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { PetAvatar } from '@/features/pet/components/PetAvatar'
@@ -13,19 +13,22 @@ import { getWelcomeMessage } from '@/features/pet/utils/welcomeMessage'
 import { Colors, Spacing } from '@/shared/constants/tokens'
 
 export default function HomeScreen() {
-  const { isLoading, error, refetch, breakdown, justCompletedWorkout } = usePetState()
+  const { isLoading, error, refetch, breakdown, justCompletedWorkout, hasEnoughData } = usePetState()
   const status = usePetStore((s) => s.status)
   const getPreviousVisit = usePetStore((s) => s.getPreviousVisit)
   const recordVisit = usePetStore((s) => s.recordVisit)
 
   const [welcomeText, setWelcomeText] = useState('')
+  const hasWelcomedRef = useRef(false)
 
   useEffect(() => {
+    if (isLoading || hasWelcomedRef.current) return
+    hasWelcomedRef.current = true
     const previousVisit = getPreviousVisit()
-    setWelcomeText(getWelcomeMessage(previousVisit))
+    setWelcomeText(getWelcomeMessage(previousVisit, hasEnoughData))
     recordVisit()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isLoading])
 
   if (error) {
     return (

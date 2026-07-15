@@ -10,6 +10,7 @@ interface PetAvatarProps {
 }
 
 const BREATHE_DURATION: Record<PetStatus, number> = {
+  NEW:         3000,
   PEAK:        1800,
   GOOD:        2400,
   TIRED:       3200,
@@ -18,6 +19,7 @@ const BREATHE_DURATION: Record<PetStatus, number> = {
 }
 
 const BREATHE_SCALE: Record<PetStatus, number> = {
+  NEW:         1.03,
   PEAK:        1.08,
   GOOD:        1.06,
   TIRED:       1.04,
