@@ -14,7 +14,7 @@ interface Props {
 }
 
 const RING_THICKNESS = 10
-const GAP            = 24  // espace entre l'anneau et le placeholder central
+const GAP            = 36  // espace entre l'anneau et le placeholder central
 
 export const PetRing = ({ status, xpProgress, size = 200, isCelebrating = false }: Props) => {
   const radius       = (size - RING_THICKNESS) / 2

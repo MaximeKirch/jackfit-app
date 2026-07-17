@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { posthog } from '@/config/posthog'
 import { supabase } from '@/shared/lib/supabase'
 
 export const useAuth = () => {
@@ -7,7 +8,11 @@ export const useAuth = () => {
       email,
       options: { shouldCreateUser: true },
     })
-    if (error) throw error
+    if (error) {
+      posthog.captureException(error, { operation: 'otp_request' })
+      throw error
+    }
+    posthog.capture('auth_otp_requested')
   }, [])
 
   const verifyOtp = useCallback(async (email: string, token: string): Promise<void> => {
@@ -16,7 +21,10 @@ export const useAuth = () => {
       token,
       type: 'email',
     })
-    if (error) throw error
+    if (error) {
+      posthog.captureException(error, { operation: 'otp_verification' })
+      throw error
+    }
   }, [])
 
   const signOut = useCallback(async (): Promise<void> => {

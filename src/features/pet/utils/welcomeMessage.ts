@@ -23,27 +23,27 @@ const NEW_USER_MESSAGES = [
 
 const WELCOME_MESSAGES: Record<TimeSinceLastVisit, string[]> = {
   first_time: [
-    "Salut, je suis Uma ! 🐾",
+    "Salut. Moi c'est Uma.",
   ],
   same_day: [
-    "Re-coucou ! Je suis toujours là. 🐾",
-    "On continue la journée ensemble ?",
-    "Content de te revoir !",
+    "Nous revoilà.",
+    "Toi aussi tu reviens voir ?",
+    "Rebonjour.",
   ],
   yesterday: [
-    "Bien dormi ? Je suis en pleine forme aujourd'hui.",
-    "Nouvelle journée, nouvelle énergie !",
-    "J'espère que t'as bien récupéré cette nuit.",
+    "Alors, cette nuit ?",
+    "Moi ça va, plutôt frais et toi ?",
+    "Nouvelle journée, on peut faire plein de choses.",
   ],
   few_days: [
-    "Tu m'as manqué un peu... on reprend ?",
-    "Ça fait quelques jours ! Raconte-moi comment tu vas.",
-    "J'attendais que tu reviennes. 🥺",
+    "Tiens, te revoilà.",
+    "Ça faisait un bail. Raconte.",
+    "On s'est ennuyés un peus.",
   ],
   week_plus: [
-    "Ça fait longtemps... je me demandais où tu étais passé.",
-    "Content de te revoir. Ça fait un moment.",
-    "J'ai gardé la maison pendant ton absence. Tout va bien ?",
+    "Ah. Ça faisait un bail, ça.",
+    "Je me demandais où t'étais passé, franchement.",
+    "J'ai gardé la maison. Toi, du nouveau ?",
   ],
 }
 
@@ -53,5 +53,5 @@ export const getWelcomeMessage = (lastVisitISO: string | null, hasEnoughData = t
   }
   const period = getTimeSinceLastVisit(lastVisitISO)
   const messages = WELCOME_MESSAGES[period]
-  return messages[Math.floor(Math.random() * messages.length)] ?? "Je suis là. 🐾"
+  return messages[Math.floor(Math.random() * messages.length)] ?? "Coucou !"
 }

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { posthog } from '@/config/posthog'
 import { supabase } from '@/shared/lib/supabase'
 import { useAuthStore } from '@/shared/stores/authStore'
 import { ATHLETE_PROFILES, type AthleteProfileKey } from '@/shared/constants/athleteProfiles'
@@ -36,6 +37,13 @@ export const useOnboarding = () => {
         .eq('id', user.id)
 
       if (error) throw error
+      posthog.capture('onboarding_completed', {
+        athlete_profile: data.athleteProfile,
+        sport_count: data.mainSports.length,
+      })
+    } catch (error) {
+      posthog.captureException(error, { operation: 'onboarding_save' })
+      throw error
     } finally {
       setIsLoading(false)
     }

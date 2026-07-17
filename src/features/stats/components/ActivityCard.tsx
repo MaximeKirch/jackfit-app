@@ -34,8 +34,9 @@ export const ActivityCard = ({ stats, accentColor }: ActivityCardProps) => {
       <Text style={styles.label}>ACTIVITÉ</Text>
       <Text style={[styles.mainValue, { color: accentColor }]}>
         {formatDuration(stats.totalMinutes)}
+        <Text style={styles.subLabel}>{' '}/ objectif {formatDuration(targetMinutes)}</Text>
       </Text>
-      <Text style={styles.subLabel}>/ objectif {formatDuration(targetMinutes)}</Text>
+
 
       <View style={styles.progressTrack}>
         <View style={[styles.progressFill, { width: `${Math.round(progress * 100)}%` as `${number}%`, backgroundColor: accentColor }]} />
@@ -43,10 +44,7 @@ export const ActivityCard = ({ stats, accentColor }: ActivityCardProps) => {
 
       <View style={styles.row}>
         <StatChip label={`${stats.workoutCount} séance${stats.workoutCount > 1 ? 's' : ''}`} />
-        {stats.topType !== null && (
-          <StatChip label={WORKOUT_LABELS[stats.topType] ?? stats.topType} />
-        )}
-        <StatChip label={`${stats.totalCalories} kcal`} />
+        <StatChip label={`${stats.totalCalories} kcal en activité`} />
       </View>
     </Card>
   )

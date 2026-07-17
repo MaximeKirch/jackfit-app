@@ -1,11 +1,13 @@
-import { useEffect } from 'react'
-import { Stack, useRouter, useSegments } from 'expo-router'
+import { useEffect, useRef } from 'react'
+import { Stack, useGlobalSearchParams, usePathname, useRouter, useSegments } from 'expo-router'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { useFonts } from 'expo-font'
 import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display'
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter'
 import { DMMono_400Regular } from '@expo-google-fonts/dm-mono'
 import * as SplashScreen from 'expo-splash-screen'
+import { PostHogProvider } from 'posthog-react-native'
+import { posthog } from '@/config/posthog'
 import { queryClient } from '@/config/queryClient'
 import { supabase } from '@/shared/lib/supabase'
 import { useAuthStore } from '@/shared/stores/authStore'
@@ -14,6 +16,7 @@ SplashScreen.preventAutoHideAsync()
 
 function AuthGuard() {
   const { user, isLoading, setUser, setSession, setIsLoading } = useAuthStore()
+  const identifiedUserId = useRef<string | null>(null)
   const router = useRouter()
   const segments = useSegments()
 
@@ -25,13 +28,26 @@ function AuthGuard() {
         setUser(null)
       } else {
         setUser(user)
+        identifiedUserId.current = user.id
+        posthog.identify(user.id)
       }
       setIsLoading(false)
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session)
       setUser(session?.user ?? null)
+
+      if (event === 'SIGNED_IN' && session?.user && identifiedUserId.current !== session.user.id) {
+        identifiedUserId.current = session.user.id
+        posthog.identify(session.user.id)
+        posthog.capture('auth_signed_in')
+      }
+
+      if (event === 'SIGNED_OUT') {
+        identifiedUserId.current = null
+        posthog.reset()
+      }
     })
 
     return () => subscription.unsubscribe()
@@ -68,6 +84,9 @@ function AuthGuard() {
 }
 
 export default function RootLayout() {
+  const pathname = usePathname()
+  const params = useGlobalSearchParams()
+  const previousPathname = useRef<string | undefined>(undefined)
   const [fontsLoaded] = useFonts({
     'DMSerifDisplay-Regular': DMSerifDisplay_400Regular,
     'Inter-Regular':          Inter_400Regular,
@@ -80,12 +99,24 @@ export default function RootLayout() {
     if (fontsLoaded) void SplashScreen.hideAsync()
   }, [fontsLoaded])
 
+  useEffect(() => {
+    if (previousPathname.current !== pathname) {
+      posthog.screen(pathname, { ...params })
+      previousPathname.current = pathname
+    }
+  }, [pathname, params])
+
   if (!fontsLoaded) return null
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthGuard />
-      <Stack screenOptions={{ headerShown: false }} />
-    </QueryClientProvider>
+    <PostHogProvider
+      client={posthog}
+      autocapture={{ captureScreens: false, captureTouches: true, propsToCapture: ['testID'] }}
+    >
+      <QueryClientProvider client={queryClient}>
+        <AuthGuard />
+        <Stack screenOptions={{ headerShown: false }} />
+      </QueryClientProvider>
+    </PostHogProvider>
   )
 }

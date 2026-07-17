@@ -1,5 +1,4 @@
 import { Tabs } from 'expo-router'
-import { Colors } from '@/shared/constants/tokens'
 import { TabBar } from '@/shared/components/TabBar'
 
 export default function TabLayout() {

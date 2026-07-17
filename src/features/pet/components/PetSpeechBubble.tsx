@@ -42,5 +42,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: '#1A1A1A',
     fontWeight: '500',
+    textAlign:'center'
   },
 })

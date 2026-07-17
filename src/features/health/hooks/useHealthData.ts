@@ -10,6 +10,7 @@ import {
   WorkoutTypeIdentifier,
 } from '@kingstinct/react-native-healthkit'
 import { transformWorkout, transformSleepSamples, deduplicateWorkouts } from '../utils/healthTransform'
+import { posthog } from '@/config/posthog'
 import type { HealthSummary, WorkoutData } from '@/shared/types/health.types'
 
 const LAST_SYNCED_WORKOUT_KEY = 'last_synced_workout_date'
@@ -42,6 +43,7 @@ export const useHealthData = () => {
 
     if (!lastSyncedDate || new Date(mostRecent.date) > new Date(lastSyncedDate)) {
       setJustCompletedWorkout(true)
+      posthog.capture('workout_detected')
       await AsyncStorage.setItem(LAST_SYNCED_WORKOUT_KEY, mostRecent.date)
 
       if (celebrationTimer.current) clearTimeout(celebrationTimer.current)
@@ -87,6 +89,7 @@ export const useHealthData = () => {
 
       void checkForNewWorkout(transformedWorkouts)
     } catch (err) {
+      posthog.captureException(err, { operation: 'health_data_sync' })
       setError(err instanceof Error ? err : new Error('Failed to fetch health data'))
     } finally {
       setIsLoading(false)
@@ -100,6 +103,7 @@ export const useHealthData = () => {
       return
     }
     if (authStatus === AuthorizationRequestStatus.unknown) {
+      posthog.capture('health_permission_denied')
       setPermissionDenied(true)
       return
     }

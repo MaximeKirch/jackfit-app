@@ -44,3 +44,5 @@ yarn-error.*
 # project brief (local only)
 BRIEF.md
 BRIEF*.md
+*brief*.md
+TODO.md

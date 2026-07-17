@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Alert } from 'react-native'
 import { router } from 'expo-router'
+import { posthog } from '@/config/posthog'
 import { supabase } from '@/shared/lib/supabase'
 import { useAuthStore } from '@/shared/stores/authStore'
 import { ATHLETE_PROFILES } from '@/shared/constants/athleteProfiles'
@@ -42,7 +43,9 @@ export const useProfile = () => {
         .eq('id', user!.id)
       if (error) throw error
     },
-    onSuccess: () => {
+    onSuccess: (_data, updates) => {
+      const updatedFields = Object.keys(updates).filter((field) => field !== 'first_name')
+      posthog.capture('profile_updated', { updated_field_count: updatedFields.length })
       void qc.invalidateQueries({ queryKey: ['profile', user?.id] })
     },
   })
@@ -86,6 +89,7 @@ export const useProfile = () => {
           text: 'Supprimer',
           style: 'destructive',
           onPress: async () => {
+            posthog.capture('account_deleted')
             await supabase.from('messages').delete().eq('user_id', user!.id)
             await supabase.from('profiles').delete().eq('id', user!.id)
             await supabase.auth.signOut()
