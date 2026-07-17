@@ -35,14 +35,14 @@ export const PetStatus = () => {
 const styles = StyleSheet.create({
   pill: {
     alignSelf: 'center',
-    paddingVertical: 4,
-    paddingHorizontal: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 16,
     borderRadius: 999,
-    marginTop: 10,
+    marginTop: 14,
   },
   text: {
     fontFamily: 'Inter-Medium',
-    fontSize: Typography.xs,
-    letterSpacing: 0.1,
+    fontSize: Typography.sm,
+    letterSpacing: 0.2,
   },
 })

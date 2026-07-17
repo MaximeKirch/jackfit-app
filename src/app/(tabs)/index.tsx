@@ -76,11 +76,12 @@ export default function HomeScreen() {
   if (isLoading) {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.content}>
-          <Skeleton width={200} height={200} borderRadius={100} />
+        <View style={styles.petSection}>
+          <Skeleton width={240} height={240} borderRadius={120} />
           <View style={styles.gap16} />
           <Skeleton width={140} height={32} borderRadius={20} />
-          <View style={styles.gap24} />
+        </View>
+        <View style={styles.bottomSection}>
           <Skeleton width={300} height={80} />
         </View>
       </SafeAreaView>
@@ -89,14 +90,12 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <PetRing status={status} xpProgress={ringProgress} isCelebrating={justCompletedWorkout} />
+      <View style={styles.petSection}>
+        <PetRing status={status} xpProgress={ringProgress} size={240} isCelebrating={justCompletedWorkout} />
         <PetStatus />
-        {breakdown && (
-          <View style={styles.gauges}>
-            <GaugesPanel breakdown={breakdown} />
-          </View>
-        )}
+      </View>
+      <View style={styles.bottomSection}>
+        {breakdown && <GaugesPanel breakdown={breakdown} />}
         <PetSpeechBubble overrideMessage={welcomeText !== '' ? welcomeText : undefined} />
       </View>
     </SafeAreaView>
@@ -108,15 +107,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.linen,
   },
-  content: {
+  petSection: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  gauges: {
-    width: '100%',
-    marginTop: Spacing.lg,
-    marginBottom: Spacing.sm,
+  bottomSection: {
+    gap: Spacing.lg,
+    paddingBottom: Spacing.xl,
   },
   permissionContainer: {
     flex: 1,
