@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useCallback } from 'react'
 import {
   FlatList,
   View,
@@ -41,12 +41,10 @@ export default function ChatList() {
   const { data: messages = [], isLoading: messagesLoading, isError: messagesError, refetch: refetchMessages } = useMessages()
 
   const listRef = useRef<FlatList<Message>>(null)
+  const scrollToBottom = useCallback(() => {
+    requestAnimationFrame(() => listRef.current?.scrollToEnd({ animated: false }))
+  }, [])
 
-  useEffect(() => {
-    if (messages.length > 0) {
-      listRef.current?.scrollToEnd({ animated: false })
-    }
-  }, [messages.length])
 
   const renderItem: ListRenderItem<Message> = ({ item }) => (
     <ChatBubble
@@ -105,6 +103,8 @@ export default function ChatList() {
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
+          onContentSizeChange={scrollToBottom}
+          onLayout={scrollToBottom}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>Commence une discussion ici</Text>
