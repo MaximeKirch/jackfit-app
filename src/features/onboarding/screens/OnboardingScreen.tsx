@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
+import { posthog } from '@/config/posthog'
 import { OnboardingStep1Name }    from '../components/OnboardingStep1Name'
 import { OnboardingStep2Sports }  from '../components/OnboardingStep2Sports'
 import { OnboardingStep3Profile } from '../components/OnboardingStep3Profile'
@@ -19,16 +20,19 @@ export default function OnboardingScreen() {
   const { saveOnboarding, isLoading } = useOnboarding()
 
   const handleStep1 = (name: string) => {
+    posthog.capture('onboarding_step_completed', { step: 'first_name' })
     setFirstName(name)
     setStep(2)
   }
 
   const handleStep2 = (sports: SportId[]) => {
+    posthog.capture('onboarding_step_completed', { step: 'sports' })
     setMainSports(sports)
     setStep(3)
   }
 
   const handleStep3 = async (profile: AthleteProfileKey) => {
+    posthog.capture('onboarding_step_completed', { step: 'athlete_profile' })
     await saveOnboarding({ firstName, mainSports, athleteProfile: profile })
     router.replace('/(tabs)')
   }

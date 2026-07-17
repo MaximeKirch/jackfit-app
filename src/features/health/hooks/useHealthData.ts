@@ -32,8 +32,8 @@ export const useHealthData = () => {
   const appState = useRef(AppState.currentState)
   const celebrationTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const checkForNewWorkout = useCallback(async (workouts: WorkoutData[]) => {
-    if (workouts.length === 0) return
+  const checkForNewWorkout = useCallback(async (workouts: WorkoutData[]): Promise<boolean> => {
+    if (workouts.length === 0) return false
 
     const mostRecent = workouts.reduce((latest, w) =>
       new Date(w.date) > new Date(latest.date) ? w : latest
@@ -43,12 +43,13 @@ export const useHealthData = () => {
 
     if (!lastSyncedDate || new Date(mostRecent.date) > new Date(lastSyncedDate)) {
       setJustCompletedWorkout(true)
-      posthog.capture('workout_detected')
       await AsyncStorage.setItem(LAST_SYNCED_WORKOUT_KEY, mostRecent.date)
 
       if (celebrationTimer.current) clearTimeout(celebrationTimer.current)
       celebrationTimer.current = setTimeout(() => setJustCompletedWorkout(false), 3000)
+      return true
     }
+    return false
   }, [])
 
   const fetchData = useCallback(async () => {
@@ -87,7 +88,8 @@ export const useHealthData = () => {
         localHour: now.getHours(),
       })
 
-      void checkForNewWorkout(transformedWorkouts)
+      const hasNewWorkout = await checkForNewWorkout(transformedWorkouts)
+      posthog.capture('healthkit_sync_triggered', { has_new_workout: hasNewWorkout })
     } catch (err) {
       posthog.captureException(err, { operation: 'health_data_sync' })
       setError(err instanceof Error ? err : new Error('Failed to fetch health data'))

@@ -6,11 +6,21 @@ import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display'
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter'
 import { DMMono_400Regular } from '@expo-google-fonts/dm-mono'
 import * as SplashScreen from 'expo-splash-screen'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { PostHogProvider } from 'posthog-react-native'
 import { posthog } from '@/config/posthog'
 import { queryClient } from '@/config/queryClient'
 import { supabase } from '@/shared/lib/supabase'
 import { useAuthStore } from '@/shared/stores/authStore'
+
+const LAST_OPEN_KEY = '@posthog_last_open'
+
+const TAB_SCREEN_NAMES: Record<string, string> = {
+  '/':        'home',
+  '/chat':    'chat',
+  '/stats':   'stats',
+  '/profile': 'profile',
+}
 
 SplashScreen.preventAutoHideAsync()
 
@@ -28,8 +38,6 @@ function AuthGuard() {
         setUser(null)
       } else {
         setUser(user)
-        identifiedUserId.current = user.id
-        posthog.identify(user.id)
       }
       setIsLoading(false)
     })
@@ -100,8 +108,21 @@ export default function RootLayout() {
   }, [fontsLoaded])
 
   useEffect(() => {
+    void (async () => {
+      const lastOpen = await AsyncStorage.getItem(LAST_OPEN_KEY)
+      const now = Date.now()
+      const daysSince = lastOpen ? Math.floor((now - parseInt(lastOpen, 10)) / 86_400_000) : 0
+      posthog.capture('app_opened', { days_since_last_open: daysSince })
+      await AsyncStorage.setItem(LAST_OPEN_KEY, String(now))
+    })()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
     if (previousPathname.current !== pathname) {
       posthog.screen(pathname, { ...params })
+      const screenName = TAB_SCREEN_NAMES[pathname]
+      if (screenName) posthog.capture('screen_viewed', { screen_name: screenName })
       previousPathname.current = pathname
     }
   }, [pathname, params])

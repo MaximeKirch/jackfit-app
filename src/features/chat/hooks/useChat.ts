@@ -65,16 +65,20 @@ export const useChat = (healthData: HealthSummary | null) => {
 
     onSuccess: () => {
       if (!user) return
-      posthog.capture('chat_message_sent')
+      const key = messagesKey(user.id)
+      const today = new Date().toISOString().slice(0, 10)
+      const cached = queryClient.getQueryData<Message[]>(key) ?? []
+      const sentToday = cached.filter((m) => m.role === 'user' && m.createdAt.slice(0, 10) === today).length
+      posthog.capture('chat_message_sent', { message_count_today: sentToday })
       lastFailedContent.current = null
-      void queryClient.invalidateQueries({ queryKey: messagesKey(user.id) })
+      void queryClient.invalidateQueries({ queryKey: key })
     },
 
     onError: (err, message, _context) => {
       if (!user) return
 
       if (err instanceof RateLimitError) {
-        // Remove optimistic message, inject Uma's rate-limit response
+        posthog.capture('chat_rate_limit_hit')
         queryClient.setQueryData<Message[]>(messagesKey(user.id), (old = []) => [
           ...old.filter((m) => !m.isOptimistic),
           RATE_LIMIT_MESSAGE,
