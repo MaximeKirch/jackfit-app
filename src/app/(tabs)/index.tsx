@@ -15,7 +15,7 @@ import { xpProgress } from '@/features/pet/utils/stages'
 import { Colors, Spacing, Radius } from '@/shared/constants/tokens'
 
 export default function HomeScreen() {
-  const { isLoading, error, refetch, permissionDenied, breakdown, justCompletedWorkout, hasEnoughData } = usePetState()
+  const { isLoading, isDataReady, error, refetch, permissionDenied, breakdown, justCompletedWorkout, hasEnoughData } = usePetState()
   const status       = usePetStore((s) => s.status)
   const totalXp      = usePetStore((s) => s.totalXp)
   const currentStage = usePetStore((s) => s.currentStage)
@@ -28,13 +28,13 @@ export default function HomeScreen() {
   const hasWelcomedRef = useRef(false)
 
   useEffect(() => {
-    if (isLoading || hasWelcomedRef.current) return
+    if (isLoading || !isDataReady || hasWelcomedRef.current) return
     hasWelcomedRef.current = true
     const previousVisit = getPreviousVisit()
     setWelcomeText(getWelcomeMessage(previousVisit, hasEnoughData))
     recordVisit()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading])
+  }, [isLoading, isDataReady])
 
   if (permissionDenied) {
     return (

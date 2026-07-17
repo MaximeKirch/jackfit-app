@@ -12,11 +12,22 @@ export const usePetState = () => {
 
   useEffect(() => {
     if (!data) return
+    console.log('[usePetState] health data loaded:', {
+      workouts:            data.workouts.length,
+      sleep:               data.sleep.length,
+      steps:               data.steps,
+      daysElapsedThisWeek: data.daysElapsedThisWeek,
+      localHour:           data.localHour,
+      hasEnough:           hasEnoughHealthData(data),
+      workoutDates:        data.workouts.map((w) => w.date.slice(0, 10)),
+      sleepDurations:      data.sleep.map((s) => s.duration),
+    })
     void syncScore(data).then(setScoreResult).catch(console.error)
   }, [data, setScoreResult])
 
   return {
     isLoading,
+    isDataReady: data !== null,
     error,
     refetch,
     permissionDenied,

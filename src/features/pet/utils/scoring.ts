@@ -1,5 +1,6 @@
 import type { HealthSummary } from '@/shared/types/health.types'
 import type { PetStatus } from '@/shared/types/pet.types'
+import type { StageName } from '@/features/pet/utils/stages'
 
 export interface ScoringConfig {
   weeklyTargetHours: number
@@ -25,6 +26,8 @@ export interface ScoreResult {
   status: PetStatus
   breakdown: ScoreBreakdown
   hasEnoughData: boolean
+  totalXp: number
+  currentStage: StageName
 }
 
 export const hasEnoughHealthData = (health: HealthSummary): boolean =>

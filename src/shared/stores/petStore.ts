@@ -52,6 +52,8 @@ export const usePetStore = create<PetStore>()(
         status: result.status,
         breakdown: result.breakdown,
         hasEnoughData: result.hasEnoughData,
+        totalXp: result.totalXp,
+        currentStage: result.currentStage,
       }),
       setLastMessage: (lastMessage) => set({ lastMessage }),
       setScoringConfig: (scoringConfig) => set({ scoringConfig }),
