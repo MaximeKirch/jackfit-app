@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Animated, View } from 'react-native'
+import { Animated, Image, View } from 'react-native'
 import Svg, { Circle, G } from 'react-native-svg'
 import { Colors } from '@/shared/constants/tokens'
-import type { PetStatus } from '@/shared/types/pet.types'
+import { PET_STATES, type PetStatus } from '@/shared/types/pet.types'
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle)
 
@@ -97,7 +97,27 @@ export const PetRing = ({ status, xpProgress, size = 200, isCelebrating = false 
         </G>
       </Svg>
 
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: innerOffset,
+          left: innerOffset,
+          width: innerSize,
+          height: innerSize,
+          alignItems:'center',
+          justifyContent:'center',
+          transform: [{ scale: breathe }],
+        }}
+      >
+        <Image
+          source={PET_STATES[status].asset}
+          style={{ width: innerSize, height: innerSize }}
+          resizeMode="contain"
+        />
+      </Animated.View>
+
       {/* Placeholder central — remplacé par un vrai asset plus tard sans toucher à l'anneau */}
+      {/*
       <Animated.View
         style={{
           position:        'absolute',
@@ -131,7 +151,7 @@ export const PetRing = ({ status, xpProgress, size = 200, isCelebrating = false 
             <View style={{ width: 26, height: 22, borderRadius: 11, backgroundColor: 'rgba(255,255,255,0.55)' }} />
           </View>
         </View>
-      </Animated.View>
+      </Animated.View> */}
     </Animated.View>
   )
 }
