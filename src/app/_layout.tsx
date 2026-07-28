@@ -14,6 +14,7 @@ import { queryClient } from '@/config/queryClient'
 import { supabase } from '@/shared/lib/supabase'
 import { useAuthStore } from '@/shared/stores/authStore'
 import { InfoSheet } from '@/features/pet/components/InfoSheet/InfoSheet'
+import { useDailyReminder } from '@/features/notifications/hooks/useDailyReminder'
 
 const LAST_OPEN_KEY = '@posthog_last_open'
 
@@ -104,6 +105,8 @@ export default function RootLayout() {
     'Inter-SemiBold':         Inter_600SemiBold,
     'DMMono-Regular':         DMMono_400Regular,
   })
+
+  useDailyReminder()
 
   useEffect(() => {
     if (fontsLoaded) void SplashScreen.hideAsync()

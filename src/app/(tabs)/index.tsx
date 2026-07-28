@@ -11,6 +11,7 @@ import { Text } from '@/shared/components/Text'
 import { usePetState } from '@/features/pet/hooks/usePetState'
 import { usePetStore } from '@/shared/stores/petStore'
 import { useUIStore } from '@/shared/stores/uiStore'
+import { useNotifStore } from '@/shared/stores/notifStore'
 import { getWelcomeMessage } from '@/features/pet/utils/welcomeMessage'
 import { xpProgress } from '@/features/pet/utils/stages'
 import { Colors, Spacing, Radius } from '@/shared/constants/tokens'
@@ -29,6 +30,8 @@ export default function HomeScreen() {
   const [welcomeText, setWelcomeText] = useState('')
   const hasWelcomedRef = useRef(false)
   const openInfoSheet = useUIStore((s) => s.openInfoSheet)
+  const hasCompletedFirstWorkoutObserved = useNotifStore((s) => s.hasCompletedFirstWorkoutObserved)
+  const markFirstWorkoutObserved         = useNotifStore((s) => s.markFirstWorkoutObserved)
 
   useEffect(() => {
     if (isLoading || !isDataReady || hasWelcomedRef.current) return
@@ -38,6 +41,12 @@ export default function HomeScreen() {
     recordVisit()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isDataReady])
+
+  useEffect(() => {
+    if (justCompletedWorkout && !hasCompletedFirstWorkoutObserved) {
+      markFirstWorkoutObserved()
+    }
+  }, [justCompletedWorkout, hasCompletedFirstWorkoutObserved, markFirstWorkoutObserved])
 
   if (permissionDenied) {
     return (
