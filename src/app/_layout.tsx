@@ -75,7 +75,8 @@ function AuthGuard() {
 
     const inTabs = segments[0] === '(tabs)'
     const inOnboarding = segments[0] === 'onboarding'
-    if (inTabs || inOnboarding) return
+    const inAIConsent = segments[0] === 'ai-consent'
+    if (inTabs || inOnboarding || inAIConsent) return
 
     void supabase
       .from('profiles')
@@ -142,7 +143,9 @@ export default function RootLayout() {
       >
         <QueryClientProvider client={queryClient}>
           <AuthGuard />
-          <Stack screenOptions={{ headerShown: false }} />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="ai-consent" options={{ presentation: 'fullScreenModal' }} />
+          </Stack>
           <InfoSheet />
         </QueryClientProvider>
       </PostHogProvider>

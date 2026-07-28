@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import {
   FlatList,
   View,
@@ -9,7 +9,9 @@ import {
   type ListRenderItem,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { router } from 'expo-router'
 import { useHealthData } from '@/features/health/hooks/useHealthData'
+import { useAIConsent } from '@/features/aiConsent/hooks/useAIConsent'
 import { usePetStore } from '@/shared/stores/petStore'
 import { PET_STATES } from '@/shared/types/pet.types'
 import { Skeleton } from '@/shared/components/Skeleton'
@@ -30,6 +32,7 @@ const TypingIndicator = ({ color }: { color: string }) => (
 
 export default function ChatList() {
   const { data: healthRaw, isLoading: healthLoading, error: healthError, refetch: refetchHealth } = useHealthData()
+  const { hasConsent, isLoading: consentLoading } = useAIConsent()
   const status = usePetStore((s) => s.status)
   const score  = usePetStore((s) => s.score)
   const { color } = PET_STATES[status]
@@ -52,6 +55,16 @@ export default function ChatList() {
       onRetry={item.isFailed === true ? retryLastMessage : undefined}
     />
   )
+
+  useEffect(() => {
+    if (!consentLoading && !hasConsent) {
+      router.push('/ai-consent')
+    }
+  }, [consentLoading, hasConsent])
+
+  if (!consentLoading && !hasConsent) {
+    return <SafeAreaView style={styles.container} edges={['top']} />
+  }
 
   if (healthError) {
     return (

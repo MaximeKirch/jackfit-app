@@ -6,17 +6,19 @@ import { posthog } from '@/config/posthog'
 import { OnboardingStep1Name }    from '../components/OnboardingStep1Name'
 import { OnboardingStep2Sports }  from '../components/OnboardingStep2Sports'
 import { OnboardingStep3Profile } from '../components/OnboardingStep3Profile'
+import { OnboardingStep4Consent } from '../components/OnboardingStep4Consent'
 import { useOnboarding } from '../hooks/useOnboarding'
 import { Colors } from '@/shared/constants/tokens'
 import type { SportId } from '@/shared/constants/sports'
 import type { AthleteProfileKey } from '@/shared/constants/athleteProfiles'
 
-type Step = 1 | 2 | 3
+type Step = 1 | 2 | 3 | 4
 
 export default function OnboardingScreen() {
   const [step, setStep]           = useState<Step>(1)
   const [firstName, setFirstName] = useState('')
   const [mainSports, setMainSports] = useState<SportId[]>([])
+  const [athleteProfile, setAthleteProfile] = useState<AthleteProfileKey | null>(null)
   const { saveOnboarding, isLoading } = useOnboarding()
 
   const handleStep1 = (name: string) => {
@@ -31,9 +33,16 @@ export default function OnboardingScreen() {
     setStep(3)
   }
 
-  const handleStep3 = async (profile: AthleteProfileKey) => {
+  const handleStep3 = (profile: AthleteProfileKey) => {
     posthog.capture('onboarding_step_completed', { step: 'athlete_profile' })
-    await saveOnboarding({ firstName, mainSports, athleteProfile: profile })
+    setAthleteProfile(profile)
+    setStep(4)
+  }
+
+  const finishOnboarding = async (aiConsentGranted: boolean) => {
+    if (!athleteProfile) return
+    posthog.capture('onboarding_step_completed', { step: 'ai_consent', granted: aiConsentGranted })
+    await saveOnboarding({ firstName, mainSports, athleteProfile, aiConsentGranted })
     router.replace('/(tabs)')
   }
 
@@ -54,6 +63,14 @@ export default function OnboardingScreen() {
             firstName={firstName}
             onNext={handleStep3}
             onBack={() => setStep(2)}
+            isLoading={false}
+          />
+        )}
+        {step === 4 && (
+          <OnboardingStep4Consent
+            onAccept={() => { void finishOnboarding(true) }}
+            onDecline={() => { void finishOnboarding(false) }}
+            onBack={() => setStep(3)}
             isLoading={isLoading}
           />
         )}

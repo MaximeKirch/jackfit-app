@@ -15,6 +15,7 @@ export interface UserProfile {
   athlete_profile: AthleteProfileKey | null
   weekly_activity_goal: number
   sleep_goal: number
+  ai_consent_given_at: string | null
 }
 
 export const useProfile = () => {

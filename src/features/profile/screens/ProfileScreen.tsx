@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ScrollView, StyleSheet, Alert, View } from 'react-native'
+import { ScrollView, StyleSheet, Alert, View, Linking } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Skeleton } from '@/shared/components/Skeleton'
 import { ProfileHeader }    from '../components/ProfileHeader'
@@ -19,6 +19,7 @@ import type { TablerIconName } from '@/shared/components/TablerIcon'
 import { Colors, Spacing }  from '@/shared/constants/tokens'
 import { Text }             from '@/shared/components/Text'
 import type { SportId }     from '@/shared/constants/sports'
+import { PRIVACY_POLICY_URL } from '@/features/aiConsent/config/privacy'
 
 const SPORT_ICONS: Partial<Record<SportId, TablerIconName>> = {
   running:    'run',
@@ -167,6 +168,14 @@ export default function ProfileScreen() {
             label="Supprimer le compte"
             onPress={deleteAccount}
             destructive
+            isLast
+          />
+        </ProfileSection>
+
+        <ProfileSection title="Confidentialité">
+          <ProfileRow
+            label="Politique de confidentialité"
+            onPress={() => { void Linking.openURL(PRIVACY_POLICY_URL) }}
             isLast
           />
         </ProfileSection>
