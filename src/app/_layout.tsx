@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Stack, useGlobalSearchParams, usePathname, useRouter, useSegments } from 'expo-router'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { useFonts } from 'expo-font'
 import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display'
@@ -12,6 +13,7 @@ import { posthog } from '@/config/posthog'
 import { queryClient } from '@/config/queryClient'
 import { supabase } from '@/shared/lib/supabase'
 import { useAuthStore } from '@/shared/stores/authStore'
+import { InfoSheet } from '@/features/pet/components/InfoSheet/InfoSheet'
 
 const LAST_OPEN_KEY = '@posthog_last_open'
 
@@ -130,14 +132,17 @@ export default function RootLayout() {
   if (!fontsLoaded) return null
 
   return (
-    <PostHogProvider
-      client={posthog}
-      autocapture={{ captureScreens: false, captureTouches: true, propsToCapture: ['testID'] }}
-    >
-      <QueryClientProvider client={queryClient}>
-        <AuthGuard />
-        <Stack screenOptions={{ headerShown: false }} />
-      </QueryClientProvider>
-    </PostHogProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PostHogProvider
+        client={posthog}
+        autocapture={{ captureScreens: false, captureTouches: true, propsToCapture: ['testID'] }}
+      >
+        <QueryClientProvider client={queryClient}>
+          <AuthGuard />
+          <Stack screenOptions={{ headerShown: false }} />
+          <InfoSheet />
+        </QueryClientProvider>
+      </PostHogProvider>
+    </GestureHandlerRootView>
   )
 }

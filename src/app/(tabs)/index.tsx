@@ -10,9 +10,11 @@ import { ErrorState } from '@/shared/components/ErrorState'
 import { Text } from '@/shared/components/Text'
 import { usePetState } from '@/features/pet/hooks/usePetState'
 import { usePetStore } from '@/shared/stores/petStore'
+import { useUIStore } from '@/shared/stores/uiStore'
 import { getWelcomeMessage } from '@/features/pet/utils/welcomeMessage'
 import { xpProgress } from '@/features/pet/utils/stages'
 import { Colors, Spacing, Radius } from '@/shared/constants/tokens'
+
 
 export default function HomeScreen() {
   const { isLoading, isDataReady, error, refetch, permissionDenied, breakdown, justCompletedWorkout, hasEnoughData } = usePetState()
@@ -26,6 +28,7 @@ export default function HomeScreen() {
 
   const [welcomeText, setWelcomeText] = useState('')
   const hasWelcomedRef = useRef(false)
+  const openInfoSheet = useUIStore((s) => s.openInfoSheet)
 
   useEffect(() => {
     if (isLoading || !isDataReady || hasWelcomedRef.current) return
@@ -92,7 +95,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.petSection}>
         <PetRing status={status} xpProgress={ringProgress} size={240} isCelebrating={justCompletedWorkout} />
-        <PetStatus />
+        <PetStatus toggleInfoModal={openInfoSheet}/>
       </View>
       <View style={styles.bottomSection}>
         {breakdown && <GaugesPanel breakdown={breakdown} />}
@@ -142,5 +145,4 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   gap16: { height: 16 },
-  gap24: { height: 24 },
 })

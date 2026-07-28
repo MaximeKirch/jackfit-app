@@ -29,9 +29,11 @@
           "NSHealthUpdateUsageDescription": false
         }
       ],
+      "@react-native-vector-icons/ant-design",
       "expo-font",
       "expo-splash-screen",
-      "expo-localization"
+      "expo-localization",
+      "expo-notifications"
     ],
     "extra": {
       "eas": {

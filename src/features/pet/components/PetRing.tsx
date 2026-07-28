@@ -116,42 +116,6 @@ export const PetRing = ({ status, xpProgress, size = 200, isCelebrating = false 
         />
       </Animated.View>
 
-      {/* Placeholder central — remplacé par un vrai asset plus tard sans toucher à l'anneau */}
-      {/*
-      <Animated.View
-        style={{
-          position:        'absolute',
-          top:             innerOffset,
-          left:            innerOffset,
-          width:           innerSize,
-          height:          innerSize,
-          borderRadius:    innerRadius * 0.45,
-          backgroundColor: petColor,
-          alignItems:      'center',
-          justifyContent:  'center',
-          transform:       [{ scale: breathe }],
-        }}
-      >
-        <View
-          style={{
-            width:           innerSize * 0.52,
-            height:          innerSize * 0.52,
-            borderRadius:    innerSize * 0.14,
-            backgroundColor: 'rgba(255,255,255,0.18)',
-            alignItems:      'center',
-            justifyContent:  'center',
-          }}
-        >
-          <View style={{ alignItems: 'center', gap: 3 }}>
-            <View style={{ flexDirection: 'row', gap: 5 }}>
-              <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: 'rgba(255,255,255,0.55)', marginTop: 4 }} />
-              <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: 'rgba(255,255,255,0.55)' }} />
-              <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: 'rgba(255,255,255,0.55)', marginTop: 4 }} />
-            </View>
-            <View style={{ width: 26, height: 22, borderRadius: 11, backgroundColor: 'rgba(255,255,255,0.55)' }} />
-          </View>
-        </View>
-      </Animated.View> */}
     </Animated.View>
   )
 }
