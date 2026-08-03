@@ -7,15 +7,21 @@ interface NotifStore {
   hasCompletedFirstWorkoutObserved: boolean
   setFirstOpenAt: (iso: string) => void
   markFirstWorkoutObserved: () => void
+  reset: () => void
+}
+
+const INITIAL_NOTIF_STATE = {
+  firstOpenAt:                      null,
+  hasCompletedFirstWorkoutObserved: false,
 }
 
 export const useNotifStore = create<NotifStore>()(
   persist(
     (set) => ({
-      firstOpenAt:                      null,
-      hasCompletedFirstWorkoutObserved: false,
+      ...INITIAL_NOTIF_STATE,
       setFirstOpenAt:           (iso) => set({ firstOpenAt: iso }),
       markFirstWorkoutObserved: ()    => set({ hasCompletedFirstWorkoutObserved: true }),
+      reset: () => set(INITIAL_NOTIF_STATE),
     }),
     {
       name:    'notif-storage',

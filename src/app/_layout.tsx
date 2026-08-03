@@ -13,6 +13,8 @@ import { posthog } from '@/config/posthog'
 import { queryClient } from '@/config/queryClient'
 import { supabase } from '@/shared/lib/supabase'
 import { useAuthStore } from '@/shared/stores/authStore'
+import { usePetStore } from '@/shared/stores/petStore'
+import { useNotifStore } from '@/shared/stores/notifStore'
 import { InfoSheet } from '@/features/pet/components/InfoSheet/InfoSheet'
 import { useDailyReminder } from '@/features/notifications/hooks/useDailyReminder'
 
@@ -58,6 +60,9 @@ function AuthGuard() {
       if (event === 'SIGNED_OUT') {
         identifiedUserId.current = null
         posthog.reset()
+        usePetStore.getState().reset()
+        useNotifStore.getState().reset()
+        queryClient.clear()
       }
     })
 

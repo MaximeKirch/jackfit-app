@@ -29,21 +29,26 @@ interface PetStore {
   setProgression: (p: { totalXp: number; currentStage: StageName; stageEnteredAt: string }) => void
   getPreviousVisit: () => string | null
   recordVisit: () => void
+  reset: () => void
+}
+
+const INITIAL_PET_STATE = {
+  status:         'NEW' as PetStatus,
+  score:          0,
+  breakdown:      null,
+  hasEnoughData:  false,
+  lastMessage:    '',
+  scoringConfig:  DEFAULT_SCORING_CONFIG,
+  lastVisit:      null,
+  totalXp:        0,
+  currentStage:   'JEUNE_CHIOT' as StageName,
+  stageEnteredAt: null,
 }
 
 export const usePetStore = create<PetStore>()(
   persist(
     (set, get) => ({
-      status: 'NEW',
-      score: 0,
-      breakdown: null,
-      hasEnoughData: false,
-      lastMessage: '',
-      scoringConfig: DEFAULT_SCORING_CONFIG,
-      lastVisit: null,
-      totalXp: 0,
-      currentStage: 'JEUNE_CHIOT',
-      stageEnteredAt: null,
+      ...INITIAL_PET_STATE,
 
       setStatus: (status) => set({ status }),
       setScore: (score) => set({ score }),
@@ -65,6 +70,8 @@ export const usePetStore = create<PetStore>()(
 
       getPreviousVisit: () => get().lastVisit,
       recordVisit: () => set({ lastVisit: new Date().toISOString() }),
+
+      reset: () => set(INITIAL_PET_STATE),
     }),
     {
       name: 'pet-storage',
