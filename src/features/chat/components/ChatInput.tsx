@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
     color: Colors.charcoal,
     paddingVertical: 10,
     maxHeight: 44,
+    letterSpacing: -0.1,
   },
   sendButton: {
     width: 36,

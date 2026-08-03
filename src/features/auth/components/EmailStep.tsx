@@ -7,6 +7,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native'
 import { Colors, Radius, Spacing, Typography } from '@/shared/constants/tokens'
 import { useAuth } from '../hooks/useAuth'
@@ -38,12 +40,15 @@ export const EmailStep = ({ onSuccess }: EmailStepProps) => {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
       <View style={styles.avatarContainer}>
         <View style={styles.avatar}>
           <Text style={styles.avatarEmoji}>🐾</Text>
         </View>
-        <Text style={styles.title}>Uma</Text>
+        <Text style={styles.title}>Bienvenue chez Uma</Text>
         <Text style={styles.subtitle}>Entre ton email pour recevoir ton code de connexion.</Text>
       </View>
 
@@ -75,7 +80,7 @@ export const EmailStep = ({ onSuccess }: EmailStepProps) => {
           )}
         </Pressable>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -107,6 +112,7 @@ const styles = StyleSheet.create({
     fontSize: Typography.xxl,
     color: Colors.charcoal,
     letterSpacing: -0.5,
+    textAlign: 'center',
   },
   subtitle: {
     fontFamily: 'Inter-Regular',

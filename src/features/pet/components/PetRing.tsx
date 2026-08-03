@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Animated, Image, View } from 'react-native'
+import { Animated, Image } from 'react-native'
 import Svg, { Circle, G } from 'react-native-svg'
 import { Colors } from '@/shared/constants/tokens'
 import { PET_STATES, type PetStatus } from '@/shared/types/pet.types'
@@ -14,7 +14,7 @@ interface Props {
 }
 
 const RING_THICKNESS = 10
-const GAP            = 36  // espace entre l'anneau et le placeholder central
+const GAP = 36
 
 export const PetRing = ({ status, xpProgress, size = 200, isCelebrating = false }: Props) => {
   const radius       = (size - RING_THICKNESS) / 2
@@ -24,7 +24,7 @@ export const PetRing = ({ status, xpProgress, size = 200, isCelebrating = false 
   const innerRadius  = innerSize / 2
   const innerOffset  = center - innerRadius
 
-  // useState lazy init: Animated.Value créé une seule fois, stable sans ref
+
   const [progress] = useState(() => new Animated.Value(0))
   const [bounceY]  = useState(() => new Animated.Value(0))
   const [breathe]  = useState(() => new Animated.Value(1))
@@ -67,7 +67,6 @@ export const PetRing = ({ status, xpProgress, size = 200, isCelebrating = false 
     outputRange: [circumference, 0],
   })
 
-  const petColor = Colors.pet[status]
 
   return (
     <Animated.View style={{ transform: [{ translateY: bounceY }] }}>

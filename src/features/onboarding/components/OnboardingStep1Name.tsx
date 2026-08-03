@@ -58,9 +58,10 @@ const styles = StyleSheet.create({
     borderRadius:    Radius.md,
     padding:         Spacing.md,
     fontSize:        Typography.xl,
-    fontFamily:      'DMSerifDisplay-Regular',
+    fontFamily:      'Inter-Medium',
     color:           Colors.charcoal,
     marginTop:       Spacing.md,
+    letterSpacing:   -0.2,
   },
   button: {
     backgroundColor: Colors.moss,
