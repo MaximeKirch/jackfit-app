@@ -23,27 +23,26 @@ const NEW_USER_MESSAGES = [
 
 const WELCOME_MESSAGES: Record<TimeSinceLastVisit, string[]> = {
   first_time: [
-    "Salut. Moi c'est Uma.",
+    "Salut! Moi c'est Uma.",
   ],
   same_day: [
-    "Nous revoilà.",
+    "Nous revoilà !",
     "Toi aussi tu reviens voir ?",
-    "Rebonjour.",
+    "Rebonjour !",
   ],
   yesterday: [
     "Alors, cette nuit ?",
-    "Moi ça va, plutôt frais et toi ?",
+    "Moi ça va, journée idéale pour sortir ?",
     "Nouvelle journée, on peut faire plein de choses.",
   ],
   few_days: [
     "Tiens, te revoilà.",
-    "Ça faisait un bail. Raconte.",
-    "On s'est ennuyés un peus.",
+    "Ça faisait un bail. Prêt à reprendre ?",
+    "Ça faisait quelques jours. On bouge ?",
   ],
   week_plus: [
-    "Ah. Ça faisait un bail, ça.",
-    "Je me demandais où t'étais passé, franchement.",
-    "J'ai gardé la maison. Toi, du nouveau ?",
+    "Une semaine sans mouvement mais si on s'y met ?",
+    "Semaine chargée ? On peut commencer léger !",
   ],
 }
 

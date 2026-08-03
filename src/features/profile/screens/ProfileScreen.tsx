@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ScrollView, StyleSheet, Alert, View, Linking } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Skeleton } from '@/shared/components/Skeleton'
+import { FadeInOnFocus } from '@/shared/components/FadeInOnFocus'
 import { ProfileHeader }    from '../components/ProfileHeader'
 import { ProfileSection }   from '../components/ProfileSection'
 import { ProfileRow }       from '../components/ProfileRow'
@@ -61,15 +62,17 @@ export default function ProfileScreen() {
   if (isLoading || !profile) {
     return (
       <SafeAreaView style={styles.safe} edges={['top']}>
-        <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-          <View style={skeletonStyles.header}>
-            <Skeleton width={140} height={22} borderRadius={11} />
-            <Skeleton width={180} height={13} borderRadius={7} />
-          </View>
-          <ProfileSkeletonSection rows={3} />
-          <ProfileSkeletonSection rows={1} />
-          <ProfileSkeletonSection rows={3} />
-        </ScrollView>
+        <FadeInOnFocus>
+          <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+            <View style={skeletonStyles.header}>
+              <Skeleton width={140} height={22} borderRadius={11} />
+              <Skeleton width={180} height={13} borderRadius={7} />
+            </View>
+            <ProfileSkeletonSection rows={3} />
+            <ProfileSkeletonSection rows={1} />
+            <ProfileSkeletonSection rows={3} />
+          </ScrollView>
+        </FadeInOnFocus>
       </SafeAreaView>
     )
   }
@@ -102,12 +105,13 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
-        <ProfileHeader firstName={profile.first_name} />
+      <FadeInOnFocus>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+        >
+          <ProfileHeader firstName={profile.first_name} />
 
         <View style={styles.progressionSection}>
           <Text size="xs" weight="semibold" color={Colors.stone} style={styles.sectionLabel}>
@@ -179,7 +183,8 @@ export default function ProfileScreen() {
             isLast
           />
         </ProfileSection>
-      </ScrollView>
+        </ScrollView>
+      </FadeInOnFocus>
 
       <EditNameModal
         visible={editName}

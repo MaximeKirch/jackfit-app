@@ -112,10 +112,10 @@ const computeStats = (
 
 
 export const useStats = () => {
-  const { data, isLoading, error } = useHealthData()
+  const { data, isLoading, error, permissionDenied } = useHealthData()
   const scoringConfig = usePetStore((s) => s.scoringConfig)
   const score = usePetStore((s) => s.score)
   const status = usePetStore((s) => s.status)
   const stats = data ? computeStats(data, scoringConfig) : null
-  return { stats, isLoading, error, score, status }
+  return { stats, isLoading, error, permissionDenied, score, status }
 }

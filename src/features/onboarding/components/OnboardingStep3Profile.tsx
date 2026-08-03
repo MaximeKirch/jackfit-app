@@ -10,9 +10,10 @@ interface Props {
   onBack:          () => void
   isLoading:       boolean
   initialSelected?: AthleteProfileKey | null
+  ctaLabel?:       string
 }
 
-export const OnboardingStep3Profile = ({ firstName, onNext, onBack, isLoading, initialSelected }: Props) => {
+export const OnboardingStep3Profile = ({ firstName, onNext, onBack, isLoading, initialSelected, ctaLabel = 'Rencontrer Uma 🐾' }: Props) => {
   const [selected, setSelected] = useState<AthleteProfileKey | null>(initialSelected ?? null)
 
   return (
@@ -77,7 +78,7 @@ export const OnboardingStep3Profile = ({ firstName, onNext, onBack, isLoading, i
           <ActivityIndicator color={Colors.white} />
         ) : (
           <Text variant="body" size="base" weight="semibold" color={Colors.white}>
-            Rencontrer Uma 🐾
+            {ctaLabel}
           </Text>
         )}
       </Pressable>

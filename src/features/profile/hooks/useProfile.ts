@@ -72,7 +72,7 @@ export const useProfile = () => {
       .delete()
       .eq('user_id', user!.id)
     if (error) throw error
-    qc.setQueryData(['messages'], [])
+    qc.setQueryData(['messages', user!.id], [])
   }
 
   const signOut = async () => {

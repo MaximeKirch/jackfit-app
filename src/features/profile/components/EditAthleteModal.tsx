@@ -23,6 +23,7 @@ export const EditAthleteModal = ({ visible, current, onSave, onClose, isLoading 
         }}
         onBack={onClose}
         isLoading={isLoading}
+        ctaLabel="Valider"
       />
     </SafeAreaView>
   </Modal>

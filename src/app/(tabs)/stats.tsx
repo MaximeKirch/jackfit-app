@@ -6,41 +6,59 @@ import { Colors, Radius, Spacing, Typography } from '@/shared/constants/tokens'
 import { ActivityCard, ActivityCardSkeleton } from '@/features/stats/components/ActivityCard'
 import { SleepCard, SleepCardSkeleton } from '@/features/stats/components/SleepCard'
 import { ConsistencyCard, ConsistencyCardSkeleton } from '@/features/stats/components/ConsistencyCard'
+import { HealthPermissionDenied } from '@/features/health/components/HealthPermissionDenied'
+import { FadeInOnFocus } from '@/shared/components/FadeInOnFocus'
 
 export default function StatsScreen() {
-  const { stats, isLoading, error, score, status } = useStats()
+  const { stats, isLoading, error, permissionDenied, score, status } = useStats()
   const { color } = PET_STATES[status]
+
+  if (permissionDenied) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        <FadeInOnFocus>
+          <HealthPermissionDenied
+            body="Sans accès à Apple Santé, on ne peut pas calculer ton score de forme."
+          />
+        </FadeInOnFocus>
+      </SafeAreaView>
+    )
+  }
 
   if (error) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.error}>Impossible de lire les données HealthKit.</Text>
+        <FadeInOnFocus>
+          <Text style={styles.error}>Impossible de lire les données HealthKit.</Text>
+        </FadeInOnFocus>
       </SafeAreaView>
     )
   }
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        <View style={[styles.scoreBanner, { backgroundColor: color }]}>
-          <Text style={styles.scoreLabel}>Score de la semaine</Text>
-          <Text style={styles.scoreValue}>{score}/100</Text>
-        </View>
+      <FadeInOnFocus>
+        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+          <View style={[styles.scoreBanner, { backgroundColor: color }]}>
+            <Text style={styles.scoreLabel}>Score de la semaine</Text>
+            <Text style={styles.scoreValue}>{score}/100</Text>
+          </View>
 
-        {isLoading || stats === null ? (
-          <>
-            <ActivityCardSkeleton />
-            <SleepCardSkeleton />
-            <ConsistencyCardSkeleton />
-          </>
-        ) : (
-          <>
-            <ActivityCard stats={stats.activity} accentColor={color} />
-            <SleepCard stats={stats.sleep} accentColor={color} />
-            <ConsistencyCard stats={stats.consistency} accentColor={color} />
-          </>
-        )}
-      </ScrollView>
+          {isLoading || stats === null ? (
+            <>
+              <ActivityCardSkeleton />
+              <SleepCardSkeleton />
+              <ConsistencyCardSkeleton />
+            </>
+          ) : (
+            <>
+              <ActivityCard stats={stats.activity} accentColor={color} />
+              <SleepCard stats={stats.sleep} accentColor={color} />
+              <ConsistencyCard stats={stats.consistency} accentColor={color} />
+            </>
+          )}
+        </ScrollView>
+      </FadeInOnFocus>
     </SafeAreaView>
   )
 }

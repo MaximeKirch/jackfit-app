@@ -10,16 +10,18 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
+import { FadeInOnFocus } from '@/shared/components/FadeInOnFocus'
 import { useHealthData } from '@/features/health/hooks/useHealthData'
 import { useAIConsent } from '@/features/aiConsent/hooks/useAIConsent'
 import { usePetStore } from '@/shared/stores/petStore'
 import { PET_STATES } from '@/shared/types/pet.types'
-import { Skeleton } from '@/shared/components/Skeleton'
 import { ErrorState } from '@/shared/components/ErrorState'
+import { HealthPermissionDenied } from '@/features/health/components/HealthPermissionDenied'
 import { Colors, Spacing, Typography } from '@/shared/constants/tokens'
 import { useChat, useMessages } from '../hooks/useChat'
 import { ChatBubble } from './ChatBubble'
 import { ChatInput } from './ChatInput'
+import { ChatSkeleton } from './ChatSkeleton'
 import type { Message } from '@/shared/types/chat.types'
 
 const TypingIndicator = ({ color }: { color: string }) => (
@@ -31,7 +33,7 @@ const TypingIndicator = ({ color }: { color: string }) => (
 )
 
 export default function ChatList() {
-  const { data: healthRaw, isLoading: healthLoading, error: healthError, refetch: refetchHealth } = useHealthData()
+  const { data: healthRaw, isLoading: healthLoading, error: healthError, refetch: refetchHealth, permissionDenied: healthDenied } = useHealthData()
   const { hasConsent, isLoading: consentLoading } = useAIConsent()
   const status = usePetStore((s) => s.status)
   const score  = usePetStore((s) => s.score)
@@ -66,13 +68,27 @@ export default function ChatList() {
     return <SafeAreaView style={styles.container} edges={['top']} />
   }
 
+  if (healthDenied) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <FadeInOnFocus>
+          <HealthPermissionDenied
+            body="Sans accès à Apple Santé, Uma ne peut pas discuter avec toi de ta forme."
+          />
+        </FadeInOnFocus>
+      </SafeAreaView>
+    )
+  }
+
   if (healthError) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
-        <ErrorState
-          message="Impossible de lire les données de santé."
-          onRetry={() => void refetchHealth()}
-        />
+        <FadeInOnFocus>
+          <ErrorState
+            message="Impossible de lire les données de santé."
+            onRetry={() => void refetchHealth()}
+          />
+        </FadeInOnFocus>
       </SafeAreaView>
     )
   }
@@ -80,26 +96,18 @@ export default function ChatList() {
   if (messagesError) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
-        <ErrorState
-          message="Uma n'arrive pas à se connecter. Vérifie ta connexion."
-          onRetry={() => void refetchMessages()}
-        />
+        <FadeInOnFocus>
+          <ErrorState
+            message="Uma n'arrive pas à se connecter. Vérifie ta connexion."
+            onRetry={() => void refetchMessages()}
+          />
+        </FadeInOnFocus>
       </SafeAreaView>
     )
   }
 
   if (healthLoading || messagesLoading) {
-    return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <View style={styles.loadingContainer}>
-          <Skeleton width="90%" height={56} borderRadius={18} />
-          <View style={styles.gap8} />
-          <Skeleton width="70%" height={56} borderRadius={18} />
-          <View style={styles.gap8} />
-          <Skeleton width="85%" height={56} borderRadius={18} />
-        </View>
-      </SafeAreaView>
-    )
+    return <ChatSkeleton />
   }
 
   return (
@@ -109,22 +117,24 @@ export default function ChatList() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={0}
       >
-        <FlatList
-          ref={listRef}
-          data={messages}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.listContent}
-          onContentSizeChange={scrollToBottom}
-          onLayout={scrollToBottom}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>Commence une discussion ici</Text>
-            </View>
-          }
-          ListFooterComponent={isPending ? <TypingIndicator color={color} /> : null}
-        />
+        <FadeInOnFocus>
+          <FlatList
+            ref={listRef}
+            data={messages}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContent}
+            onContentSizeChange={scrollToBottom}
+            onLayout={scrollToBottom}
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>Commence une discussion ici</Text>
+              </View>
+            }
+            ListFooterComponent={isPending ? <TypingIndicator color={color} /> : null}
+          />
+        </FadeInOnFocus>
         <ChatInput onSend={sendMessage} isLoading={isPending} accentColor={color} />
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -176,9 +186,4 @@ const styles = StyleSheet.create({
     color: Colors.stone,
     letterSpacing: 4,
   },
-  loadingContainer: {
-    padding: Spacing.md,
-    paddingTop: Spacing.lg,
-  },
-  gap8: { height: 8 },
 })
