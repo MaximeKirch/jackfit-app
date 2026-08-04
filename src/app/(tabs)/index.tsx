@@ -82,7 +82,14 @@ export default function HomeScreen() {
             <Skeleton width={140} height={32} borderRadius={20} />
           </View>
           <View style={styles.bottomSection}>
-            <Skeleton width={300} height={80} />
+            <View style={styles.gaugesSkeleton}>
+              <Skeleton width="100%" height={14} borderRadius={7} />
+              <Skeleton width="100%" height={14} borderRadius={7} />
+              <Skeleton width="100%" height={14} borderRadius={7} />
+            </View>
+            <View style={styles.bubbleSkeletonWrap}>
+              <Skeleton width={300} height={80} />
+            </View>
           </View>
         </FadeInOnFocus>
       </SafeAreaView>
@@ -118,6 +125,13 @@ const styles = StyleSheet.create({
   bottomSection: {
     gap: Spacing.lg,
     paddingBottom: Spacing.xl,
+  },
+  gaugesSkeleton: {
+    gap: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+  },
+  bubbleSkeletonWrap: {
+    alignItems: 'center',
   },
   gap16: { height: 16 },
 })

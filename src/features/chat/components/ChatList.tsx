@@ -2,12 +2,20 @@ import { useRef, useCallback, useEffect } from 'react'
 import {
   FlatList,
   View,
-  Text,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
+  Text,
   type ListRenderItem,
 } from 'react-native'
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withSequence,
+  withTiming,
+  withDelay,
+} from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { FadeInOnFocus } from '@/shared/components/FadeInOnFocus'
@@ -24,10 +32,34 @@ import { ChatInput } from './ChatInput'
 import { ChatSkeleton } from './ChatSkeleton'
 import type { Message } from '@/shared/types/chat.types'
 
+const TypingDot = ({ delay, color }: { delay: number; color: string }) => {
+  const opacity = useSharedValue(0.3)
+
+  useEffect(() => {
+    opacity.value = withDelay(
+      delay,
+      withRepeat(
+        withSequence(
+          withTiming(1, { duration: 400 }),
+          withTiming(0.3, { duration: 400 }),
+        ),
+        -1,
+        false,
+      ),
+    )
+  }, [delay, opacity])
+
+  const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }))
+
+  return <Animated.View style={[styles.typingDot, { backgroundColor: color }, animatedStyle]} />
+}
+
 const TypingIndicator = ({ color }: { color: string }) => (
   <View style={styles.typingRow}>
     <View style={[styles.typingBubble, { borderColor: color }]}>
-      <Text style={styles.typingText}>…</Text>
+      <TypingDot delay={0}   color={color} />
+      <TypingDot delay={150} color={color} />
+      <TypingDot delay={300} color={color} />
     </View>
   </View>
 )
@@ -178,12 +210,15 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderRadius: 18,
     borderBottomLeftRadius: 4,
-    paddingVertical: 10,
-    paddingHorizontal: 18,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
-  typingText: {
-    fontSize: Typography.lg,
-    color: Colors.stone,
-    letterSpacing: 4,
+  typingDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
   },
 })

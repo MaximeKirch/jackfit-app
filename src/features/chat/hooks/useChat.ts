@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import * as Haptics from 'expo-haptics'
 import { sendMessage, fetchMessages, RateLimitError } from '../api/chatApi'
 import { posthog } from '@/config/posthog'
 import { useAuthStore } from '@/shared/stores/authStore'
@@ -71,6 +72,7 @@ export const useChat = (healthData: HealthSummary | null) => {
       const sentToday = cached.filter((m) => m.role === 'user' && m.createdAt.slice(0, 10) === today).length
       posthog.capture('chat_message_sent', { message_count_today: sentToday })
       lastFailedContent.current = null
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       void queryClient.invalidateQueries({ queryKey: key })
     },
 
