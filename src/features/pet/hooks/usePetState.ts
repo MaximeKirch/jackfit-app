@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useHealthData } from '@/features/health/hooks/useHealthData'
 import { syncScore } from '@/features/health/api/scoreApi'
 import { usePetStore } from '@/shared/stores/petStore'
@@ -14,6 +14,7 @@ export const usePetState = () => {
   const currentStage = usePetStore((s) => s.currentStage)
   const totalXp = usePetStore((s) => s.totalXp)
   const prevStageRef = useRef<StageName | null>(null)
+  const [hasFreshScore, setHasFreshScore] = useState(false)
 
   useEffect(() => {
     if (prevStageRef.current === null) {
@@ -42,12 +43,22 @@ export const usePetState = () => {
       workoutDates:        data.workouts.map((w) => w.date.slice(0, 10)),
       sleepDurations:      data.sleep.map((s) => s.duration),
     })
-    void syncScore(data).then(setScoreResult).catch(console.error)
+    void (async () => {
+      try {
+        const result = await syncScore(data)
+        setScoreResult(result)
+      } catch (err) {
+        posthog.captureException(err, { operation: 'score_sync' })
+      } finally {
+        setHasFreshScore(true)
+      }
+    })()
   }, [data, setScoreResult])
 
   return {
     isLoading,
     isDataReady: data !== null,
+    hasFreshScore,
     error,
     refetch,
     permissionDenied,

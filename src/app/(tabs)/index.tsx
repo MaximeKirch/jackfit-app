@@ -19,7 +19,7 @@ import { Colors, Spacing } from '@/shared/constants/tokens'
 
 
 export default function HomeScreen() {
-  const { isLoading, isDataReady, error, refetch, permissionDenied, breakdown, justCompletedWorkout, hasEnoughData } = usePetState()
+  const { isLoading, isDataReady, hasFreshScore, error, refetch, permissionDenied, breakdown, justCompletedWorkout, hasEnoughData } = usePetState()
   const status       = usePetStore((s) => s.status)
   const totalXp      = usePetStore((s) => s.totalXp)
   const currentStage = usePetStore((s) => s.currentStage)
@@ -72,7 +72,7 @@ export default function HomeScreen() {
     )
   }
 
-  if (isLoading) {
+  if (isLoading || !hasFreshScore) {
     return (
       <SafeAreaView style={styles.container}>
         <FadeInOnFocus>
