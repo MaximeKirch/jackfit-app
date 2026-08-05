@@ -1,6 +1,4 @@
-// TODO: replace with the final URL once the privacy policy is drafted
-// and reviewed by qualified counsel (Apple 5.1.2(i) compliance).
-export const PRIVACY_POLICY_URL = 'https://jackfit.app/privacy'
+export const PRIVACY_POLICY_URL = 'https://jackfit.maxime-kirch.workers.dev/privacy/'
 
 export const AI_PROVIDER = {
   company: 'Anthropic',
