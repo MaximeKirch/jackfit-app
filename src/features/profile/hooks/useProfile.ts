@@ -90,11 +90,19 @@ export const useProfile = () => {
           text: 'Supprimer',
           style: 'destructive',
           onPress: async () => {
-            posthog.capture('account_deleted')
-            await supabase.from('messages').delete().eq('user_id', user!.id)
-            await supabase.from('profiles').delete().eq('id', user!.id)
-            await supabase.auth.signOut()
-            router.replace('/auth')
+            try {
+              const { error } = await supabase.functions.invoke('delete-account')
+              if (error) throw error
+              posthog.capture('account_deleted')
+              await supabase.auth.signOut()
+              router.replace('/auth')
+            } catch (err) {
+              posthog.captureException(err, { operation: 'account_delete' })
+              Alert.alert(
+                'Erreur',
+                "Impossible de supprimer ton compte pour le moment. Réessaie ou contacte maxime.kirch@gmail.com.",
+              )
+            }
           },
         },
       ]
