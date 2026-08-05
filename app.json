@@ -7,6 +7,12 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a0ee710a-df1d-4030-b32d-419e45cf697e"
+    },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.jackfit.app",
@@ -28,7 +34,12 @@
           "NSHealthShareUsageDescription": "JackFit lit tes données de santé pour évaluer ta forme et donner des conseils personnalisés.",
           "NSHealthUpdateUsageDescription": false
         }
-      ]
+      ],
+      "@react-native-vector-icons/ant-design",
+      "expo-font",
+      "expo-splash-screen",
+      "expo-localization",
+      "expo-notifications"
     ],
     "extra": {
       "eas": {

@@ -1,10 +1,11 @@
-import type { HealthSummary, WorkoutData, SleepData } from '@/shared/types/health.types'
+import type { HealthSummary } from '@/shared/types/health.types'
 import type { PetStatus } from '@/shared/types/pet.types'
+import type { StageName } from '@/features/pet/utils/stages'
 
 export interface ScoringConfig {
-  weeklyTargetHours: number // 5 pour un coureur de 5km, 15+ pour un Ironman
-  targetActiveDays: number  // jours d'entraînement visés par semaine
-  targetSleepHours: number  // heures de sommeil visées par nuit
+  weeklyTargetHours: number
+  targetActiveDays: number
+  targetSleepHours: number
 }
 
 export const DEFAULT_SCORING_CONFIG: ScoringConfig = {
@@ -13,49 +14,21 @@ export const DEFAULT_SCORING_CONFIG: ScoringConfig = {
   targetSleepHours: 8,
 }
 
-const DEFAULT_INTENSITY = 0.8
-
-const WORKOUT_INTENSITY: Partial<Record<string, number>> = {
-  running: 1.2,
-  cycling: 1.0,
-  swimming: 1.3,
-  strength: 0.9,
+export interface ScoreBreakdown {
+  sleep:     number // 0-100
+  activity:  number // 0-100
+  wellbeing: number // 0-100
+  total:     number
 }
 
-const scoreActivity = (workouts: WorkoutData[], weeklyTargetHours: number): number => {
-  if (workouts.length === 0) return 0
-  const raw = workouts.reduce((acc, w) => {
-    const intensity = WORKOUT_INTENSITY[w.type.toLowerCase()] ?? DEFAULT_INTENSITY
-    return acc + (w.duration / 60) * intensity
-  }, 0)
-  return Math.min((raw / weeklyTargetHours) * 40, 40)
+export interface ScoreResult {
+  score: number
+  status: PetStatus
+  breakdown: ScoreBreakdown
+  hasEnoughData: boolean
+  totalXp: number
+  currentStage: StageName
 }
 
-const scoreSleep = (sleep: SleepData[], targetSleepHours: number): number => {
-  if (sleep.length === 0) return 0
-  const avg = sleep.reduce((acc, s) => acc + s.duration, 0) / sleep.length
-  return Math.min((avg / targetSleepHours) * 40, 40)
-}
-
-const scoreConsistency = (workouts: WorkoutData[], targetActiveDays: number): number => {
-  const activeDays = new Set(workouts.map((w) => w.date.slice(0, 10))).size
-  return Math.min((activeDays / targetActiveDays) * 20, 20)
-}
-
-export const calculateScore = (
-  health: HealthSummary,
-  config: ScoringConfig = DEFAULT_SCORING_CONFIG,
-): number =>
-  Math.round(
-    scoreActivity(health.workouts, config.weeklyTargetHours) +
-      scoreSleep(health.sleep, config.targetSleepHours) +
-      scoreConsistency(health.workouts, config.targetActiveDays),
-  )
-
-export const scoreToStatus = (score: number): PetStatus => {
-  if (score >= 80) return 'PEAK'
-  if (score >= 60) return 'GOOD'
-  if (score >= 40) return 'TIRED'
-  if (score >= 20) return 'LAZY'
-  return 'OVERREACHED'
-}
+export const hasEnoughHealthData = (health: HealthSummary): boolean =>
+  health.workouts.length + health.sleep.length >= 3

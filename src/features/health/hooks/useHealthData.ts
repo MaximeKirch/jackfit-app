@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { AppState, type AppStateStatus } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import {
   useHealthkitAuthorization,
   queryWorkoutSamples,
@@ -8,7 +10,10 @@ import {
   WorkoutTypeIdentifier,
 } from '@kingstinct/react-native-healthkit'
 import { transformWorkout, transformSleepSamples, deduplicateWorkouts } from '../utils/healthTransform'
-import type { HealthSummary } from '@/shared/types/health.types'
+import { posthog } from '@/config/posthog'
+import type { HealthSummary, WorkoutData } from '@/shared/types/health.types'
+
+const LAST_SYNCED_WORKOUT_KEY = 'last_synced_workout_date'
 
 const READ_TYPES = [
   WorkoutTypeIdentifier,
@@ -20,16 +25,46 @@ export const useHealthData = () => {
   const [data, setData] = useState<HealthSummary | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
+  const [permissionDenied, setPermissionDenied] = useState(false)
+  const [justCompletedWorkout, setJustCompletedWorkout] = useState(false)
 
   const [authStatus, requestAuth] = useHealthkitAuthorization({ toRead: READ_TYPES })
+  const appState = useRef(AppState.currentState)
+  const celebrationTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const checkForNewWorkout = useCallback(async (workouts: WorkoutData[]): Promise<boolean> => {
+    if (workouts.length === 0) return false
+
+    const mostRecent = workouts.reduce((latest, w) =>
+      new Date(w.date) > new Date(latest.date) ? w : latest
+    )
+
+    const lastSyncedDate = await AsyncStorage.getItem(LAST_SYNCED_WORKOUT_KEY)
+
+    if (!lastSyncedDate || new Date(mostRecent.date) > new Date(lastSyncedDate)) {
+      setJustCompletedWorkout(true)
+      await AsyncStorage.setItem(LAST_SYNCED_WORKOUT_KEY, mostRecent.date)
+
+      if (celebrationTimer.current) clearTimeout(celebrationTimer.current)
+      celebrationTimer.current = setTimeout(() => setJustCompletedWorkout(false), 3000)
+      return true
+    }
+    return false
+  }, [])
 
   const fetchData = useCallback(async () => {
     setIsLoading(true)
     setError(null)
     try {
       const now = new Date()
-      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-      const dateFilter = { date: { startDate: sevenDaysAgo, endDate: now } }
+      const today = new Date(now)
+      today.setHours(0, 0, 0, 0)
+      const dayOfWeek = today.getDay() // 0=Sun … 6=Sat
+      const offsetToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek
+      const daysElapsedThisWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1 // Mon=0, Tue=1 … Sun=6
+      const monday = new Date(today)
+      monday.setDate(today.getDate() + offsetToMonday)
+      const dateFilter = { date: { startDate: monday, endDate: now } }
 
       const [workouts, sleepSamples, stepsResult] = await Promise.all([
         queryWorkoutSamples({ filter: dateFilter, limit: -1 }),
@@ -43,13 +78,20 @@ export const useHealthData = () => {
         }),
       ])
 
+      const transformedWorkouts = deduplicateWorkouts(workouts).map(transformWorkout)
+
       setData({
-        workouts: deduplicateWorkouts(workouts).map(transformWorkout),
+        workouts: transformedWorkouts,
         sleep: transformSleepSamples(sleepSamples),
         steps: Math.round(stepsResult.sumQuantity?.quantity ?? 0),
-        weeklyScore: 0, // computed in step 3 (scoring algorithm)
+        daysElapsedThisWeek,
+        localHour: now.getHours(),
       })
+
+      const hasNewWorkout = await checkForNewWorkout(transformedWorkouts)
+      posthog.capture('healthkit_sync_triggered', { has_new_workout: hasNewWorkout })
     } catch (err) {
+      posthog.captureException(err, { operation: 'health_data_sync' })
       setError(err instanceof Error ? err : new Error('Failed to fetch health data'))
     } finally {
       setIsLoading(false)
@@ -62,8 +104,29 @@ export const useHealthData = () => {
       void requestAuth()
       return
     }
+    if (authStatus === AuthorizationRequestStatus.unknown) {
+      posthog.capture('health_permission_denied')
+      setPermissionDenied(true)
+      return
+    }
     void fetchData()
   }, [authStatus, fetchData, requestAuth])
 
-  return { data, isLoading, error, refetch: fetchData }
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextState: AppStateStatus) => {
+      if (appState.current !== 'active' && nextState === 'active') {
+        void fetchData()
+      }
+      appState.current = nextState
+    })
+    return () => subscription.remove()
+  }, [fetchData])
+
+  useEffect(() => {
+    return () => {
+      if (celebrationTimer.current) clearTimeout(celebrationTimer.current)
+    }
+  }, [])
+
+  return { data, isLoading, error, refetch: fetchData, permissionDenied, requestAuth, justCompletedWorkout }
 }

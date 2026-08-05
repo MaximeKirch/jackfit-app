@@ -1,24 +1,13 @@
-import { View, StyleSheet, type ViewStyle } from 'react-native'
-import type { ReactNode } from 'react'
+import { View, type ViewProps } from 'react-native'
+import { Colors, Radius, Shadow, Spacing } from '../constants/tokens'
 
-interface CardProps {
-  children: ReactNode
-  style?: ViewStyle
+interface CardProps extends ViewProps {
+  padding?: number
 }
 
-export const Card = ({ children, style }: CardProps) => (
-  <View style={[styles.card, style]}>{children}</View>
+export const Card = ({ padding = Spacing.md, style, ...props }: CardProps) => (
+  <View
+    style={[{ backgroundColor: Colors.white, borderRadius: Radius.lg, padding, ...Shadow.soft }, style]}
+    {...props}
+  />
 )
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-})

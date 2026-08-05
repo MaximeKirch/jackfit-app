@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native'
 import { Card } from '@/shared/components/Card'
 import { Skeleton } from '@/shared/components/Skeleton'
+import { Colors, Typography } from '@/shared/constants/tokens'
 import type { ActivityStats } from '../hooks/useStats'
 
 const WORKOUT_LABELS: Record<string, string> = {
@@ -33,8 +34,9 @@ export const ActivityCard = ({ stats, accentColor }: ActivityCardProps) => {
       <Text style={styles.label}>ACTIVITÉ</Text>
       <Text style={[styles.mainValue, { color: accentColor }]}>
         {formatDuration(stats.totalMinutes)}
+        <Text style={styles.subLabel}>{' '}/ objectif {formatDuration(targetMinutes)}</Text>
       </Text>
-      <Text style={styles.subLabel}>/ objectif {formatDuration(targetMinutes)}</Text>
+
 
       <View style={styles.progressTrack}>
         <View style={[styles.progressFill, { width: `${Math.round(progress * 100)}%` as `${number}%`, backgroundColor: accentColor }]} />
@@ -42,10 +44,7 @@ export const ActivityCard = ({ stats, accentColor }: ActivityCardProps) => {
 
       <View style={styles.row}>
         <StatChip label={`${stats.workoutCount} séance${stats.workoutCount > 1 ? 's' : ''}`} />
-        {stats.topType !== null && (
-          <StatChip label={WORKOUT_LABELS[stats.topType] ?? stats.topType} />
-        )}
-        <StatChip label={`${stats.totalCalories} kcal`} />
+        <StatChip label={`${stats.totalCalories} kcal en activité`} />
       </View>
     </Card>
   )
@@ -75,25 +74,26 @@ export const ActivityCardSkeleton = () => (
 
 const styles = StyleSheet.create({
   label: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#9E9E9E',
+    fontSize: Typography.xs,
+    fontFamily: 'Inter-SemiBold',
+    color: Colors.stone,
     letterSpacing: 1,
     marginBottom: 4,
   },
   mainValue: {
     fontSize: 40,
-    fontWeight: '800',
+    fontFamily: 'Inter-SemiBold',
     lineHeight: 48,
   },
   subLabel: {
-    fontSize: 13,
-    color: '#9E9E9E',
+    fontSize: Typography.sm,
+    fontFamily: 'Inter-Regular',
+    color: Colors.stone,
     marginBottom: 12,
   },
   progressTrack: {
     height: 6,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: Colors.sand,
     borderRadius: 3,
     marginBottom: 14,
     overflow: 'hidden',
@@ -108,14 +108,14 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   chip: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.sand,
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 14,
   },
   chipText: {
-    fontSize: 13,
-    color: '#424242',
-    fontWeight: '500',
+    fontSize: Typography.sm,
+    fontFamily: 'Inter-Medium',
+    color: Colors.charcoal,
   },
 })

@@ -1,39 +1,63 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Pressable } from 'react-native'
+import * as Haptics from 'expo-haptics';
 import { usePetStore } from '@/shared/stores/petStore'
-import { PET_STATES } from '@/shared/types/pet.types'
+import { stageInfo } from '@/features/pet/utils/stages'
+import { Colors, Radius, Typography } from '@/shared/constants/tokens'
+import type { PetStatus as PetStatusType } from '@/shared/types/pet.types'
+import { AntDesign } from '@react-native-vector-icons/ant-design';
 
-export const PetStatus = () => {
-  const status = usePetStore((s) => s.status)
-  const score = usePetStore((s) => s.score)
-  const { color, label } = PET_STATES[status]
+const PILL_BG: Record<PetStatusType, string> = {
+  NEW:         '#EDE9E4',
+  PEAK:        '#E8F0E9',
+  GOOD:        '#EFF4F0',
+  TIRED:       '#F5EDDF',
+  LAZY:        '#F3E6DF',
+  OVERREACHED: '#F3DCD3',
+}
+
+interface PetStatusProps {
+  toggleInfoModal: () => void
+}
+
+export const PetStatus = ({ toggleInfoModal }: PetStatusProps) => {
+  const status       = usePetStore((s) => s.status)
+  const totalXp      = usePetStore((s) => s.totalXp)
+  const currentStage = usePetStore((s) => s.currentStage)
+  const textColor    = Colors.pet[status]
+  const pillBg       = PILL_BG[status]
+  const stage        = stageInfo(currentStage)
 
   return (
-    <View style={[styles.badge, { backgroundColor: color }]}>
-      <Text style={styles.label}>{label}</Text>
-      <Text style={styles.score}>{score}/100</Text>
+    <View style={[styles.pill, { backgroundColor: pillBg }]}>
+      <Text style={[styles.text, { color: textColor }]}>
+        {stage.label} · {totalXp} XP
+      </Text>
+      <Pressable
+        onPress={() => {
+          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+          toggleInfoModal()
+        }}
+        style={{ justifyContent: 'center' }}>
+        <AntDesign name='info-circle' color={textColor} size={12} />
+      </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  badge: {
+  pill: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    alignSelf: 'center',
+    justifyContent: 'center',
     paddingVertical: 6,
     paddingHorizontal: 16,
-    borderRadius: 20,
-    marginTop: 16,
+    borderRadius: Radius.full,
+    marginTop: 14,
+    gap: 4,
   },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  score: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    opacity: 0.9,
+  text: {
+    fontFamily: 'Inter-Medium',
+    fontSize: Typography.sm,
+    letterSpacing: 0.2,
   },
 })

@@ -43,3 +43,12 @@ yarn-error.*
 
 # project brief (local only)
 BRIEF.md
+BRIEF*.md
+*brief*.md
+TODO.md
+
+# Claude Code local state
+.claude/scheduled_tasks.lock
+
+# Supabase CLI local metadata
+supabase/.temp/

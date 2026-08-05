@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native'
 import { Card } from '@/shared/components/Card'
 import { Skeleton } from '@/shared/components/Skeleton'
+import { Colors, Typography } from '@/shared/constants/tokens'
 import type { ConsistencyStats } from '../hooks/useStats'
 
 const DAY_LABELS = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
@@ -97,24 +98,25 @@ export const ConsistencyCardSkeleton = () => (
 
 const styles = StyleSheet.create({
   label: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#9E9E9E',
+    fontSize: Typography.xs,
+    fontFamily: 'Inter-SemiBold',
+    color: Colors.stone,
     letterSpacing: 1,
     marginBottom: 4,
   },
   mainValue: {
     fontSize: 36,
-    fontWeight: '800',
+    fontFamily: 'Inter-SemiBold',
     lineHeight: 44,
   },
   mainValueSub: {
     fontSize: 22,
-    fontWeight: '600',
+    fontFamily: 'Inter-SemiBold',
   },
   subLabel: {
-    fontSize: 13,
-    color: '#9E9E9E',
+    fontSize: Typography.sm,
+    fontFamily: 'Inter-Regular',
+    color: Colors.stone,
     marginBottom: 16,
   },
   dots: {
@@ -131,19 +133,20 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   dotEmpty: {
-    backgroundColor: '#EEEEEE',
+    backgroundColor: Colors.sand,
   },
   dotFuture: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.linen,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: Colors.sand,
   },
   dayLabel: {
-    fontSize: 11,
-    color: '#9E9E9E',
-    fontWeight: '600',
+    fontSize: Typography.xs,
+    fontFamily: 'Inter-SemiBold',
+    color: Colors.stone,
   },
   dayLabelFuture: {
-    color: '#BDBDBD',
+    color: Colors.stone,
+    opacity: 0.5,
   },
 })

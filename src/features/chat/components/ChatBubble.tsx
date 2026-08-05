@@ -1,12 +1,13 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { Colors, Typography } from '@/shared/constants/tokens'
 import type { Message } from '@/shared/types/chat.types'
 
 interface ChatBubbleProps {
   message: Message
-  accentColor: string
+  onRetry?: (() => void) | undefined
 }
 
-export const ChatBubble = ({ message, accentColor }: ChatBubbleProps) => {
+export const ChatBubble = ({ message, onRetry }: ChatBubbleProps) => {
   const isUser = message.role === 'user'
 
   return (
@@ -14,16 +15,20 @@ export const ChatBubble = ({ message, accentColor }: ChatBubbleProps) => {
       <View
         style={[
           styles.bubble,
-          isUser
-            ? [styles.bubbleUser, { backgroundColor: accentColor }]
-            : [styles.bubbleAI, { borderColor: accentColor }],
+          isUser ? styles.bubbleUser : styles.bubbleAI,
           message.isOptimistic === true && styles.optimistic,
+          message.isFailed === true && styles.failed,
         ]}
       >
         <Text style={[styles.text, isUser ? styles.textUser : styles.textAI]}>
           {message.content}
         </Text>
       </View>
+      {message.isFailed === true && onRetry && (
+        <Pressable onPress={onRetry} style={styles.retryButton}>
+          <Text style={styles.retryText}>↻ Réessayer</Text>
+        </Pressable>
+      )}
     </View>
   )
 }
@@ -46,25 +51,37 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   bubbleUser: {
+    backgroundColor: Colors.moss,
     borderBottomRightRadius: 4,
   },
   bubbleAI: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
+    backgroundColor: Colors.white,
     borderBottomLeftRadius: 4,
   },
   optimistic: {
     opacity: 0.7,
   },
+  failed: {
+    opacity: 0.45,
+  },
   text: {
-    fontSize: 15,
+    fontFamily: 'Inter-Regular',
+    fontSize: Typography.base,
     lineHeight: 21,
   },
   textUser: {
-    color: '#FFFFFF',
-    fontWeight: '500',
+    fontFamily: 'Inter-Medium',
+    color: Colors.white,
   },
   textAI: {
-    color: '#1A1A1A',
+    color: Colors.charcoal,
+  },
+  retryButton: {
+    marginTop: 4,
+  },
+  retryText: {
+    fontFamily: 'Inter-Regular',
+    fontSize: Typography.sm,
+    color: Colors.pet.TIRED,
   },
 })

@@ -1,22 +1,52 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { sendMessage } from '../api/chatApi'
+import { useRef } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import * as Haptics from 'expo-haptics'
+import { sendMessage, fetchMessages, RateLimitError } from '../api/chatApi'
+import { posthog } from '@/config/posthog'
+import { useAuthStore } from '@/shared/stores/authStore'
+import { usePetStore } from '@/shared/stores/petStore'
 import type { HealthSummary } from '@/shared/types/health.types'
 import type { Message } from '@/shared/types/chat.types'
 
-export const MESSAGES_KEY = ['messages'] as const
+export const messagesKey = (userId: string) => ['messages', userId] as const
+
+export const useMessages = () => {
+  const user = useAuthStore((state) => state.user)
+
+  return useQuery<Message[]>({
+    queryKey: messagesKey(user?.id ?? ''),
+    enabled: !!user,
+    queryFn: () => fetchMessages(user!.id),
+    staleTime: Infinity,
+    gcTime: Infinity,
+  })
+}
+
+const RATE_LIMIT_MESSAGE: Message = {
+  id: 'rate-limit-uma',
+  role: 'assistant',
+  content: "Uma se repose pour aujourd'hui. Reviens demain, j'aurai rechargé les batteries.",
+  createdAt: new Date().toISOString(),
+}
 
 export const useChat = (healthData: HealthSummary | null) => {
   const queryClient = useQueryClient()
+  const user = useAuthStore((state) => state.user)
+  const weeklyScore = usePetStore((s) => s.score)
+  const lastFailedContent = useRef<string | null>(null)
 
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: (message: string) => {
       if (!healthData) throw new Error('Health data not available')
-      return sendMessage(message, healthData)
+      if (!user) throw new Error('Not authenticated')
+      return sendMessage(message, healthData, weeklyScore)
     },
 
     onMutate: async (message: string) => {
-      await queryClient.cancelQueries({ queryKey: MESSAGES_KEY })
-      const previousMessages = queryClient.getQueryData<Message[]>(MESSAGES_KEY)
+      if (!user) return
+      const key = messagesKey(user.id)
+      await queryClient.cancelQueries({ queryKey: key })
+      const previousMessages = queryClient.getQueryData<Message[]>(key)
 
       const optimisticMessage: Message = {
         id: `temp-${Date.now()}`,
@@ -26,32 +56,50 @@ export const useChat = (healthData: HealthSummary | null) => {
         isOptimistic: true,
       }
 
-      queryClient.setQueryData<Message[]>(MESSAGES_KEY, (old = []) => [...old, optimisticMessage])
+      queryClient.setQueryData<Message[]>(key, (old = []) => [
+        ...old.filter((m) => !m.isFailed),
+        optimisticMessage,
+      ])
 
       return { previousMessages }
     },
 
-    onSuccess: (aiResponse: string, userMessage: string) => {
-      const now = Date.now()
-      queryClient.setQueryData<Message[]>(MESSAGES_KEY, (old = []) => [
-        ...old.filter((m) => !m.isOptimistic),
-        {
-          id: `user-${now}`,
-          role: 'user',
-          content: userMessage,
-          createdAt: new Date(now).toISOString(),
-        },
-        {
-          id: `ai-${now + 1}`,
-          role: 'assistant',
-          content: aiResponse,
-          createdAt: new Date(now + 1).toISOString(),
-        },
-      ])
+    onSuccess: () => {
+      if (!user) return
+      const key = messagesKey(user.id)
+      const today = new Date().toISOString().slice(0, 10)
+      const cached = queryClient.getQueryData<Message[]>(key) ?? []
+      const sentToday = cached.filter((m) => m.role === 'user' && m.createdAt.slice(0, 10) === today).length
+      posthog.capture('chat_message_sent', { message_count_today: sentToday })
+      lastFailedContent.current = null
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+      void queryClient.invalidateQueries({ queryKey: key })
     },
 
-    onError: (_err, _message, context) => {
-      queryClient.setQueryData(MESSAGES_KEY, context?.previousMessages)
+    onError: (err, message, _context) => {
+      if (!user) return
+
+      if (err instanceof RateLimitError) {
+        posthog.capture('chat_rate_limit_hit')
+        queryClient.setQueryData<Message[]>(messagesKey(user.id), (old = []) => [
+          ...old.filter((m) => !m.isOptimistic),
+          RATE_LIMIT_MESSAGE,
+        ])
+        return
+      }
+
+      posthog.captureException(err, { operation: 'chat_message_send' })
+      lastFailedContent.current = message
+      queryClient.setQueryData<Message[]>(messagesKey(user.id), (old = []) =>
+        old.map((m) => (m.isOptimistic ? { ...m, isOptimistic: false, isFailed: true } : m))
+      )
     },
   })
+
+  return {
+    ...mutation,
+    retryLastMessage: lastFailedContent.current != null
+      ? () => mutation.mutate(lastFailedContent.current!)
+      : undefined,
+  }
 }
