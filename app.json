@@ -5,7 +5,7 @@
     "scheme": "jackfit",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/uma_icon.png",
     "userInterfaceStyle": "light",
     "runtimeVersion": {
       "policy": "fingerprint"
