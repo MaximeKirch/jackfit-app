@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 import { PetRing } from '@/features/pet/components/PetRing'
 import { PetStatus } from '@/features/pet/components/PetStatus'
 import { PetSpeechBubble } from '@/features/pet/components/PetSpeechBubble'
@@ -19,6 +20,7 @@ import { Colors, Spacing } from '@/shared/constants/tokens'
 
 
 export default function HomeScreen() {
+  const { t } = useTranslation()
   const { isLoading, isDataReady, hasFreshScore, error, refetch, permissionDenied, breakdown, justCompletedWorkout, hasEnoughData } = usePetState()
   const status       = usePetStore((s) => s.status)
   const totalXp      = usePetStore((s) => s.totalXp)
@@ -64,7 +66,7 @@ export default function HomeScreen() {
       <SafeAreaView style={styles.container}>
         <FadeInOnFocus>
           <ErrorState
-            message="Impossible de lire les données de santé."
+            message={t('home.health_read_error')}
             onRetry={() => void refetch()}
           />
         </FadeInOnFocus>

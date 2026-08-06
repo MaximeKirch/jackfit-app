@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { View, Pressable, StyleSheet, ScrollView } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Text } from '@/shared/components/Text'
 import { Colors, Spacing, Radius } from '@/shared/constants/tokens'
 import { SPORTS, type SportId } from '@/shared/constants/sports'
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export const OnboardingStep2Sports = ({ onNext, onBack, initialSelected }: Props) => {
+  const { t } = useTranslation()
   const [selected, setSelected] = useState<SportId[]>(initialSelected ?? [])
 
   const MAX_SPORTS = 3
@@ -29,16 +31,16 @@ export const OnboardingStep2Sports = ({ onNext, onBack, initialSelected }: Props
     <View style={styles.container}>
       <View style={styles.header}>
         <Pressable onPress={onBack}>
-          <Text variant="body" size="base" color={Colors.stone}>← Retour</Text>
+          <Text variant="body" size="base" color={Colors.stone}>{t('common.back')}</Text>
         </Pressable>
       </View>
 
       <Text variant="display" size="xxl" style={styles.title}>
-        Tes sports 🏅
+        {t('onboarding.sports.title')}
       </Text>
       <Text variant="body" size="base" color={Colors.stone} style={styles.subtitle}>
-        Choisis jusqu'à {MAX_SPORTS} sports
-        {selected.length > 0 && ` · ${selected.length}/${MAX_SPORTS}`}
+        {t('onboarding.sports.subtitle', { max: MAX_SPORTS })}
+        {selected.length > 0 && t('onboarding.sports.ratio_suffix', { selected: selected.length, max: MAX_SPORTS })}
       </Text>
 
       <ScrollView
@@ -68,7 +70,7 @@ export const OnboardingStep2Sports = ({ onNext, onBack, initialSelected }: Props
                 weight={isSelected ? 'semibold' : 'regular'}
                 color={isSelected ? Colors.white : Colors.charcoal}
               >
-                {sport.label}
+                {t(`sports.${sport.id}`)}
               </Text>
             </Pressable>
           )
@@ -81,7 +83,7 @@ export const OnboardingStep2Sports = ({ onNext, onBack, initialSelected }: Props
         disabled={!isValid}
       >
         <Text variant="body" size="base" weight="semibold" color={Colors.white}>
-          Continuer →
+          {t('common.continue')}
         </Text>
       </Pressable>
     </View>

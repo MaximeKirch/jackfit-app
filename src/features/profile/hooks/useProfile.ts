@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Alert } from 'react-native'
 import { router } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { posthog } from '@/config/posthog'
 import { supabase } from '@/shared/lib/supabase'
 import { useAuthStore } from '@/shared/stores/authStore'
@@ -19,6 +20,7 @@ export interface UserProfile {
 }
 
 export const useProfile = () => {
+  const { t } = useTranslation()
   const user = useAuthStore((state) => state.user)
   const qc = useQueryClient()
 
@@ -82,12 +84,12 @@ export const useProfile = () => {
 
   const deleteAccount = () => {
     Alert.alert(
-      'Supprimer le compte',
-      'Cette action est irréversible. Ton compte et toutes tes données seront supprimés définitivement.',
+      t('profile.delete_account'),
+      t('profile.delete_account_confirm'),
       [
-        { text: 'Annuler', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Supprimer',
+          text: t('profile.delete'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -98,10 +100,7 @@ export const useProfile = () => {
               router.replace('/auth')
             } catch (err) {
               posthog.captureException(err, { operation: 'account_delete' })
-              Alert.alert(
-                'Erreur',
-                "Impossible de supprimer ton compte pour le moment. Réessaie ou contacte maxime.kirch@gmail.com.",
-              )
+              Alert.alert(t('common.error'), t('profile.delete_account_error'))
             }
           },
         },

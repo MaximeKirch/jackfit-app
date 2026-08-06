@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Colors, Radius, Spacing, Typography } from '@/shared/constants/tokens'
 import { useAuth } from '../hooks/useAuth'
 
@@ -18,6 +19,7 @@ interface EmailStepProps {
 }
 
 export const EmailStep = ({ onSuccess }: EmailStepProps) => {
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const { sendOtp } = useAuth()
@@ -25,7 +27,7 @@ export const EmailStep = ({ onSuccess }: EmailStepProps) => {
   const handleSubmit = async () => {
     const trimmed = email.trim().toLowerCase()
     if (!trimmed.includes('@')) {
-      Alert.alert('Email invalide', 'Entre une adresse email valide.')
+      Alert.alert(t('auth.email.invalid_email_title'), t('auth.email.invalid_email_body'))
       return
     }
     setIsLoading(true)
@@ -33,7 +35,7 @@ export const EmailStep = ({ onSuccess }: EmailStepProps) => {
       await sendOtp(trimmed)
       onSuccess(trimmed)
     } catch (error) {
-      Alert.alert('Erreur', error instanceof Error ? error.message : 'Une erreur est survenue.')
+      Alert.alert(t('common.error'), error instanceof Error ? error.message : t('common.generic_error'))
     } finally {
       setIsLoading(false)
     }
@@ -48,14 +50,14 @@ export const EmailStep = ({ onSuccess }: EmailStepProps) => {
         <View style={styles.avatar}>
           <Text style={styles.avatarEmoji}>🐾</Text>
         </View>
-        <Text style={styles.title}>Bienvenue chez Uma</Text>
-        <Text style={styles.subtitle}>Entre ton email pour recevoir ton code de connexion.</Text>
+        <Text style={styles.title}>{t('auth.email.welcome_title')}</Text>
+        <Text style={styles.subtitle}>{t('auth.email.welcome_subtitle')}</Text>
       </View>
 
       <View style={styles.form}>
         <TextInput
           style={styles.input}
-          placeholder="ton@email.com"
+          placeholder={t('auth.email.placeholder')}
           placeholderTextColor={Colors.stone}
           value={email}
           onChangeText={setEmail}
@@ -76,7 +78,7 @@ export const EmailStep = ({ onSuccess }: EmailStepProps) => {
           {isLoading ? (
             <ActivityIndicator color={Colors.white} />
           ) : (
-            <Text style={styles.buttonLabel}>Envoyer le code</Text>
+            <Text style={styles.buttonLabel}>{t('auth.email.send_button')}</Text>
           )}
         </Pressable>
       </View>

@@ -1,5 +1,6 @@
 import { ScrollView, View, Text, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 import { useStats } from '@/features/stats/hooks/useStats'
 import { PET_STATES } from '@/shared/types/pet.types'
 import { Colors, Radius, Spacing, Typography } from '@/shared/constants/tokens'
@@ -10,6 +11,7 @@ import { HealthPermissionDenied } from '@/features/health/components/HealthPermi
 import { FadeInOnFocus } from '@/shared/components/FadeInOnFocus'
 
 export default function StatsScreen() {
+  const { t } = useTranslation()
   const { stats, isLoading, error, permissionDenied, score, status } = useStats()
   const { color } = PET_STATES[status]
 
@@ -17,9 +19,7 @@ export default function StatsScreen() {
     return (
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
         <FadeInOnFocus>
-          <HealthPermissionDenied
-            body="Sans accès à Apple Santé, on ne peut pas calculer ton score de forme."
-          />
+          <HealthPermissionDenied body={t('stats.no_health_access')} />
         </FadeInOnFocus>
       </SafeAreaView>
     )
@@ -29,7 +29,7 @@ export default function StatsScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <FadeInOnFocus>
-          <Text style={styles.error}>Impossible de lire les données HealthKit.</Text>
+          <Text style={styles.error}>{t('stats.health_read_error')}</Text>
         </FadeInOnFocus>
       </SafeAreaView>
     )
@@ -40,7 +40,7 @@ export default function StatsScreen() {
       <FadeInOnFocus>
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
           <View style={[styles.scoreBanner, { backgroundColor: color }]}>
-            <Text style={styles.scoreLabel}>Score de la semaine</Text>
+            <Text style={styles.scoreLabel}>{t('stats.week_score')}</Text>
             <Text style={styles.scoreValue}>{score}/100</Text>
           </View>
 

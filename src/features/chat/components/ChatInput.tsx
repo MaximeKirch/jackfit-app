@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { View, TextInput, Pressable, StyleSheet } from 'react-native'
 import Svg, { Line } from 'react-native-svg'
+import { useTranslation } from 'react-i18next'
 import { Colors, Radius, Spacing, Typography } from '@/shared/constants/tokens'
 
 interface ChatInputProps {
@@ -18,6 +19,7 @@ const SendIcon = ({ color }: { color: string }) => (
 )
 
 export const ChatInput = ({ onSend, isLoading, accentColor }: ChatInputProps) => {
+  const { t } = useTranslation()
   const [text, setText] = useState('')
 
   const handleSend = () => {
@@ -36,7 +38,7 @@ export const ChatInput = ({ onSend, isLoading, accentColor }: ChatInputProps) =>
           style={styles.input}
           value={text}
           onChangeText={setText}
-          placeholder="Dis quelque chose…"
+          placeholder={t('chat.input_placeholder')}
           placeholderTextColor={Colors.stone}
           returnKeyType="send"
           onSubmitEditing={handleSend}

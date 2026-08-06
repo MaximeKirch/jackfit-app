@@ -1,10 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Card } from '@/shared/components/Card'
 import { Skeleton } from '@/shared/components/Skeleton'
 import { Colors, Typography } from '@/shared/constants/tokens'
 import type { ConsistencyStats } from '../hooks/useStats'
-
-const DAY_LABELS = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
 
 // "YYYY-MM-DD" in local timezone
 const toLocalDateKey = (date: Date): string => {
@@ -35,17 +34,19 @@ interface ConsistencyCardProps {
 }
 
 export const ConsistencyCard = ({ stats, accentColor }: ConsistencyCardProps) => {
+  const { t } = useTranslation()
   const weekDays = getWeekDays()
   const today = toLocalDateKey(new Date())
+  const dayLabels = t('stats.consistency.day_labels', { returnObjects: true }) as string[]
 
   return (
     <Card>
-      <Text style={styles.label}>RÉGULARITÉ</Text>
+      <Text style={styles.label}>{t('stats.consistency.title')}</Text>
       <Text style={[styles.mainValue, { color: accentColor }]}>
         {stats.activeDatesThisWeek.size}
-        <Text style={styles.mainValueSub}> / {stats.targetDays} jours</Text>
+        <Text style={styles.mainValueSub}> {t('stats.consistency.days_ratio_suffix', { target: stats.targetDays })}</Text>
       </Text>
-      <Text style={styles.subLabel}>jours actifs cette semaine</Text>
+      <Text style={styles.subLabel}>{t('stats.consistency.days_active')}</Text>
 
       <View style={styles.dots}>
         {weekDays.map((day, i) => {
@@ -66,7 +67,7 @@ export const ConsistencyCard = ({ stats, accentColor }: ConsistencyCardProps) =>
                 ]}
               />
               <Text style={[styles.dayLabel, isFuture && styles.dayLabelFuture]}>
-                {DAY_LABELS[i]}
+                {dayLabels[i]}
               </Text>
             </View>
           )
@@ -85,7 +86,7 @@ export const ConsistencyCardSkeleton = () => (
     <Skeleton width={160} height={12} borderRadius={6} />
     <View style={{ height: 16 }} />
     <View style={styles.dots}>
-      {DAY_LABELS.map((_, i) => (
+      {Array.from({ length: 7 }).map((_, i) => (
         <View key={i} style={styles.dotWrapper}>
           <Skeleton width={28} height={28} borderRadius={14} />
           <View style={{ height: 4 }} />

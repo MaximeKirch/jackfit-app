@@ -35,6 +35,7 @@ export const sendMessage = async (
   message: string,
   healthData: HealthSummary,
   weeklyScore = 65,
+  locale: 'fr' | 'en' = 'fr',
 ): Promise<string> => {
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) throw new Error('Not authenticated')
@@ -45,7 +46,7 @@ export const sendMessage = async (
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${session.access_token}`,
     },
-    body: JSON.stringify({ message, weeklyScore, healthData }),
+    body: JSON.stringify({ message, weeklyScore, healthData, locale }),
   })
 
   if (response.status === 429) {

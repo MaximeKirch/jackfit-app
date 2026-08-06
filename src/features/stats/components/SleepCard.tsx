@@ -1,15 +1,16 @@
 import { View, Text, StyleSheet } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Card } from '@/shared/components/Card'
 import { Skeleton } from '@/shared/components/Skeleton'
 import { Colors, Typography } from '@/shared/constants/tokens'
 import type { SleepStats } from '../hooks/useStats'
 
-const qualityLabel = (avgHours: number, targetHours: number): string => {
+const qualityKey = (avgHours: number, targetHours: number): string => {
   const ratio = avgHours / targetHours
-  if (ratio >= 0.93) return 'Excellent'
-  if (ratio >= 0.81) return 'Correct'
-  if (ratio >= 0.625) return 'Insuffisant'
-  return 'Mauvais'
+  if (ratio >= 0.93) return 'excellent'
+  if (ratio >= 0.81) return 'correct'
+  if (ratio >= 0.625) return 'insufficient'
+  return 'bad'
 }
 
 interface SleepCardProps {
@@ -18,12 +19,15 @@ interface SleepCardProps {
 }
 
 export const SleepCard = ({ stats, accentColor }: SleepCardProps) => {
+  const { t } = useTranslation()
   const color = stats.nightCount > 0 ? accentColor : Colors.stone
-  const label = stats.nightCount > 0 ? qualityLabel(stats.avgHours, stats.targetHours) : '—'
+  const label = stats.nightCount > 0
+    ? t(`stats.sleep.${qualityKey(stats.avgHours, stats.targetHours)}`)
+    : '—'
 
   return (
     <Card>
-      <Text style={styles.label}>SOMMEIL</Text>
+      <Text style={styles.label}>{t('stats.sleep.title')}</Text>
       <View style={styles.mainRow}>
         <Text style={[styles.mainValue, { color }]}>
           {stats.nightCount > 0 ? `${stats.avgHours}h` : '—'}
@@ -34,8 +38,8 @@ export const SleepCard = ({ stats, accentColor }: SleepCardProps) => {
       </View>
       <Text style={styles.subLabel}>
         {stats.nightCount > 0
-          ? `moyenne sur ${stats.nightCount} nuit${stats.nightCount > 1 ? 's' : ''} · objectif ${stats.targetHours}h`
-          : 'Aucune donnée cette semaine'}
+          ? t('stats.sleep.average', { count: stats.nightCount, target: stats.targetHours })
+          : t('stats.sleep.no_data')}
       </Text>
     </Card>
   )

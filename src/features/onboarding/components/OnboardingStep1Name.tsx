@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { View, TextInput, Pressable, StyleSheet } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Text } from '@/shared/components/Text'
 import { Colors, Spacing, Radius, Typography } from '@/shared/constants/tokens'
 
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export const OnboardingStep1Name = ({ onNext }: Props) => {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
 
   const isValid = name.trim().length >= 2
@@ -16,17 +18,17 @@ export const OnboardingStep1Name = ({ onNext }: Props) => {
     <View style={styles.container}>
       <View style={styles.content}>
         <Text variant="display" size="xxl" style={styles.title}>
-          Bonjour 👋
+          {t('onboarding.name.greeting')}
         </Text>
         <Text variant="body" size="base" color={Colors.stone} style={styles.subtitle}>
-          Comment tu t'appelles ?
+          {t('onboarding.name.question')}
         </Text>
 
         <TextInput
           style={styles.input}
           value={name}
           onChangeText={setName}
-          placeholder="Ton prénom"
+          placeholder={t('onboarding.name.placeholder')}
           placeholderTextColor={Colors.stone}
           autoFocus
           autoCapitalize="words"
@@ -41,7 +43,7 @@ export const OnboardingStep1Name = ({ onNext }: Props) => {
         disabled={!isValid}
       >
         <Text variant="body" size="base" weight="semibold" color={Colors.white}>
-          Continuer →
+          {t('common.continue')}
         </Text>
       </Pressable>
     </View>

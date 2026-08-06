@@ -1,4 +1,5 @@
 import { View, StyleSheet, Pressable } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Text } from '@/shared/components/Text'
 import { Colors, Spacing } from '@/shared/constants/tokens'
 import { AIConsentScreen } from '@/features/aiConsent/components/AIConsentScreen'
@@ -10,11 +11,13 @@ interface Props {
   isLoading: boolean
 }
 
-export const OnboardingStep4Consent = ({ onAccept, onDecline, onBack, isLoading }: Props) => (
+export const OnboardingStep4Consent = ({ onAccept, onDecline, onBack, isLoading }: Props) => {
+  const { t } = useTranslation()
+  return (
   <View style={styles.container}>
     <View style={styles.header}>
       <Pressable onPress={onBack} disabled={isLoading}>
-        <Text variant="body" size="base" color={Colors.stone}>← Retour</Text>
+        <Text variant="body" size="base" color={Colors.stone}>{t('common.back')}</Text>
       </Pressable>
     </View>
 
@@ -24,7 +27,8 @@ export const OnboardingStep4Consent = ({ onAccept, onDecline, onBack, isLoading 
       isLoading={isLoading}
     />
   </View>
-)
+  )
+}
 
 const styles = StyleSheet.create({
   container: {

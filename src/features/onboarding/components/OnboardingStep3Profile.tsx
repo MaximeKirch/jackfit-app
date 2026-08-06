@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { View, Pressable, StyleSheet, ActivityIndicator } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Text } from '@/shared/components/Text'
 import { Colors, Spacing, Radius } from '@/shared/constants/tokens'
 import { ATHLETE_PROFILES, type AthleteProfileKey } from '@/shared/constants/athleteProfiles'
@@ -13,22 +14,24 @@ interface Props {
   ctaLabel?:       string
 }
 
-export const OnboardingStep3Profile = ({ firstName, onNext, onBack, isLoading, initialSelected, ctaLabel = 'Rencontrer Uma 🐾' }: Props) => {
+export const OnboardingStep3Profile = ({ firstName, onNext, onBack, isLoading, initialSelected, ctaLabel }: Props) => {
+  const { t } = useTranslation()
   const [selected, setSelected] = useState<AthleteProfileKey | null>(initialSelected ?? null)
+  const resolvedCta = ctaLabel ?? t('onboarding.consent_cta')
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Pressable onPress={onBack}>
-          <Text variant="body" size="base" color={Colors.stone}>← Retour</Text>
+          <Text variant="body" size="base" color={Colors.stone}>{t('common.back')}</Text>
         </Pressable>
       </View>
 
       <Text variant="display" size="xxl" style={styles.title}>
-        {firstName ? `${firstName}, comment` : 'Comment'}{'\n'}tu t'entraînes ?
+        {firstName ? t('onboarding.profile.title_with_name', { name: firstName }) : t('onboarding.profile.title')}
       </Text>
       <Text variant="body" size="base" color={Colors.stone} style={styles.subtitle}>
-        Uma adaptera ses attentes à ton rythme.
+        {t('onboarding.profile.subtitle')}
       </Text>
 
       <View style={styles.profiles}>
@@ -50,14 +53,14 @@ export const OnboardingStep3Profile = ({ firstName, onNext, onBack, isLoading, i
                     weight={isSelected ? 'semibold' : 'medium'}
                     color={isSelected ? Colors.white : Colors.charcoal}
                   >
-                    {profile.label}
+                    {t(`athlete_profiles.${key}.label`)}
                   </Text>
                   <Text
                     variant="body"
                     size="sm"
                     color={isSelected ? Colors.white : Colors.stone}
                   >
-                    {profile.description}
+                    {t(`athlete_profiles.${key}.description`)}
                   </Text>
                 </View>
                 {isSelected && (
@@ -78,7 +81,7 @@ export const OnboardingStep3Profile = ({ firstName, onNext, onBack, isLoading, i
           <ActivityIndicator color={Colors.white} />
         ) : (
           <Text variant="body" size="base" weight="semibold" color={Colors.white}>
-            {ctaLabel}
+            {resolvedCta}
           </Text>
         )}
       </Pressable>

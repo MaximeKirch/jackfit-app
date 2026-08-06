@@ -1,9 +1,11 @@
 import { useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import * as Haptics from 'expo-haptics'
+import { useTranslation } from 'react-i18next'
 import { sendMessage, fetchMessages, RateLimitError } from '../api/chatApi'
 import { posthog } from '@/config/posthog'
 import { useAuthStore } from '@/shared/stores/authStore'
+import { useLocaleStore } from '@/shared/stores/localeStore'
 import { usePetStore } from '@/shared/stores/petStore'
 import type { HealthSummary } from '@/shared/types/health.types'
 import type { Message } from '@/shared/types/chat.types'
@@ -22,24 +24,19 @@ export const useMessages = () => {
   })
 }
 
-const RATE_LIMIT_MESSAGE: Message = {
-  id: 'rate-limit-uma',
-  role: 'assistant',
-  content: "Uma se repose pour aujourd'hui. Reviens demain, j'aurai rechargé les batteries.",
-  createdAt: new Date().toISOString(),
-}
-
 export const useChat = (healthData: HealthSummary | null) => {
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
   const user = useAuthStore((state) => state.user)
   const weeklyScore = usePetStore((s) => s.score)
+  const locale = useLocaleStore((s) => s.locale)
   const lastFailedContent = useRef<string | null>(null)
 
   const mutation = useMutation({
     mutationFn: (message: string) => {
       if (!healthData) throw new Error('Health data not available')
       if (!user) throw new Error('Not authenticated')
-      return sendMessage(message, healthData, weeklyScore)
+      return sendMessage(message, healthData, weeklyScore, locale)
     },
 
     onMutate: async (message: string) => {
@@ -81,9 +78,15 @@ export const useChat = (healthData: HealthSummary | null) => {
 
       if (err instanceof RateLimitError) {
         posthog.capture('chat_rate_limit_hit')
+        const rateLimitMessage: Message = {
+          id: 'rate-limit-uma',
+          role: 'assistant',
+          content: t('chat.rate_limit_message'),
+          createdAt: new Date().toISOString(),
+        }
         queryClient.setQueryData<Message[]>(messagesKey(user.id), (old = []) => [
           ...old.filter((m) => !m.isOptimistic),
-          RATE_LIMIT_MESSAGE,
+          rateLimitMessage,
         ])
         return
       }

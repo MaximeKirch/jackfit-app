@@ -1,11 +1,11 @@
 export type StageName = 'JEUNE_CHIOT' | 'CHIOT' | 'ADULTE_ACTIF' | 'VÉTÉRAN' | 'ATHLÈTE_ÉLITE'
 
-export const STAGES: ReadonlyArray<{ name: StageName; label: string; minXp: number }> = [
-  { name: 'JEUNE_CHIOT',   label: 'Jeune chiot',   minXp: 0    },
-  { name: 'CHIOT',         label: 'Chiot',         minXp: 200  },
-  { name: 'ADULTE_ACTIF',  label: 'Adulte actif',  minXp: 600  },
-  { name: 'VÉTÉRAN',       label: 'Vétéran',       minXp: 1400 },
-  { name: 'ATHLÈTE_ÉLITE', label: 'Athlète élite', minXp: 3000 },
+export const STAGES: ReadonlyArray<{ name: StageName; minXp: number }> = [
+  { name: 'JEUNE_CHIOT',   minXp: 0    },
+  { name: 'CHIOT',         minXp: 200  },
+  { name: 'ADULTE_ACTIF',  minXp: 600  },
+  { name: 'VÉTÉRAN',       minXp: 1400 },
+  { name: 'ATHLÈTE_ÉLITE', minXp: 3000 },
 ]
 
 export const stageInfo = (name: StageName) =>

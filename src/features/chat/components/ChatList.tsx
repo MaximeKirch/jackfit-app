@@ -18,6 +18,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { FadeInOnFocus } from '@/shared/components/FadeInOnFocus'
 import { useHealthData } from '@/features/health/hooks/useHealthData'
 import { useAIConsent } from '@/features/aiConsent/hooks/useAIConsent'
@@ -65,6 +66,7 @@ const TypingIndicator = ({ color }: { color: string }) => (
 )
 
 export default function ChatList() {
+  const { t } = useTranslation()
   const { data: healthRaw, isLoading: healthLoading, error: healthError, refetch: refetchHealth, permissionDenied: healthDenied } = useHealthData()
   const { hasConsent, isLoading: consentLoading } = useAIConsent()
   const status = usePetStore((s) => s.status)
@@ -104,9 +106,7 @@ export default function ChatList() {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         <FadeInOnFocus>
-          <HealthPermissionDenied
-            body="Sans accès à Apple Santé, Uma ne peut pas discuter avec toi de ta forme."
-          />
+          <HealthPermissionDenied body={t('chat.no_health_access')} />
         </FadeInOnFocus>
       </SafeAreaView>
     )
@@ -117,7 +117,7 @@ export default function ChatList() {
       <SafeAreaView style={styles.container} edges={['top']}>
         <FadeInOnFocus>
           <ErrorState
-            message="Impossible de lire les données de santé."
+            message={t('chat.health_read_error')}
             onRetry={() => void refetchHealth()}
           />
         </FadeInOnFocus>
@@ -130,7 +130,7 @@ export default function ChatList() {
       <SafeAreaView style={styles.container} edges={['top']}>
         <FadeInOnFocus>
           <ErrorState
-            message="Uma n'arrive pas à se connecter. Vérifie ta connexion."
+            message={t('chat.connection_error')}
             onRetry={() => void refetchMessages()}
           />
         </FadeInOnFocus>
@@ -161,7 +161,7 @@ export default function ChatList() {
             onLayout={scrollToBottom}
             ListEmptyComponent={
               <View style={styles.emptyContainer}>
-                <Text style={styles.emptyText}>Commence une discussion ici</Text>
+                <Text style={styles.emptyText}>{t('chat.empty_state')}</Text>
               </View>
             }
             ListFooterComponent={isPending ? <TypingIndicator color={color} /> : null}

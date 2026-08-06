@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { View, StyleSheet, Animated } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Text } from '@/shared/components/Text'
 import { Colors, Spacing, Radius, Shadow } from '@/shared/constants/tokens'
-import { STAGES, stageInfo, nextStage, xpProgress } from '../utils/stages'
+import { STAGES, nextStage, xpProgress } from '../utils/stages'
 import type { StageName } from '../utils/stages'
 
 interface Props {
@@ -12,8 +13,8 @@ interface Props {
 }
 
 export const ProgressionCard = ({ totalXp, currentStage, justChangedStage }: Props) => {
+  const { t } = useTranslation()
   const progress   = xpProgress(totalXp, currentStage)
-  const current    = stageInfo(currentStage)
   const next       = nextStage(currentStage)
   const isMaxStage = next === null
   const currentIdx = STAGES.findIndex((s) => s.name === currentStage)
@@ -50,7 +51,7 @@ export const ProgressionCard = ({ totalXp, currentStage, justChangedStage }: Pro
         {/* Stage name + XP total */}
         <View style={styles.header}>
           <Text weight="semibold" size="base" color={Colors.charcoal}>
-            {current.label}
+            {t(`stages.${currentStage}`)}
           </Text>
           <Text size="sm" color={Colors.stone}>
             {totalXp} XP
@@ -89,7 +90,7 @@ export const ProgressionCard = ({ totalXp, currentStage, justChangedStage }: Pro
                 style={styles.dotLabel}
                 numberOfLines={1}
               >
-                {stage.label}
+                {t(`stages.${stage.name}`)}
               </Text>
             </View>
           ))}
@@ -99,11 +100,11 @@ export const ProgressionCard = ({ totalXp, currentStage, justChangedStage }: Pro
         <View style={styles.footer}>
           {isMaxStage ? (
             <Text size="xs" color={Colors.moss}>
-              Stade maximum atteint
+              {t('home.progression.max_stage')}
             </Text>
           ) : (
             <Text size="xs" color={Colors.stone}>
-              {xpToNext} XP jusqu'à {next.label}
+              {t('home.progression.xp_to_next', { xp: xpToNext, next: t(`stages.${next.name}`) })}
             </Text>
           )}
         </View>
