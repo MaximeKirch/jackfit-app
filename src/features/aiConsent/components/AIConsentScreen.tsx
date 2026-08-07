@@ -1,12 +1,8 @@
 import { Linking, Pressable, ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Text } from '@/shared/components/Text'
 import { Colors, Radius, Spacing } from '@/shared/constants/tokens'
-import {
-  AI_PROVIDER,
-  NOT_SHARED_DATA_BULLETS,
-  PRIVACY_POLICY_URL,
-  SHARED_DATA_BULLETS,
-} from '../config/privacy'
+import { AI_PROVIDER, PRIVACY_POLICY_URL } from '../config/privacy'
 
 interface Props {
   onAccept:     () => void
@@ -20,9 +16,16 @@ export const AIConsentScreen = ({
   onAccept,
   onDecline,
   isLoading    = false,
-  acceptLabel  = "J'accepte",
-  declineLabel = 'Je refuse',
+  acceptLabel,
+  declineLabel,
 }: Props) => {
+  const { t } = useTranslation()
+  const resolvedAccept = acceptLabel ?? t('ai_consent.accept')
+  const resolvedDecline = declineLabel ?? t('ai_consent.decline')
+
+  const sharedBullets  = t('ai_consent.shared_bullets',     { returnObjects: true }) as string[]
+  const notSharedBullets = t('ai_consent.not_shared_bullets', { returnObjects: true }) as string[]
+
   const openPrivacyPolicy = () => {
     void Linking.openURL(PRIVACY_POLICY_URL)
   }
@@ -31,30 +34,29 @@ export const AIConsentScreen = ({
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text variant="display" size="xxl" style={styles.title}>
-          Partager tes données{'\n'}avec {AI_PROVIDER.product}
+          {t('ai_consent.title', { product: AI_PROVIDER.product })}
         </Text>
 
         <Text variant="body" size="base" color={Colors.stone} style={styles.intro}>
-          Pour discuter avec Uma, un résumé de ta semaine et tes messages
-          sont envoyés à <Text weight="semibold" color={Colors.charcoal}>{AI_PROVIDER.product}</Text>,
-          une IA développée par <Text weight="semibold" color={Colors.charcoal}>{AI_PROVIDER.company}</Text>.
-          Rien n'est envoyé sans ton accord.
+          {t('ai_consent.intro_before')} <Text weight="semibold" color={Colors.charcoal}>{AI_PROVIDER.product}</Text>,{' '}
+          {t('ai_consent.intro_after')} <Text weight="semibold" color={Colors.charcoal}>{AI_PROVIDER.company}</Text>.{' '}
+          {t('ai_consent.no_send_notice')}
         </Text>
 
         <BulletBlock
-          heading="Ce qui est partagé"
-          items={SHARED_DATA_BULLETS}
+          heading={t('ai_consent.shared_title')}
+          items={sharedBullets}
           color={Colors.charcoal}
         />
         <BulletBlock
-          heading="Ce qui n'est jamais partagé"
-          items={NOT_SHARED_DATA_BULLETS}
+          heading={t('ai_consent.not_shared_title')}
+          items={notSharedBullets}
           color={Colors.stone}
         />
 
         <Pressable onPress={openPrivacyPolicy} style={styles.linkRow}>
           <Text variant="body" size="sm" color={Colors.moss} weight="medium">
-            Lire la politique de confidentialité →
+            {t('ai_consent.read_policy')}
           </Text>
         </Pressable>
       </ScrollView>
@@ -69,7 +71,7 @@ export const AIConsentScreen = ({
             <ActivityIndicator color={Colors.white} />
           ) : (
             <Text variant="body" size="base" weight="semibold" color={Colors.white}>
-              {acceptLabel}
+              {resolvedAccept}
             </Text>
           )}
         </Pressable>
@@ -80,7 +82,7 @@ export const AIConsentScreen = ({
           style={[styles.declineButton, isLoading && styles.buttonDisabled]}
         >
           <Text variant="body" size="base" weight="semibold" color={Colors.charcoal}>
-            {declineLabel}
+            {resolvedDecline}
           </Text>
         </Pressable>
       </View>

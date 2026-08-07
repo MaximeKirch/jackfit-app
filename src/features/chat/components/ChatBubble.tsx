@@ -1,4 +1,5 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Colors, Typography } from '@/shared/constants/tokens'
 import type { Message } from '@/shared/types/chat.types'
 
@@ -8,6 +9,7 @@ interface ChatBubbleProps {
 }
 
 export const ChatBubble = ({ message, onRetry }: ChatBubbleProps) => {
+  const { t } = useTranslation()
   const isUser = message.role === 'user'
 
   return (
@@ -26,7 +28,7 @@ export const ChatBubble = ({ message, onRetry }: ChatBubbleProps) => {
       </View>
       {message.isFailed === true && onRetry && (
         <Pressable onPress={onRetry} style={styles.retryButton}>
-          <Text style={styles.retryText}>↻ Réessayer</Text>
+          <Text style={styles.retryText}>{t('chat.retry_button')}</Text>
         </Pressable>
       )}
     </View>

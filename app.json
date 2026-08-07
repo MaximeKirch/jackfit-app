@@ -5,7 +5,7 @@
     "scheme": "jackfit",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/uma_icon.png",
     "userInterfaceStyle": "light",
     "runtimeVersion": {
       "policy": "fingerprint"
@@ -32,7 +32,7 @@
         "@kingstinct/react-native-healthkit",
         {
           "NSHealthShareUsageDescription": "JackFit lit tes données de santé pour évaluer ta forme et donner des conseils personnalisés.",
-          "NSHealthUpdateUsageDescription": false
+          "NSHealthUpdateUsageDescription": "JackFit ne modifie jamais tes données Santé. Cette permission n'est pas utilisée par l'app."
         }
       ],
       "@react-native-vector-icons/ant-design",

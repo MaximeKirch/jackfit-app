@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Modal, View, TextInput, Pressable, StyleSheet } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Text } from '@/shared/components/Text'
 import { Colors, Spacing, Radius, Typography } from '@/shared/constants/tokens'
 
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export const EditNameModal = ({ visible, current, onSave, onClose, isLoading }: Props) => {
+  const { t } = useTranslation()
   const [name, setName] = useState(current)
 
   const handleSave = async () => {
@@ -25,12 +27,12 @@ export const EditNameModal = ({ visible, current, onSave, onClose, isLoading }: 
       <View style={styles.container}>
         <View style={styles.header}>
           <Pressable onPress={onClose}>
-            <Text variant="body" size="base" color={Colors.stone}>Annuler</Text>
+            <Text variant="body" size="base" color={Colors.stone}>{t('common.cancel')}</Text>
           </Pressable>
-          <Text variant="body" size="base" weight="semibold">Prénom</Text>
+          <Text variant="body" size="base" weight="semibold">{t('profile.first_name')}</Text>
           <Pressable onPress={handleSave} disabled={isLoading}>
             <Text variant="body" size="base" weight="semibold" color={Colors.moss}>
-              {isLoading ? '...' : 'Sauvegarder'}
+              {isLoading ? '...' : t('common.save')}
             </Text>
           </Pressable>
         </View>
@@ -41,7 +43,7 @@ export const EditNameModal = ({ visible, current, onSave, onClose, isLoading }: 
           onChangeText={setName}
           autoFocus
           autoCapitalize="words"
-          placeholder="Ton prénom"
+          placeholder={t('profile.edit_name_placeholder')}
           placeholderTextColor={Colors.stone}
         />
       </View>

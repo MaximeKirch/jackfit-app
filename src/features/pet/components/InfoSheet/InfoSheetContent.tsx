@@ -1,4 +1,5 @@
 import { View, StyleSheet } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Text } from '@/shared/components/Text'
 import { usePetStore } from '@/shared/stores/petStore'
 import { nextStage, stageInfo } from '@/features/pet/utils/stages'
@@ -13,6 +14,7 @@ interface Props {
 const STAGGER_MS = 70
 
 export const InfoSheetContent = ({ isOpen }: Props) => {
+  const { t } = useTranslation()
   const breakdown    = usePetStore((s) => s.breakdown)
   const totalXp      = usePetStore((s) => s.totalXp)
   const currentStage = usePetStore((s) => s.currentStage)
@@ -21,7 +23,7 @@ export const InfoSheetContent = ({ isOpen }: Props) => {
     return (
       <View style={styles.container}>
         <Text variant="body" color={Colors.stone}>
-          Pas encore assez de données cette semaine.
+          {t('home.info_sheet.not_enough_data')}
         </Text>
       </View>
     )
@@ -34,22 +36,22 @@ export const InfoSheetContent = ({ isOpen }: Props) => {
     ? Math.min((totalXp - stage.minXp) / (next.minXp - stage.minXp), 1)
     : 1
 
-  const rows: Array<{ label: string; value: number }> = [
-    { label: 'Activité',  value: breakdown.activity },
-    { label: 'Sommeil',   value: breakdown.sleep },
-    { label: 'Bien-être', value: breakdown.wellbeing },
+  const rows = [
+    { key: 'activity', label: t('home.gauges.activity'), value: breakdown.activity },
+    { key: 'sleep',    label: t('home.gauges.sleep'),    value: breakdown.sleep },
+    { key: 'wellness', label: t('home.gauges.wellness'), value: breakdown.wellbeing },
   ]
 
   return (
     <View style={styles.container}>
       <Text variant="display" size="lg" style={styles.title}>
-        Cette semaine
+        {t('home.info_sheet.this_week')}
       </Text>
 
       <View style={styles.rows}>
         {rows.map((row, i) => (
           <AnimatedGaugeRow
-            key={row.label}
+            key={row.key}
             label={row.label}
             value={row.value}
             delay={i * STAGGER_MS}
@@ -59,7 +61,7 @@ export const InfoSheetContent = ({ isOpen }: Props) => {
       </View>
 
       <View style={styles.totalRow}>
-        <Text variant="body" size="sm" color={Colors.stone}>Total</Text>
+        <Text variant="body" size="sm" color={Colors.stone}>{t('home.info_sheet.total')}</Text>
         <Text variant="mono" size="md" color={Colors.charcoal}>
           {breakdown.total}/100
         </Text>
@@ -68,10 +70,12 @@ export const InfoSheetContent = ({ isOpen }: Props) => {
       <View style={styles.divider} />
 
       <View style={styles.stageBlock}>
-        <Text variant="body" size="sm" color={Colors.stone}>Palier</Text>
+        <Text variant="body" size="sm" color={Colors.stone}>{t('home.info_sheet.stage')}</Text>
         <Text variant="body" size="md" color={Colors.charcoal} style={styles.stageLine}>
-          {stage.label}
-          {next ? ` · encore ${xpToNext} XP avant ${next.label}` : ' · palier maximum atteint'}
+          {t(`stages.${currentStage}`)}
+          {next
+            ? t('home.info_sheet.stage_progress', { xp: xpToNext, next: t(`stages.${next.name}`) })
+            : t('home.info_sheet.stage_max')}
         </Text>
         <View style={styles.stageBarWrap}>
           <StageProgressBar
@@ -88,7 +92,7 @@ export const InfoSheetContent = ({ isOpen }: Props) => {
       <View style={styles.divider} />
 
       <Text variant="body" size="sm" color={Colors.stone} style={styles.explainer}>
-        Ton score dépend de ta régularité (pas juste du volume) et de ta récupération.
+        {t('home.info_sheet.explanation')}
       </Text>
     </View>
   )

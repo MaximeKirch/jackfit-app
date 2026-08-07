@@ -7,7 +7,9 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
 } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Colors, Spacing, Typography } from '@/shared/constants/tokens'
 import { useAuth } from '../hooks/useAuth'
 
@@ -17,6 +19,7 @@ interface OtpStepProps {
 }
 
 export const OtpStep = ({ email, onBack }: OtpStepProps) => {
+  const { t } = useTranslation()
   const [otp, setOtp] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
   const [isResending, setIsResending] = useState(false)
@@ -29,7 +32,7 @@ export const OtpStep = ({ email, onBack }: OtpStepProps) => {
     try {
       await verifyOtp(email, code)
     } catch {
-      Alert.alert('Code invalide', 'Le code est incorrect ou a expiré. Demande-en un nouveau.')
+      Alert.alert(t('auth.otp.invalid_code_title'), t('auth.otp.invalid_code_body'))
       setOtp('')
       inputRef.current?.focus()
     } finally {
@@ -47,24 +50,24 @@ export const OtpStep = ({ email, onBack }: OtpStepProps) => {
     setIsResending(true)
     try {
       await sendOtp(email)
-      Alert.alert('Code renvoyé', 'Vérifie ta boîte email.')
+      Alert.alert(t('auth.otp.resent_title'), t('auth.otp.resent_body'))
     } catch {
-      Alert.alert('Erreur', 'Impossible de renvoyer le code.')
+      Alert.alert(t('common.error'), t('auth.otp.resend_error'))
     } finally {
       setIsResending(false)
     }
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
       <Pressable onPress={onBack} style={styles.backButton}>
-        <Text style={styles.backText}>← Retour</Text>
+        <Text style={styles.backText}>{t('common.back')}</Text>
       </Pressable>
 
       <View style={styles.content}>
-        <Text style={styles.title}>Vérifie ton email 📬</Text>
+        <Text style={styles.title}>{t('auth.otp.title')}</Text>
         <Text style={styles.subtitle}>
-          {'Code envoyé à\n'}
+          {t('auth.otp.sent_to')}
           <Text style={styles.emailHighlight}>{email}</Text>
         </Text>
 
@@ -90,11 +93,11 @@ export const OtpStep = ({ email, onBack }: OtpStepProps) => {
           style={styles.resendButton}
         >
           <Text style={styles.resendText}>
-            {isResending ? 'Envoi en cours…' : 'Renvoyer le code'}
+            {isResending ? t('auth.otp.resending') : t('auth.otp.resend_button')}
           </Text>
         </Pressable>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 

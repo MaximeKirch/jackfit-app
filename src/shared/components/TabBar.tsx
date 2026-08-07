@@ -1,5 +1,6 @@
 import { View, Pressable, StyleSheet } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import * as Haptics from 'expo-haptics'
 import { TablerIcon } from './TablerIcon'
 import type { TablerIconName } from './TablerIcon'
 import { Colors, Spacing } from '../constants/tokens'
@@ -29,7 +30,11 @@ export const TabBar = ({ state, navigation }: TabBarProps) => {
         return (
           <Pressable
             key={route.key}
-            onPress={() => { if (!isFocused) navigation.navigate(route.name) }}
+            onPress={() => {
+              if (isFocused) return
+              void Haptics.selectionAsync()
+              navigation.navigate(route.name)
+            }}
             style={styles.tab}
           >
             <TablerIcon

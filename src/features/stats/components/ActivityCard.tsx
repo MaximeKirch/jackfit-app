@@ -1,16 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { Card } from '@/shared/components/Card'
 import { Skeleton } from '@/shared/components/Skeleton'
 import { Colors, Typography } from '@/shared/constants/tokens'
 import type { ActivityStats } from '../hooks/useStats'
-
-const WORKOUT_LABELS: Record<string, string> = {
-  running: 'Course à pied',
-  cycling: 'Vélo',
-  swimming: 'Natation',
-  strength: 'Musculation',
-  default: 'Autre',
-}
 
 const formatDuration = (minutes: number): string => {
   const h = Math.floor(minutes / 60)
@@ -26,15 +19,16 @@ interface ActivityCardProps {
 }
 
 export const ActivityCard = ({ stats, accentColor }: ActivityCardProps) => {
+  const { t } = useTranslation()
   const targetMinutes = stats.targetHours * 60
   const progress = Math.min(stats.totalMinutes / targetMinutes, 1)
 
   return (
     <Card>
-      <Text style={styles.label}>ACTIVITÉ</Text>
+      <Text style={styles.label}>{t('stats.activity.title')}</Text>
       <Text style={[styles.mainValue, { color: accentColor }]}>
         {formatDuration(stats.totalMinutes)}
-        <Text style={styles.subLabel}>{' '}/ objectif {formatDuration(targetMinutes)}</Text>
+        <Text style={styles.subLabel}>{' '}{t('stats.activity.target', { target: formatDuration(targetMinutes) })}</Text>
       </Text>
 
 
@@ -43,8 +37,8 @@ export const ActivityCard = ({ stats, accentColor }: ActivityCardProps) => {
       </View>
 
       <View style={styles.row}>
-        <StatChip label={`${stats.workoutCount} séance${stats.workoutCount > 1 ? 's' : ''}`} />
-        <StatChip label={`${stats.totalCalories} kcal en activité`} />
+        <StatChip label={t('stats.activity.session', { count: stats.workoutCount })} />
+        <StatChip label={t('stats.activity.calories', { count: stats.totalCalories })} />
       </View>
     </Card>
   )

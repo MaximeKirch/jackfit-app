@@ -1,6 +1,9 @@
 import { useState } from 'react'
-import { ScrollView, StyleSheet, Alert, View, Linking } from 'react-native'
+import { ScrollView, StyleSheet, Alert, ActionSheetIOS, View, Linking } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
+import { useLocaleStore } from '@/shared/stores/localeStore'
+import type { SupportedLocale } from '@/shared/i18n'
 import { Skeleton } from '@/shared/components/Skeleton'
 import { FadeInOnFocus } from '@/shared/components/FadeInOnFocus'
 import { ProfileHeader }    from '../components/ProfileHeader'
@@ -14,7 +17,6 @@ import { useProfile }       from '../hooks/useProfile'
 import { useProgression }   from '@/features/pet/hooks/useProgression'
 import { useAuthStore }     from '@/shared/stores/authStore'
 import { usePetStore }      from '@/shared/stores/petStore'
-import { ATHLETE_PROFILES } from '@/shared/constants/athleteProfiles'
 import { TablerIcon }       from '@/shared/components/TablerIcon'
 import type { TablerIconName } from '@/shared/components/TablerIcon'
 import { Colors, Spacing }  from '@/shared/constants/tokens'
@@ -38,6 +40,7 @@ const SPORT_ICONS: Partial<Record<SportId, TablerIconName>> = {
 }
 
 export default function ProfileScreen() {
+  const { t } = useTranslation()
   const user = useAuthStore((state) => state.user)
   const {
     profile,
@@ -54,6 +57,9 @@ export default function ProfileScreen() {
   const totalXp      = usePetStore((s) => s.totalXp)
   const currentStage = usePetStore((s) => s.currentStage)
   const { justChangedStage } = useProgression()
+
+  const locale = useLocaleStore((s) => s.locale)
+  const setLocale = useLocaleStore((s) => s.setLocale)
 
   const [editName,    setEditName]    = useState(false)
   const [editSports,  setEditSports]  = useState(false)
@@ -82,25 +88,44 @@ export default function ProfileScreen() {
     .filter((icon): icon is TablerIconName => icon !== undefined)
 
   const athleteLabel = profile.athlete_profile
-    ? ATHLETE_PROFILES[profile.athlete_profile].label
+    ? t(`athlete_profiles.${profile.athlete_profile}.label`)
     : '—'
 
   const handleClearChat = () => {
     Alert.alert(
-      'Effacer la conversation',
-      'Tous tes messages avec Uma seront supprimés. Uma repartira de zéro.',
+      t('profile.clear_chat'),
+      t('profile.clear_chat_confirm'),
       [
-        { text: 'Annuler', style: 'cancel' },
-        { text: 'Effacer', style: 'destructive', onPress: () => { void clearChat() } },
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('profile.delete'), style: 'destructive', onPress: () => { void clearChat() } },
       ]
     )
   }
 
   const handleSignOut = () => {
-    Alert.alert('Déconnexion', 'Tu veux vraiment te déconnecter ?', [
-      { text: 'Annuler', style: 'cancel' },
-      { text: 'Se déconnecter', style: 'destructive', onPress: () => { void signOut() } },
+    Alert.alert(t('profile.sign_out_confirm_title'), t('profile.sign_out_confirm_body'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('profile.sign_out'), style: 'destructive', onPress: () => { void signOut() } },
     ])
+  }
+
+  const handleChangeLanguage = () => {
+    const options: { label: string; value: SupportedLocale }[] = [
+      { label: t('languages.fr'), value: 'fr' },
+      { label: t('languages.en'), value: 'en' },
+    ]
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        title: t('profile.language_choice_title'),
+        options: [...options.map((o) => o.label), t('common.cancel')],
+        cancelButtonIndex: options.length,
+        userInterfaceStyle: 'light',
+      },
+      (index) => {
+        const picked = options[index]
+        if (picked) setLocale(picked.value)
+      }
+    )
   }
 
   return (
@@ -115,7 +140,7 @@ export default function ProfileScreen() {
 
         <View style={styles.progressionSection}>
           <Text size="xs" weight="semibold" color={Colors.stone} style={styles.sectionLabel}>
-            PROGRESSION
+            {t('profile.progression')}
           </Text>
           <ProgressionCard
             totalXp={totalXp}
@@ -124,14 +149,14 @@ export default function ProfileScreen() {
           />
         </View>
 
-        <ProfileSection title="Mon profil">
+        <ProfileSection title={t('profile.my_profile')}>
           <ProfileRow
-            label="Prénom"
+            label={t('profile.first_name')}
             value={profile.first_name ?? '—'}
             onPress={() => setEditName(true)}
           />
           <ProfileRow
-            label="Sports"
+            label={t('profile.sports')}
             valueNode={
               sportsIcons && sportsIcons.length > 0 ? (
                 <View style={styles.sportsRow}>
@@ -144,41 +169,46 @@ export default function ProfileScreen() {
             onPress={() => setEditSports(true)}
           />
           <ProfileRow
-            label="Rythme"
+            label={t('profile.pace')}
             value={athleteLabel}
             onPress={() => setEditAthlete(true)}
             isLast
           />
         </ProfileSection>
 
-        <ProfileSection title="Uma">
+        <ProfileSection title={t('profile.uma')}>
           <ProfileRow
-            label="Effacer la conversation"
+            label={t('profile.clear_chat')}
             onPress={handleClearChat}
             isLast
           />
         </ProfileSection>
 
-        <ProfileSection title="Compte">
+        <ProfileSection title={t('profile.account')}>
           <ProfileRow
-            label="Email"
+            label={t('profile.email')}
             value={user?.email ?? '—'}
           />
           <ProfileRow
-            label="Se déconnecter"
+            label={t('profile.language')}
+            value={t(`languages.${locale}`)}
+            onPress={handleChangeLanguage}
+          />
+          <ProfileRow
+            label={t('profile.sign_out')}
             onPress={handleSignOut}
           />
           <ProfileRow
-            label="Supprimer le compte"
+            label={t('profile.delete_account')}
             onPress={deleteAccount}
             destructive
             isLast
           />
         </ProfileSection>
 
-        <ProfileSection title="Confidentialité">
+        <ProfileSection title={t('profile.privacy')}>
           <ProfileRow
-            label="Politique de confidentialité"
+            label={t('profile.privacy_policy')}
             onPress={() => { void Linking.openURL(PRIVACY_POLICY_URL) }}
             isLast
           />

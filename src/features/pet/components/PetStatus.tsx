@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 import * as Haptics from 'expo-haptics';
+import { useTranslation } from 'react-i18next'
 import { usePetStore } from '@/shared/stores/petStore'
-import { stageInfo } from '@/features/pet/utils/stages'
 import { Colors, Radius, Typography } from '@/shared/constants/tokens'
 import type { PetStatus as PetStatusType } from '@/shared/types/pet.types'
 import { AntDesign } from '@react-native-vector-icons/ant-design';
@@ -20,17 +20,17 @@ interface PetStatusProps {
 }
 
 export const PetStatus = ({ toggleInfoModal }: PetStatusProps) => {
+  const { t } = useTranslation()
   const status       = usePetStore((s) => s.status)
   const totalXp      = usePetStore((s) => s.totalXp)
   const currentStage = usePetStore((s) => s.currentStage)
   const textColor    = Colors.pet[status]
   const pillBg       = PILL_BG[status]
-  const stage        = stageInfo(currentStage)
 
   return (
     <View style={[styles.pill, { backgroundColor: pillBg }]}>
       <Text style={[styles.text, { color: textColor }]}>
-        {stage.label} · {totalXp} XP
+        {t(`stages.${currentStage}`)} · {totalXp} XP
       </Text>
       <Pressable
         onPress={() => {

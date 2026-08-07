@@ -1,0 +1,235 @@
+{
+  "common": {
+    "back": "← Back",
+    "continue": "Continue →",
+    "cancel": "Cancel",
+    "save": "Save",
+    "validate": "Confirm",
+    "retry": "Retry",
+    "error": "Error",
+    "generic_error": "Something went wrong."
+  },
+  "auth": {
+    "email": {
+      "welcome_title": "Welcome to Uma",
+      "welcome_subtitle": "Your fitness pet for hybrid & endurance training.",
+      "placeholder": "your@email.com",
+      "send_button": "Send code",
+      "invalid_email_title": "Invalid email",
+      "invalid_email_body": "Enter a valid email address."
+    },
+    "otp": {
+      "title": "Check your email 📬",
+      "sent_to": "Code sent to\n",
+      "resend_button": "Resend code",
+      "resending": "Sending…",
+      "invalid_code_title": "Invalid code",
+      "invalid_code_body": "The code is wrong or has expired. Request a new one.",
+      "resent_title": "Code resent",
+      "resent_body": "Check your inbox.",
+      "resend_error": "Couldn't resend the code."
+    }
+  },
+  "onboarding": {
+    "name": {
+      "greeting": "Hi 👋",
+      "question": "What's your name?",
+      "placeholder": "Your first name"
+    },
+    "sports": {
+      "title": "Your favorite sports 🏅",
+      "subtitle": "Pick up to {{max}} sports",
+      "ratio_suffix": " · {{selected}}/{{max}}"
+    },
+    "profile": {
+      "title": "How do you\ntrain?",
+      "title_with_name": "{{name}}, how do you\ntrain?",
+      "subtitle": "Uma will match her expectations to your pace."
+    },
+    "consent_cta": "Meet Uma 🐾"
+  },
+  "ai_consent": {
+    "title": "Share your data\nwith {{product}}",
+    "intro_before": "To chat with Uma, a summary of your week and your messages are sent to",
+    "intro_after": "an AI built by",
+    "no_send_notice": "Nothing is sent without your consent.",
+    "shared_title": "What's shared",
+    "not_shared_title": "What's never shared",
+    "read_policy": "Read the privacy policy →",
+    "accept": "I accept",
+    "decline": "I decline",
+    "shared_bullets": [
+      "The message you write to Uma",
+      "Recent history of your exchanges",
+      "Your first name and the sports you practice",
+      "A summary of your week: type and duration of your sessions, average sleep, step count, fitness score"
+    ],
+    "not_shared_bullets": [
+      "Your email",
+      "Your heart rate, calories burned, or the exact dates of your workouts",
+      "The details of each of your nights of sleep (only the average is shared)"
+    ]
+  },
+  "chat": {
+    "input_placeholder": "Say something…",
+    "empty_state": "Start a conversation here",
+    "retry_button": "↻ Retry",
+    "no_health_access": "Without Apple Health access, Uma can't talk to you about your fitness.",
+    "health_read_error": "Couldn't read your health data.",
+    "connection_error": "Uma can't connect. Check your connection.",
+    "rate_limit_message": "Uma's taking the day off. Come back tomorrow — I'll have recharged the batteries."
+  },
+  "home": {
+    "default_messages": {
+      "new": "We don't know each other yet — move around a bit and I'll start figuring out how you're doing.",
+      "peak": "You're crushing it this week. Keep it up.",
+      "good": "Decent week overall. But you can do better.",
+      "tired": "You look wiped out. Get more sleep.",
+      "lazy": "Seriously? That's all you did this week?",
+      "overreached": "Stop. You're wrecking yourself. Recover now."
+    },
+    "welcome_new": [
+      "We don't know each other yet — move around a bit and I'll start figuring out how you're doing.",
+      "Give me a few days of data and I'll tell you how I feel."
+    ],
+    "welcome_return": {
+      "first_time": ["Hey! I'm Uma."],
+      "same_day":   ["We meet again!", "You came back too?", "Hi again!"],
+      "yesterday":  ["So, how'd you sleep?", "I'm good, perfect day to head out?", "New day, plenty we can do."],
+      "few_days":   ["Well, look who's back.", "It's been a while. Ready to get back to it?", "It's been a few days. Let's move?"],
+      "week_plus":  ["A week without moving but shall we get to it?", "Busy week? We can start light!"]
+    },
+    "welcome_fallback": "Hey there!",
+    "gauges": {
+      "sleep": "Sleep",
+      "activity": "Activity",
+      "wellness": "Wellness"
+    },
+    "info_sheet": {
+      "not_enough_data": "Not enough data this week yet.",
+      "this_week": "This week",
+      "total": "Total",
+      "stage": "Stage",
+      "stage_progress": " · {{xp}} XP to go to {{next}}",
+      "stage_max": " · max stage reached",
+      "explanation": "Your score depends on your consistency (not just volume) and your recovery."
+    },
+    "progression": {
+      "xp_to_next": "{{xp}} XP to {{next}}",
+      "max_stage": "Max stage reached"
+    },
+    "health_read_error": "Couldn't read your health data."
+  },
+  "stages": {
+    "JEUNE_CHIOT":   "Young pup",
+    "CHIOT":         "Pup",
+    "ADULTE_ACTIF":  "Active adult",
+    "VÉTÉRAN":       "Veteran",
+    "ATHLÈTE_ÉLITE": "Elite athlete"
+  },
+  "stats": {
+    "week_score": "This week's score",
+    "no_health_access": "Without Apple Health access, we can't calculate your fitness score.",
+    "health_read_error": "Couldn't read HealthKit data.",
+    "activity": {
+      "title": "ACTIVITY",
+      "target": "/ target {{target}}",
+      "session_one": "{{count}} session",
+      "session_other": "{{count}} sessions",
+      "calories": "{{count}} kcal burned"
+    },
+    "sleep": {
+      "title": "SLEEP",
+      "excellent": "Excellent",
+      "correct": "Fine",
+      "insufficient": "Not enough",
+      "bad": "Poor",
+      "average_one": "average over {{count}} night · target {{target}}h",
+      "average_other": "average over {{count}} nights · target {{target}}h",
+      "no_data": "No data this week"
+    },
+    "consistency": {
+      "title": "CONSISTENCY",
+      "days_ratio_suffix": "/ {{target}} days",
+      "days_active": "active days this week",
+      "day_labels": ["M", "T", "W", "T", "F", "S", "S"]
+    },
+    "sports": {
+      "running": "Running",
+      "cycling": "Cycling",
+      "swimming": "Swimming",
+      "strength": "Strength",
+      "other": "Other"
+    }
+  },
+  "sports": {
+    "running": "Running",
+    "cycling": "Cycling",
+    "swimming": "Swimming",
+    "strength": "Strength",
+    "hiking": "Hiking",
+    "yoga": "Yoga",
+    "tennis": "Tennis",
+    "soccer": "Soccer",
+    "basketball": "Basketball",
+    "rowing": "Rowing",
+    "crossfit": "CrossFit",
+    "triathlon": "Triathlon"
+  },
+  "athlete_profiles": {
+    "beginner": { "label": "Just starting", "description": "1 to 2 times a week" },
+    "regular":  { "label": "Regular", "description": "3 to 4 times a week" },
+    "serious":  { "label": "Serious", "description": "5+ times a week" },
+    "competition": { "label": "Competition", "description": "I'm training for an event" }
+  },
+  "profile": {
+    "progression": "PROGRESSION",
+    "my_profile": "My profile",
+    "delete": "Delete",
+    "language_choice_title": "Choose your language",
+    "first_name": "First name",
+    "sports": "Sports",
+    "pace": "Pace",
+    "uma": "Uma",
+    "clear_chat": "Clear conversation",
+    "clear_chat_confirm": "All your messages with Uma will be deleted. Uma will start over.",
+    "account": "Account",
+    "email": "Email",
+    "language": "Language",
+    "sign_out": "Sign out",
+    "sign_out_confirm_title": "Sign out",
+    "sign_out_confirm_body": "Are you sure you want to sign out?",
+    "delete_account": "Delete account",
+    "delete_account_confirm": "This action is irreversible. Your account and all your data will be permanently deleted.",
+    "delete_account_error": "Couldn't delete your account right now. Try again or contact maxime.kirch@gmail.com.",
+    "privacy": "Privacy",
+    "privacy_policy": "Privacy policy",
+    "edit_name_placeholder": "Your first name",
+    "athlete_profiles": {
+      "beginner_label": "Just starting",
+      "beginner_desc": "1 to 2 times a week",
+      "regular_label": "Regular",
+      "regular_desc": "3 to 4 times a week",
+      "serious_label": "Serious",
+      "serious_desc": "5+ times a week",
+      "competition_label": "Competition",
+      "competition_desc": "I'm training for an event"
+    }
+  },
+  "tabs": {
+    "uma": "Uma",
+    "chat": "Chat",
+    "stats": "Stats",
+    "profile": "Profile"
+  },
+  "health_permission": {
+    "title": "Uma needs your data",
+    "body": "Without Apple Health access, Uma can't tell how you're doing.",
+    "open_settings": "Open settings",
+    "path": "Settings → Privacy → Health → JackFit"
+  },
+  "languages": {
+    "fr": "Français",
+    "en": "English"
+  }
+}
