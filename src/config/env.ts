@@ -4,8 +4,8 @@ const envSchema = z.object({
   EXPO_PUBLIC_API_URL: z.string().url().default('http://localhost:3000'),
   EXPO_PUBLIC_SUPABASE_URL: z.string().url(),
   EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
-  EXPO_PUBLIC_POSTHOG_PROJECT_TOKEN: z.string().min(1),
-  EXPO_PUBLIC_POSTHOG_HOST: z.string().url(),
+  EXPO_PUBLIC_POSTHOG_PROJECT_TOKEN: z.string().min(1).optional(),
+  EXPO_PUBLIC_POSTHOG_HOST: z.string().url().optional(),
 })
 
 export const env = envSchema.parse({
