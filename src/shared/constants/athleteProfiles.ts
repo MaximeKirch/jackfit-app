@@ -12,12 +12,12 @@ export const ATHLETE_PROFILES = {
   serious: {
     emoji: '🔥',
     weeklyActivityGoal: 5,
-    sleepGoal: 8.5,
+    sleepGoal: 8.0,
   },
   competition: {
     emoji: '🏅',
     weeklyActivityGoal: 6,
-    sleepGoal: 9.0,
+    sleepGoal: 8.0,
   },
 } as const
 

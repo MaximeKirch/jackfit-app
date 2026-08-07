@@ -12,7 +12,7 @@
   "auth": {
     "email": {
       "welcome_title": "Bienvenue chez Uma",
-      "welcome_subtitle": "Entre ton email pour recevoir ton code de connexion.",
+      "welcome_subtitle": "Ton compagnon pour l'endurance et l'entraînement hybride.",
       "placeholder": "ton@email.com",
       "send_button": "Envoyer le code",
       "invalid_email_title": "Email invalide",
