@@ -4,11 +4,13 @@ import { supabase } from '@/shared/lib/supabase'
 import { useAuthStore } from '@/shared/stores/authStore'
 import { ATHLETE_PROFILES, type AthleteProfileKey } from '@/shared/constants/athleteProfiles'
 import type { SportId } from '@/shared/constants/sports'
+import type { GoalValue } from '../components/OnboardingStep4Goal'
 
 interface OnboardingData {
   firstName: string
   mainSports: SportId[]
   athleteProfile: AthleteProfileKey | null
+  goal: GoalValue
   aiConsentGranted: boolean
 }
 
@@ -33,6 +35,8 @@ export const useOnboarding = () => {
           athlete_profile:      data.athleteProfile,
           weekly_activity_goal: profile.weeklyActivityGoal,
           sleep_goal:           profile.sleepGoal,
+          goal_event_name:      data.goal?.name ?? null,
+          goal_event_date:      data.goal?.date ?? null,
           onboarding_completed: true,
           ai_consent_given_at:  data.aiConsentGranted ? now : null,
           updated_at:           now,
@@ -43,6 +47,7 @@ export const useOnboarding = () => {
       posthog.capture('onboarding_completed', {
         athlete_profile:     data.athleteProfile,
         sport_count:         data.mainSports.length,
+        has_goal:            data.goal !== null,
         ai_consent_granted:  data.aiConsentGranted,
       })
       if (data.aiConsentGranted) {

@@ -16,6 +16,8 @@ export interface UserProfile {
   athlete_profile: AthleteProfileKey | null
   weekly_activity_goal: number
   sleep_goal: number
+  goal_event_name: string | null
+  goal_event_date: string | null
   ai_consent_given_at: string | null
 }
 
@@ -68,6 +70,12 @@ export const useProfile = () => {
     })
   }
 
+  const updateGoal = (goal: { name: string; date: string } | null) =>
+    updateMutation.mutateAsync({
+      goal_event_name: goal?.name ?? null,
+      goal_event_date: goal?.date ?? null,
+    })
+
   const clearChat = async () => {
     const { error } = await supabase
       .from('messages')
@@ -115,6 +123,7 @@ export const useProfile = () => {
     updateName,
     updateSports,
     updateAthleteProfile,
+    updateGoal,
     clearChat,
     signOut,
     deleteAccount,

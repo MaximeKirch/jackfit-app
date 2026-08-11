@@ -46,6 +46,17 @@
       "title_with_name": "{{name}}, comment\ntu t'entraînes?",
       "subtitle": "Uma adaptera ses attentes à ton rythme."
     },
+    "goal": {
+      "title": "As-tu un objectif?",
+      "subtitle": "Une course, un événement, une échéance qui te motive?",
+      "yes": "Oui, j'ai une course/objectif en tête",
+      "no": "Pas d'objectif précis pour l'instant",
+      "event_name_label": "Nom de l'événement",
+      "event_name_placeholder": "Marathon de Paris, Ironman Nice…",
+      "event_date_label": "Date",
+      "event_date_placeholder": "Choisir une date",
+      "date_must_be_future": "La date doit être dans le futur."
+    },
     "consent_cta": "Rencontrer Uma 🐾"
   },
   "ai_consent": {
@@ -190,6 +201,10 @@
     "first_name": "Prénom",
     "sports": "Sports",
     "pace": "Rythme",
+    "goal": "Objectif",
+    "goal_none": "Aucun",
+    "goal_event_name": "Nom de l'événement",
+    "goal_event_date": "Date",
     "uma": "Uma",
     "clear_chat": "Effacer la conversation",
     "clear_chat_confirm": "Tous tes messages avec Uma seront supprimés. Uma repartira de zéro.",

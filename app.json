@@ -39,7 +39,8 @@
       "expo-font",
       "expo-splash-screen",
       "expo-localization",
-      "expo-notifications"
+      "expo-notifications",
+      "@react-native-community/datetimepicker"
     ],
     "extra": {
       "eas": {

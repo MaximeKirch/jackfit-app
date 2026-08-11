@@ -46,6 +46,17 @@
       "title_with_name": "{{name}}, how do you\ntrain?",
       "subtitle": "Uma will match her expectations to your pace."
     },
+    "goal": {
+      "title": "Do you have a goal?",
+      "subtitle": "A race, an event, a deadline pulling you forward?",
+      "yes": "Yes, I have a race/goal in mind",
+      "no": "No specific goal for now",
+      "event_name_label": "Event name",
+      "event_name_placeholder": "Boston Marathon, Ironman Nice…",
+      "event_date_label": "Date",
+      "event_date_placeholder": "Pick a date",
+      "date_must_be_future": "Date must be in the future."
+    },
     "consent_cta": "Meet Uma 🐾"
   },
   "ai_consent": {
@@ -190,6 +201,10 @@
     "first_name": "First name",
     "sports": "Sports",
     "pace": "Pace",
+    "goal": "Goal",
+    "goal_none": "None",
+    "goal_event_name": "Event name",
+    "goal_event_date": "Date",
     "uma": "Uma",
     "clear_chat": "Clear conversation",
     "clear_chat_confirm": "All your messages with Uma will be deleted. Uma will start over.",
