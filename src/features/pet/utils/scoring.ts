@@ -19,6 +19,16 @@ export interface ScoreBreakdown {
   activity:  number // 0-100
   wellbeing: number // 0-100
   total:     number
+  // True when the week had zero sleep entries — Sleep's 40 pts were redistributed
+  // proportionally onto Activity (+26.67) and Consistency (+13.33). UI can hide the
+  // sleep gauge or show an "N/A" state instead of a misleading 0%.
+  sleepExcluded: boolean
+  sleepNightsCounted: number
+  weights: {
+    sleep:       number
+    activity:    number
+    consistency: number
+  }
 }
 
 export interface ScoreResult {
