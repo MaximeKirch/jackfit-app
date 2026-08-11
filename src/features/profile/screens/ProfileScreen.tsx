@@ -13,6 +13,7 @@ import { EditNameModal }    from '../components/EditNameModal'
 import { EditSportsModal }  from '../components/EditSportsModal'
 import { EditAthleteModal } from '../components/EditAthleteModal'
 import { EditGoalModal }    from '../components/EditGoalModal'
+import { EditWeeklyHoursModal } from '../components/EditWeeklyHoursModal'
 import { ProgressionCard }  from '@/features/pet/components/ProgressionCard'
 import { useProfile }       from '../hooks/useProfile'
 import { useProgression }   from '@/features/pet/hooks/useProgression'
@@ -51,6 +52,7 @@ export default function ProfileScreen() {
     updateSports,
     updateAthleteProfile,
     updateGoal,
+    updateWeeklyHours,
     clearChat,
     signOut,
     deleteAccount,
@@ -63,10 +65,11 @@ export default function ProfileScreen() {
   const locale = useLocaleStore((s) => s.locale)
   const setLocale = useLocaleStore((s) => s.setLocale)
 
-  const [editName,    setEditName]    = useState(false)
-  const [editSports,  setEditSports]  = useState(false)
-  const [editAthlete, setEditAthlete] = useState(false)
-  const [editGoal,    setEditGoal]    = useState(false)
+  const [editName,         setEditName]         = useState(false)
+  const [editSports,       setEditSports]       = useState(false)
+  const [editAthlete,      setEditAthlete]      = useState(false)
+  const [editGoal,         setEditGoal]         = useState(false)
+  const [editWeeklyHours,  setEditWeeklyHours]  = useState(false)
 
   if (isLoading || !profile) {
     return (
@@ -97,6 +100,12 @@ export default function ProfileScreen() {
   const goalLabel = profile.goal_event_name
     ? profile.goal_event_name
     : t('profile.goal_none')
+
+  const weeklyHoursLabel = profile.weekly_activity_goal_hours != null
+    ? t('profile.weekly_hours_value', {
+        hours: Number(profile.weekly_activity_goal_hours).toFixed(1).replace(/\.0$/, ''),
+      })
+    : t('profile.weekly_hours_none')
 
   const currentGoal = profile.goal_event_name && profile.goal_event_date
     ? { name: profile.goal_event_name, date: profile.goal_event_date }
@@ -185,6 +194,11 @@ export default function ProfileScreen() {
             onPress={() => setEditAthlete(true)}
           />
           <ProfileRow
+            label={t('profile.weekly_hours')}
+            value={weeklyHoursLabel}
+            onPress={() => setEditWeeklyHours(true)}
+          />
+          <ProfileRow
             label={t('profile.goal')}
             value={goalLabel}
             onPress={() => setEditGoal(true)}
@@ -258,6 +272,13 @@ export default function ProfileScreen() {
         current={currentGoal}
         onSave={updateGoal}
         onClose={() => setEditGoal(false)}
+      />
+      <EditWeeklyHoursModal
+        visible={editWeeklyHours}
+        current={profile.weekly_activity_goal_hours}
+        onSave={updateWeeklyHours}
+        onClose={() => setEditWeeklyHours(false)}
+        isLoading={isUpdating}
       />
     </SafeAreaView>
   )

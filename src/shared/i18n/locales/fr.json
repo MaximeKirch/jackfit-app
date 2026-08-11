@@ -46,6 +46,17 @@
       "title_with_name": "{{name}}, comment\ntu t'entraînes?",
       "subtitle": "Uma adaptera ses attentes à ton rythme."
     },
+    "volume": {
+      "title": "Combien d'heures\ntu t'entraînes\npar semaine?",
+      "subtitle": "Aide-nous à ajuster ton objectif hebdo.",
+      "buckets": {
+        "under_3h": "Moins de 3h",
+        "3_6h":     "3 à 6h",
+        "6_10h":    "6 à 10h",
+        "10h_plus": "10h et plus",
+        "unknown":  "Je ne sais pas encore"
+      }
+    },
     "goal": {
       "title": "As-tu un objectif?",
       "subtitle": "Une course, un événement, une échéance qui te motive?",
@@ -205,6 +216,12 @@
     "goal_none": "Aucun",
     "goal_event_name": "Nom de l'événement",
     "goal_event_date": "Date",
+    "weekly_hours": "Objectif hebdo",
+    "weekly_hours_none": "Non défini",
+    "weekly_hours_value": "{{hours}}h / semaine",
+    "weekly_hours_edit_title": "Objectif hebdomadaire",
+    "weekly_hours_edit_subtitle": "Combien d'heures d'entraînement tu vises par semaine?",
+    "weekly_hours_unit": "h / semaine",
     "uma": "Uma",
     "clear_chat": "Effacer la conversation",
     "clear_chat_confirm": "Tous tes messages avec Uma seront supprimés. Uma repartira de zéro.",

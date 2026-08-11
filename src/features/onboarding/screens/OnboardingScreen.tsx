@@ -6,6 +6,7 @@ import { posthog } from '@/config/posthog'
 import { OnboardingStep1Name }    from '../components/OnboardingStep1Name'
 import { OnboardingStep2Sports }  from '../components/OnboardingStep2Sports'
 import { OnboardingStep3Profile } from '../components/OnboardingStep3Profile'
+import { OnboardingStepVolume, type VolumeChoice } from '../components/OnboardingStepVolume'
 import { OnboardingStep4Goal, type GoalValue } from '../components/OnboardingStep4Goal'
 import { OnboardingStep4Consent } from '../components/OnboardingStep4Consent'
 import { useOnboarding } from '../hooks/useOnboarding'
@@ -13,13 +14,14 @@ import { Colors } from '@/shared/constants/tokens'
 import type { SportId } from '@/shared/constants/sports'
 import type { AthleteProfileKey } from '@/shared/constants/athleteProfiles'
 
-type Step = 1 | 2 | 3 | 4 | 5
+type Step = 1 | 2 | 3 | 4 | 5 | 6
 
 export default function OnboardingScreen() {
   const [step, setStep]           = useState<Step>(1)
   const [firstName, setFirstName] = useState('')
   const [mainSports, setMainSports] = useState<SportId[]>([])
   const [athleteProfile, setAthleteProfile] = useState<AthleteProfileKey | null>(null)
+  const [volume, setVolume] = useState<VolumeChoice | null>(null)
   const [goal, setGoal] = useState<GoalValue>(null)
   const { saveOnboarding, isLoading } = useOnboarding()
 
@@ -41,16 +43,22 @@ export default function OnboardingScreen() {
     setStep(4)
   }
 
-  const handleStep4 = (nextGoal: GoalValue) => {
+  const handleStep4 = (choice: VolumeChoice) => {
+    posthog.capture('onboarding_step_completed', { step: 'weekly_volume', volume: choice })
+    setVolume(choice)
+    setStep(5)
+  }
+
+  const handleStep5 = (nextGoal: GoalValue) => {
     posthog.capture('onboarding_step_completed', { step: 'goal', has_goal: nextGoal !== null })
     setGoal(nextGoal)
-    setStep(5)
+    setStep(6)
   }
 
   const finishOnboarding = async (aiConsentGranted: boolean) => {
     if (!athleteProfile) return
     posthog.capture('onboarding_step_completed', { step: 'ai_consent', granted: aiConsentGranted })
-    await saveOnboarding({ firstName, mainSports, athleteProfile, goal, aiConsentGranted })
+    await saveOnboarding({ firstName, mainSports, athleteProfile, volume, goal, aiConsentGranted })
     router.replace('/(tabs)')
   }
 
@@ -75,17 +83,24 @@ export default function OnboardingScreen() {
           />
         )}
         {step === 4 && (
-          <OnboardingStep4Goal
-            initial={goal}
+          <OnboardingStepVolume
+            initial={volume}
             onNext={handleStep4}
             onBack={() => setStep(3)}
           />
         )}
         {step === 5 && (
+          <OnboardingStep4Goal
+            initial={goal}
+            onNext={handleStep5}
+            onBack={() => setStep(4)}
+          />
+        )}
+        {step === 6 && (
           <OnboardingStep4Consent
             onAccept={() => { void finishOnboarding(true) }}
             onDecline={() => { void finishOnboarding(false) }}
-            onBack={() => setStep(4)}
+            onBack={() => setStep(5)}
             isLoading={isLoading}
           />
         )}

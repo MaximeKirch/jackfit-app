@@ -15,6 +15,8 @@ export interface UserProfile {
   main_sports: SportId[]
   athlete_profile: AthleteProfileKey | null
   weekly_activity_goal: number
+  weekly_activity_goal_hours: number | null
+  current_weekly_volume: string | null
   sleep_goal: number
   goal_event_name: string | null
   goal_event_date: string | null
@@ -76,6 +78,9 @@ export const useProfile = () => {
       goal_event_date: goal?.date ?? null,
     })
 
+  const updateWeeklyHours = (hours: number) =>
+    updateMutation.mutateAsync({ weekly_activity_goal_hours: hours })
+
   const clearChat = async () => {
     const { error } = await supabase
       .from('messages')
@@ -124,6 +129,7 @@ export const useProfile = () => {
     updateSports,
     updateAthleteProfile,
     updateGoal,
+    updateWeeklyHours,
     clearChat,
     signOut,
     deleteAccount,

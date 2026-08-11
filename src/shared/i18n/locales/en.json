@@ -46,6 +46,17 @@
       "title_with_name": "{{name}}, how do you\ntrain?",
       "subtitle": "Uma will match her expectations to your pace."
     },
+    "volume": {
+      "title": "How many hours\ndo you train\neach week?",
+      "subtitle": "Helps us set the right weekly target.",
+      "buckets": {
+        "under_3h": "Less than 3h",
+        "3_6h":     "3 to 6h",
+        "6_10h":    "6 to 10h",
+        "10h_plus": "10h or more",
+        "unknown":  "Not sure yet"
+      }
+    },
     "goal": {
       "title": "Do you have a goal?",
       "subtitle": "A race, an event, a deadline pulling you forward?",
@@ -205,6 +216,12 @@
     "goal_none": "None",
     "goal_event_name": "Event name",
     "goal_event_date": "Date",
+    "weekly_hours": "Weekly target",
+    "weekly_hours_none": "Not set",
+    "weekly_hours_value": "{{hours}}h / week",
+    "weekly_hours_edit_title": "Weekly target",
+    "weekly_hours_edit_subtitle": "How many training hours are you aiming for each week?",
+    "weekly_hours_unit": "h / week",
     "uma": "Uma",
     "clear_chat": "Clear conversation",
     "clear_chat_confirm": "All your messages with Uma will be deleted. Uma will start over.",
