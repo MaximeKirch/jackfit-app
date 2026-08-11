@@ -35,8 +35,10 @@ jobs:
         run: npm ci
 
       - name: Publish update
+        env:
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
         run: |
           eas update \
             --branch ${{ github.ref_name == 'main' && 'production' || 'preview' }} \
-            --message "${{ github.event.head_commit.message }}" \
+            --message "$COMMIT_MSG" \
             --non-interactive
