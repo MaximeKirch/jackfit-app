@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { PetRing } from '@/features/pet/components/PetRing'
@@ -21,7 +21,19 @@ import { Colors, Spacing } from '@/shared/constants/tokens'
 
 export default function HomeScreen() {
   const { t } = useTranslation()
-  const { isLoading, isDataReady, hasFreshScore, error, refetch, permissionDenied, breakdown, justCompletedWorkout, hasEnoughData } = usePetState()
+  const {
+    isLoading,
+    isDataReady,
+    hasFreshScore,
+    error,
+    refetch,
+    permissionDenied,
+    breakdown,
+    justCompletedWorkout,
+    hasEnoughData,
+    daysWithData,
+    daysRequired,
+  } = usePetState()
   const status       = usePetStore((s) => s.status)
   const totalXp      = usePetStore((s) => s.totalXp)
   const currentStage = usePetStore((s) => s.currentStage)
@@ -40,10 +52,19 @@ export default function HomeScreen() {
     if (isLoading || !isDataReady || hasWelcomedRef.current) return
     hasWelcomedRef.current = true
     const previousVisit = getPreviousVisit()
-    setWelcomeText(getWelcomeMessage(previousVisit, hasEnoughData))
+    setWelcomeText(getWelcomeMessage(previousVisit))
     recordVisit()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isDataReady])
+
+  const progressMessage = hasEnoughData
+    ? undefined
+    : t('home.progress.days_bubble', {
+        received: Math.min(daysWithData, daysRequired),
+        required: daysRequired,
+      })
+
+  const bubbleMessage = progressMessage ?? (welcomeText !== '' ? welcomeText : undefined)
 
   useEffect(() => {
     if (justCompletedWorkout && !hasCompletedFirstWorkoutObserved) {
@@ -107,7 +128,7 @@ export default function HomeScreen() {
         </View>
         <View style={styles.bottomSection}>
           {breakdown && <GaugesPanel breakdown={breakdown} />}
-          <PetSpeechBubble overrideMessage={welcomeText !== '' ? welcomeText : undefined} />
+          <PetSpeechBubble overrideMessage={bubbleMessage} />
         </View>
       </FadeInOnFocus>
     </SafeAreaView>

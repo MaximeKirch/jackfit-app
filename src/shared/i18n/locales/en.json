@@ -70,6 +70,35 @@
     },
     "consent_cta": "Meet Uma 🐾"
   },
+  "welcome": {
+    "title": "Meet Uma",
+    "subtitle": "Your training companion, for endurance and hybrid work.",
+    "points": [
+      {
+        "title": "She reacts to what you do",
+        "body": "Sleep, workouts, consistency. She reads it all from Apple Health and sends back a fitness state."
+      },
+      {
+        "title": "She needs to get to know you",
+        "body": "The first few days, she stays quiet. Enough time to gather the data to say something honest."
+      },
+      {
+        "title": "Then she talks to you",
+        "body": "Once she knows you, she reacts every day to your week — and grows with you over the weeks."
+      }
+    ],
+    "watch_sync": {
+      "question": "Have you synced Apple Health with your watch?",
+      "intro": "If you use a watch (Garmin, Coros, Polar, Wahoo, Suunto…), your workouts have to go through Apple Health for Uma to see them.",
+      "steps": [
+        "Open your watch's app (Garmin Connect, Coros, Polar Flow…).",
+        "Go to settings, Apple Health section.",
+        "Enable syncing for Workouts, Sleep and Heart Rate."
+      ],
+      "footer": "Without this, Uma stays quiet even after several sessions."
+    },
+    "cta": "Let's go"
+  },
   "ai_consent": {
     "title": "Share your data\nwith {{product}}",
     "intro_before": "To chat with Uma, a summary of your week and your messages are sent to",
@@ -110,10 +139,9 @@
       "lazy": "Seriously? That's all you did this week?",
       "overreached": "Stop. You're wrecking yourself. Recover now."
     },
-    "welcome_new": [
-      "We don't know each other yet — move around a bit and I'll start figuring out how you're doing.",
-      "Give me a few days of data and I'll tell you how I feel."
-    ],
+    "progress": {
+      "days_bubble": "{{received}}/{{required}} days of data\nA bit more and I'll be able to tell you how you're doing."
+    },
     "welcome_return": {
       "first_time": ["Hey! I'm Uma."],
       "same_day":   ["We meet again!", "You came back too?", "Hi again!"],

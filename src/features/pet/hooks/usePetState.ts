@@ -3,7 +3,7 @@ import { useHealthData } from '@/features/health/hooks/useHealthData'
 import { syncScore } from '@/features/health/api/scoreApi'
 import { usePetStore } from '@/shared/stores/petStore'
 import { posthog } from '@/config/posthog'
-import { hasEnoughHealthData } from '../utils/scoring'
+import { hasEnoughHealthData, countDistinctDaysWithData, DAYS_REQUIRED_FOR_SCORE } from '../utils/scoring'
 import type { StageName } from '../utils/stages'
 
 export const usePetState = () => {
@@ -66,5 +66,7 @@ export const usePetState = () => {
     breakdown,
     justCompletedWorkout,
     hasEnoughData: data ? hasEnoughHealthData(data) : hasEnoughData,
+    daysWithData: data ? countDistinctDaysWithData(data) : 0,
+    daysRequired: DAYS_REQUIRED_FOR_SCORE,
   }
 }

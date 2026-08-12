@@ -59,7 +59,7 @@ export default function OnboardingScreen() {
     if (!athleteProfile) return
     posthog.capture('onboarding_step_completed', { step: 'ai_consent', granted: aiConsentGranted })
     await saveOnboarding({ firstName, mainSports, athleteProfile, volume, goal, aiConsentGranted })
-    router.replace('/(tabs)')
+    router.replace('/welcome')
   }
 
   return (

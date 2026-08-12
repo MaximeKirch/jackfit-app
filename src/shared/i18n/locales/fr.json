@@ -70,6 +70,35 @@
     },
     "consent_cta": "Rencontrer Uma 🐾"
   },
+  "welcome": {
+    "title": "Voici Uma",
+    "subtitle": "Ta compagne d'entraînement, pour l'endurance et l'hybride.",
+    "points": [
+      {
+        "title": "Elle réagit à ce que tu fais",
+        "body": "Sommeil, séances, régularité. Elle lit tout ça depuis Apple Santé et te renvoie un état de forme."
+      },
+      {
+        "title": "Elle a besoin de te découvrir",
+        "body": "Les premiers jours, elle reste silencieuse. Le temps de collecter assez de données pour dire quelque chose d'honnête."
+      },
+      {
+        "title": "Ensuite, elle te parle",
+        "body": "Une fois qu'elle te connaît, elle réagit chaque jour à ta semaine — et grandit avec toi au fil des semaines."
+      }
+    ],
+    "watch_sync": {
+      "question": "As-tu synchronisé Apple Santé avec ta montre?",
+      "intro": "Si tu utilises une montre (Garmin, Coros, Polar, Wahoo, Suunto…), tes séances doivent transiter par Apple Santé pour qu'Uma les voie.",
+      "steps": [
+        "Ouvre l'app de ta montre (Garmin Connect, Coros, Polar Flow…).",
+        "Va dans les réglages, section Apple Santé ou Health.",
+        "Active la sync pour Activités, Sommeil et Fréquence cardiaque."
+      ],
+      "footer": "Sans cette étape, Uma restera silencieuse même après plusieurs séances."
+    },
+    "cta": "C'est parti"
+  },
   "ai_consent": {
     "title": "Partager tes données\navec {{product}}",
     "intro_before": "Pour discuter avec Uma, un résumé de ta semaine et tes messages sont envoyés à",
@@ -110,10 +139,9 @@
       "lazy": "Sérieusement? C'est tout ce que t'as fait cette semaine?",
       "overreached": "Stop. Tu te détruis. Récupère maintenant."
     },
-    "welcome_new": [
-      "On ne se connaît pas encore — bouge un peu et je vais commencer à comprendre comment tu vas.",
-      "Donne-moi quelques jours de données et je te dirai comment je me sens."
-    ],
+    "progress": {
+      "days_bubble": "{{received}}/{{required}} jours de données\nEncore un peu et je pourrai te dire comment tu vas."
+    },
     "welcome_return": {
       "first_time": ["Salut! Moi c'est Uma."],
       "same_day":   ["Nous revoilà!", "Toi aussi tu reviens voir?", "Rebonjour!"],

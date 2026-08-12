@@ -42,3 +42,12 @@ export interface ScoreResult {
 
 export const hasEnoughHealthData = (health: HealthSummary): boolean =>
   health.workouts.length + health.sleep.length >= 3
+
+export const DAYS_REQUIRED_FOR_SCORE = 3
+
+export const countDistinctDaysWithData = (health: HealthSummary): number => {
+  const days = new Set<string>()
+  for (const w of health.workouts) days.add(w.date.slice(0, 10))
+  for (const s of health.sleep) days.add(s.date.slice(0, 10))
+  return days.size
+}
