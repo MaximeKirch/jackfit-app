@@ -21,11 +21,7 @@ const getTimeSinceLastVisit = (lastVisitISO: string | null): TimeSinceLastVisit 
 const pickRandom = (arr: string[]): string =>
   arr[Math.floor(Math.random() * arr.length)] ?? arr[0]!
 
-export const getWelcomeMessage = (lastVisitISO: string | null, hasEnoughData = true): string => {
-  if (!hasEnoughData) {
-    const messages = i18n.t('home.welcome_new', { returnObjects: true }) as string[]
-    return pickRandom(messages)
-  }
+export const getWelcomeMessage = (lastVisitISO: string | null): string => {
   const period = getTimeSinceLastVisit(lastVisitISO)
   const bucket = i18n.t(`home.welcome_return.${period}`, { returnObjects: true }) as string[]
   return pickRandom(bucket.length > 0 ? bucket : [i18n.t('home.welcome_fallback')])

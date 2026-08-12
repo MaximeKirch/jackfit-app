@@ -19,6 +19,16 @@ export interface ScoreBreakdown {
   activity:  number // 0-100
   wellbeing: number // 0-100
   total:     number
+  // True when the week had zero sleep entries — Sleep's 40 pts were redistributed
+  // proportionally onto Activity (+26.67) and Consistency (+13.33). UI can hide the
+  // sleep gauge or show an "N/A" state instead of a misleading 0%.
+  sleepExcluded: boolean
+  sleepNightsCounted: number
+  weights: {
+    sleep:       number
+    activity:    number
+    consistency: number
+  }
 }
 
 export interface ScoreResult {
@@ -32,3 +42,12 @@ export interface ScoreResult {
 
 export const hasEnoughHealthData = (health: HealthSummary): boolean =>
   health.workouts.length + health.sleep.length >= 3
+
+export const DAYS_REQUIRED_FOR_SCORE = 3
+
+export const countDistinctDaysWithData = (health: HealthSummary): number => {
+  const days = new Set<string>()
+  for (const w of health.workouts) days.add(w.date.slice(0, 10))
+  for (const s of health.sleep) days.add(s.date.slice(0, 10))
+  return days.size
+}

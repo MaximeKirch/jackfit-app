@@ -46,7 +46,58 @@
       "title_with_name": "{{name}}, comment\ntu t'entraînes?",
       "subtitle": "Uma adaptera ses attentes à ton rythme."
     },
+    "volume": {
+      "title": "Combien d'heures\ntu t'entraînes\npar semaine?",
+      "subtitle": "Aide-nous à ajuster ton objectif hebdo.",
+      "buckets": {
+        "under_3h": "Moins de 3h",
+        "3_6h":     "3 à 6h",
+        "6_10h":    "6 à 10h",
+        "10h_plus": "10h et plus",
+        "unknown":  "Je ne sais pas encore"
+      }
+    },
+    "goal": {
+      "title": "As-tu un objectif?",
+      "subtitle": "Une course, un événement, une échéance qui te motive?",
+      "yes": "Oui, j'ai une course/objectif en tête",
+      "no": "Pas d'objectif précis pour l'instant",
+      "event_name_label": "Nom de l'événement",
+      "event_name_placeholder": "Marathon de Paris, Ironman Nice…",
+      "event_date_label": "Date",
+      "event_date_placeholder": "Choisir une date",
+      "date_must_be_future": "La date doit être dans le futur."
+    },
     "consent_cta": "Rencontrer Uma 🐾"
+  },
+  "welcome": {
+    "title": "Voici Uma",
+    "subtitle": "Ta compagne d'entraînement, pour l'endurance et l'hybride.",
+    "points": [
+      {
+        "title": "Elle réagit à ce que tu fais",
+        "body": "Sommeil, séances, régularité. Elle lit tout ça depuis Apple Santé et te renvoie un état de forme."
+      },
+      {
+        "title": "Elle a besoin de te découvrir",
+        "body": "Les premiers jours, elle reste silencieuse. Le temps de collecter assez de données pour dire quelque chose d'honnête."
+      },
+      {
+        "title": "Ensuite, elle te parle",
+        "body": "Une fois qu'elle te connaît, elle réagit chaque jour à ta semaine — et grandit avec toi au fil des semaines."
+      }
+    ],
+    "watch_sync": {
+      "question": "As-tu synchronisé Apple Santé avec ta montre?",
+      "intro": "Si tu utilises une montre (Garmin, Coros, Polar, Wahoo, Suunto…), tes séances doivent transiter par Apple Santé pour qu'Uma les voie.",
+      "steps": [
+        "Ouvre l'app de ta montre (Garmin Connect, Coros, Polar Flow…).",
+        "Va dans les réglages, section Apple Santé ou Health.",
+        "Active la sync pour Activités, Sommeil et Fréquence cardiaque."
+      ],
+      "footer": "Sans cette étape, Uma restera silencieuse même après plusieurs séances."
+    },
+    "cta": "C'est parti"
   },
   "ai_consent": {
     "title": "Partager tes données\navec {{product}}",
@@ -88,10 +139,9 @@
       "lazy": "Sérieusement? C'est tout ce que t'as fait cette semaine?",
       "overreached": "Stop. Tu te détruis. Récupère maintenant."
     },
-    "welcome_new": [
-      "On ne se connaît pas encore — bouge un peu et je vais commencer à comprendre comment tu vas.",
-      "Donne-moi quelques jours de données et je te dirai comment je me sens."
-    ],
+    "progress": {
+      "days_bubble": "{{received}}/{{required}} jours de données\nEncore un peu et je pourrai te dire comment tu vas."
+    },
     "welcome_return": {
       "first_time": ["Salut! Moi c'est Uma."],
       "same_day":   ["Nous revoilà!", "Toi aussi tu reviens voir?", "Rebonjour!"],
@@ -190,6 +240,16 @@
     "first_name": "Prénom",
     "sports": "Sports",
     "pace": "Rythme",
+    "goal": "Objectif",
+    "goal_none": "Aucun",
+    "goal_event_name": "Nom de l'événement",
+    "goal_event_date": "Date",
+    "weekly_hours": "Objectif hebdo",
+    "weekly_hours_none": "Non défini",
+    "weekly_hours_value": "{{hours}}h / semaine",
+    "weekly_hours_edit_title": "Objectif hebdomadaire",
+    "weekly_hours_edit_subtitle": "Combien d'heures d'entraînement tu vises par semaine?",
+    "weekly_hours_unit": "h / semaine",
     "uma": "Uma",
     "clear_chat": "Effacer la conversation",
     "clear_chat_confirm": "Tous tes messages avec Uma seront supprimés. Uma repartira de zéro.",

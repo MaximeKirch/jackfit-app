@@ -82,7 +82,8 @@ function AuthGuard() {
     const inTabs = segments[0] === '(tabs)'
     const inOnboarding = segments[0] === 'onboarding'
     const inAIConsent = segments[0] === 'ai-consent'
-    if (inTabs || inOnboarding || inAIConsent) return
+    const inWelcome = segments[0] === 'welcome'
+    if (inTabs || inOnboarding || inAIConsent || inWelcome) return
 
     void supabase
       .from('profiles')

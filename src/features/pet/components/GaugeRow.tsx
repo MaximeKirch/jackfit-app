@@ -9,6 +9,7 @@ interface Props {
   icon: TablerIconName
   label: string
   value: number // 0-100
+  disabled?: boolean
 }
 
 const getGaugeColor = (value: number): string => {
@@ -17,16 +18,16 @@ const getGaugeColor = (value: number): string => {
   return Colors.pet.TIRED
 }
 
-export const GaugeRow = ({ icon, label, value }: Props) => {
+export const GaugeRow = ({ icon, label, value, disabled = false }: Props) => {
   const widthAnim = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
     Animated.timing(widthAnim, {
-      toValue: value,
+      toValue: disabled ? 0 : value,
       duration: 800,
       useNativeDriver: false,
     }).start()
-  }, [value, widthAnim])
+  }, [value, disabled, widthAnim])
 
   const widthInterpolated = widthAnim.interpolate({
     inputRange: [0, 100],
@@ -34,18 +35,25 @@ export const GaugeRow = ({ icon, label, value }: Props) => {
   })
 
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, disabled && styles.rowDisabled]}>
       <TablerIcon name={icon} size={16} color={Colors.stone} />
       <Text variant="body" size="sm" color={Colors.stone} style={styles.label}>
         {label}
       </Text>
       <View style={styles.track}>
-        <Animated.View
-          style={[styles.fill, { width: widthInterpolated, backgroundColor: getGaugeColor(value) }]}
-        />
+        {!disabled && (
+          <Animated.View
+            style={[styles.fill, { width: widthInterpolated, backgroundColor: getGaugeColor(value) }]}
+          />
+        )}
       </View>
-      <Text variant="mono" size="xs" color={Colors.charcoal} style={styles.pct}>
-        {value}%
+      <Text
+        variant="mono"
+        size="xs"
+        color={disabled ? Colors.stone : Colors.charcoal}
+        style={styles.pct}
+      >
+        {disabled ? '—' : `${value}%`}
       </Text>
     </View>
   )
@@ -56,6 +64,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems:    'center',
     gap:           Spacing.sm,
+  },
+  rowDisabled: {
+    opacity: 0.5,
   },
   label: {
     width: 70,

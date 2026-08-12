@@ -46,7 +46,58 @@
       "title_with_name": "{{name}}, how do you\ntrain?",
       "subtitle": "Uma will match her expectations to your pace."
     },
+    "volume": {
+      "title": "How many hours\ndo you train\neach week?",
+      "subtitle": "Helps us set the right weekly target.",
+      "buckets": {
+        "under_3h": "Less than 3h",
+        "3_6h":     "3 to 6h",
+        "6_10h":    "6 to 10h",
+        "10h_plus": "10h or more",
+        "unknown":  "Not sure yet"
+      }
+    },
+    "goal": {
+      "title": "Do you have a goal?",
+      "subtitle": "A race, an event, a deadline pulling you forward?",
+      "yes": "Yes, I have a race/goal in mind",
+      "no": "No specific goal for now",
+      "event_name_label": "Event name",
+      "event_name_placeholder": "Boston Marathon, Ironman Nice…",
+      "event_date_label": "Date",
+      "event_date_placeholder": "Pick a date",
+      "date_must_be_future": "Date must be in the future."
+    },
     "consent_cta": "Meet Uma 🐾"
+  },
+  "welcome": {
+    "title": "Meet Uma",
+    "subtitle": "Your training companion, for endurance and hybrid work.",
+    "points": [
+      {
+        "title": "She reacts to what you do",
+        "body": "Sleep, workouts, consistency. She reads it all from Apple Health and sends back a fitness state."
+      },
+      {
+        "title": "She needs to get to know you",
+        "body": "The first few days, she stays quiet. Enough time to gather the data to say something honest."
+      },
+      {
+        "title": "Then she talks to you",
+        "body": "Once she knows you, she reacts every day to your week — and grows with you over the weeks."
+      }
+    ],
+    "watch_sync": {
+      "question": "Have you synced Apple Health with your watch?",
+      "intro": "If you use a watch (Garmin, Coros, Polar, Wahoo, Suunto…), your workouts have to go through Apple Health for Uma to see them.",
+      "steps": [
+        "Open your watch's app (Garmin Connect, Coros, Polar Flow…).",
+        "Go to settings, Apple Health section.",
+        "Enable syncing for Workouts, Sleep and Heart Rate."
+      ],
+      "footer": "Without this, Uma stays quiet even after several sessions."
+    },
+    "cta": "Let's go"
   },
   "ai_consent": {
     "title": "Share your data\nwith {{product}}",
@@ -88,10 +139,9 @@
       "lazy": "Seriously? That's all you did this week?",
       "overreached": "Stop. You're wrecking yourself. Recover now."
     },
-    "welcome_new": [
-      "We don't know each other yet — move around a bit and I'll start figuring out how you're doing.",
-      "Give me a few days of data and I'll tell you how I feel."
-    ],
+    "progress": {
+      "days_bubble": "{{received}}/{{required}} days of data\nA bit more and I'll be able to tell you how you're doing."
+    },
     "welcome_return": {
       "first_time": ["Hey! I'm Uma."],
       "same_day":   ["We meet again!", "You came back too?", "Hi again!"],
@@ -190,6 +240,16 @@
     "first_name": "First name",
     "sports": "Sports",
     "pace": "Pace",
+    "goal": "Goal",
+    "goal_none": "None",
+    "goal_event_name": "Event name",
+    "goal_event_date": "Date",
+    "weekly_hours": "Weekly target",
+    "weekly_hours_none": "Not set",
+    "weekly_hours_value": "{{hours}}h / week",
+    "weekly_hours_edit_title": "Weekly target",
+    "weekly_hours_edit_subtitle": "How many training hours are you aiming for each week?",
+    "weekly_hours_unit": "h / week",
     "uma": "Uma",
     "clear_chat": "Clear conversation",
     "clear_chat_confirm": "All your messages with Uma will be deleted. Uma will start over.",

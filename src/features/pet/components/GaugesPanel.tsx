@@ -12,7 +12,12 @@ export const GaugesPanel = ({ breakdown }: Props) => {
   const { t } = useTranslation()
   return (
     <View style={styles.container}>
-      <GaugeRow icon="moon"  label={t('home.gauges.sleep')}    value={breakdown.sleep} />
+      <GaugeRow
+        icon="moon"
+        label={t('home.gauges.sleep')}
+        value={breakdown.sleep}
+        disabled={breakdown.sleepExcluded}
+      />
       <GaugeRow icon="run"   label={t('home.gauges.activity')} value={breakdown.activity} />
       <GaugeRow icon="heart" label={t('home.gauges.wellness')} value={breakdown.wellbeing} />
     </View>

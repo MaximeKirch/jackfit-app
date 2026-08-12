@@ -37,9 +37,9 @@ export const InfoSheetContent = ({ isOpen }: Props) => {
     : 1
 
   const rows = [
-    { key: 'activity', label: t('home.gauges.activity'), value: breakdown.activity },
-    { key: 'sleep',    label: t('home.gauges.sleep'),    value: breakdown.sleep },
-    { key: 'wellness', label: t('home.gauges.wellness'), value: breakdown.wellbeing },
+    { key: 'activity', label: t('home.gauges.activity'), value: breakdown.activity,  disabled: false },
+    { key: 'sleep',    label: t('home.gauges.sleep'),    value: breakdown.sleep,     disabled: breakdown.sleepExcluded },
+    { key: 'wellness', label: t('home.gauges.wellness'), value: breakdown.wellbeing, disabled: false },
   ]
 
   return (
@@ -56,6 +56,7 @@ export const InfoSheetContent = ({ isOpen }: Props) => {
             value={row.value}
             delay={i * STAGGER_MS}
             isOpen={isOpen}
+            disabled={row.disabled}
           />
         ))}
       </View>

@@ -15,6 +15,7 @@ interface Props {
   value: number // 0-100
   delay: number
   isOpen: boolean
+  disabled?: boolean
 }
 
 const DURATION = 800
@@ -25,11 +26,11 @@ const getGaugeColor = (value: number): string => {
   return Colors.pet.TIRED
 }
 
-export const AnimatedGaugeRow = ({ label, value, delay, isOpen }: Props) => {
+export const AnimatedGaugeRow = ({ label, value, delay, isOpen, disabled = false }: Props) => {
   const width = useSharedValue(0)
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !disabled) {
       width.value = withDelay(
         delay,
         withTiming(value, { duration: DURATION, easing: Easing.out(Easing.cubic) }),
@@ -37,22 +38,24 @@ export const AnimatedGaugeRow = ({ label, value, delay, isOpen }: Props) => {
     } else {
       width.value = 0
     }
-  }, [isOpen, value, delay, width])
+  }, [isOpen, value, delay, width, disabled])
 
   const barStyle = useAnimatedStyle(() => ({
     width: `${width.value}%`,
   }))
 
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, disabled && styles.rowDisabled]}>
       <View style={styles.header}>
-        <Text variant="body" size="sm" color={Colors.charcoal}>{label}</Text>
-        <Text variant="mono" size="xs" color={Colors.stone}>{value}%</Text>
+        <Text variant="body" size="sm" color={disabled ? Colors.stone : Colors.charcoal}>{label}</Text>
+        <Text variant="mono" size="xs" color={Colors.stone}>{disabled ? '—' : `${value}%`}</Text>
       </View>
       <View style={styles.track}>
-        <Animated.View
-          style={[styles.fill, barStyle, { backgroundColor: getGaugeColor(value) }]}
-        />
+        {!disabled && (
+          <Animated.View
+            style={[styles.fill, barStyle, { backgroundColor: getGaugeColor(value) }]}
+          />
+        )}
       </View>
     </View>
   )
@@ -61,6 +64,9 @@ export const AnimatedGaugeRow = ({ label, value, delay, isOpen }: Props) => {
 const styles = StyleSheet.create({
   row: {
     gap: 6,
+  },
+  rowDisabled: {
+    opacity: 0.5,
   },
   header: {
     flexDirection:  'row',
